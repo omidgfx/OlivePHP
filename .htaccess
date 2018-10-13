@@ -1,0 +1,15 @@
+Options +FollowSymLinks
+DirectorySlash On
+RewriteEngine On
+
+# Remove trailing slash for non directories
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Map every link to olive.php
+RewriteRule ^(.*)/$ %1/$1 [R,L]
+
+# Make direct files accessible
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteCond %{REQUEST_URI} !^olive.php.*$
+RewriteRule ^([^\n]+)|(.*)$ olive.php?___ROUTE=$1 [QSA,END]
