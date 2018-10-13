@@ -1,5 +1,7 @@
 <?php namespace Olive\Security\CSRFTokenizer;
 
+use Olive\Exceptions\CSRFTokenExpired;
+use Olive\Exceptions\CSRFTokenInvalid;
 use Olive\Http\Session;
 use Olive\Util\Text;
 
@@ -8,10 +10,6 @@ use Olive\Util\Text;
  * @package Olive\Security\CSRFTokenizer
  */
 class CSRFToken {
-
-    #region Constants
-    const PREFIX = 'ocsrf_';
-    #endregion
 
     #region Fields
     /** @var string */
@@ -43,9 +41,36 @@ class CSRFToken {
 
     }
 
-    public static function check($key, $token, $timeSpan=NULL, $multiple=false) {
+    /**
+     * @param $key
+     * @param $token
+     * @param null $timeout
+     * @param bool $multiple
+     * @return CSRFToken
+     * @throws CSRFTokenExpired
+     * @throws CSRFTokenInvalid
+     */
+    public static function check($key, $token, $timeout = NULL, $multiple = FALSE) {
 
+        $csrf = self::read($key);
+        if($csrf == NULL)
+            throw new CSRFTokenInvalid;
+
+
+        if(!$multiple) $csrf->revoke();
+
+        $ok = $csrf->token == $token;
+
+        if(!$ok)
+            throw new CSRFTokenInvalid;
+
+        if($timeout > 0 && $csrf->time + $timeout < time())
+            throw new CSRFTokenExpired;
+
+        return $csrf;
     }
+
+
 
     /**
      * @param string $key
@@ -55,7 +80,7 @@ class CSRFToken {
      */
     public static function read($key) {
 
-        $val = Session::get(static::fixkey($key));
+        $val = Session::get(static::getName($key));
         if($val == NULL) return NULL;
 
         $csrf      = new static;
@@ -78,19 +103,35 @@ class CSRFToken {
     }
     #endregion
 
-    #region Private methods
+    #region Non-static methods
 
     /**
      * @return static
      */
-    private function save() {
-        Session::set(static::PREFIX . $this->key, "{$this->time}_$this->token");
+    public function save() {
+        Session::set(static::getName($this->key), "{$this->time}_$this->token");
         return $this;
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    private static function getName($key) {
+        return '__osrcf_' . static::fixkey($key);
+    }
+
+    /**
+     * Revoke (remove) token from session
+     */
+    public function revoke() {
+        Session::delete(static::getName($this->key));
     }
 
     private static function fixkey($key) {
         return preg_replace('/[^a-zA-Z0-9_]+/', '', $key);
     }
+
 
     #endregion
 }
