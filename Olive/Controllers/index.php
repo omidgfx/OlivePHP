@@ -1,30 +1,42 @@
 <?php namespace Olive\Routing;
 
+use Olive\Security\CSRFToken;
 use Olive\Html\Form as form;
-use Olive\Html\Html;
-use Olive\Security\CSRFTokenizer\CSRFToken;
-use Olive\Util\Text;
+use Olive\Util\DateTime;
+
 
 class index extends Controller {
 
     public function fnIndex($args = []) {
         self::requireModule('html');
-        $time = microtime(TRUE);
-        for($i = 0; $i < 1000; $i++)
-            Text::random(32);
-        $time2 = microtime(TRUE);
-        echo '<pre>', Html::entitiesEncode($time . ' - ' . $time2 . ' = ' . ($time2 - $time)), '</pre>';
-
-        $token = CSRFToken::generate('')
+        $csrf = CSRFToken::generate();
+        $dt = new DateTime;
         ?>
         <html>
         <body>
         <?php
-
         echo form::open('\\#');
         echo form::a('\\#', 'my title');
-        echo form::close();
+        echo form::token($csrf);
+        echo form::nbsp(5);
+        echo form::select('', [
+            ''  => 'cc',
+            'a' => 'A',
+            'b' => 'B',
+            'c' => 'C',
+            'd' => 'D',
+            'e' => [
+                'ea' => 'EA',
+                'eb' => 'EB',
+                'ec' => 'EC',
+            ],
+        ], 'ec', [], ['' => ['disabled' => 'disabled']]);
 
+        echo form::radio('a',NULL,TRUE);
+        echo form::checkbox('a',NULL,TRUE);
+        echo form::color('a');
+        echo form::radio('s', $dt);
+        echo form::close();
         ?>
         </body>
         </html>

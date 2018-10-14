@@ -1,7 +1,6 @@
-<?php namespace Olive\Routing\Controllers;
+<?php namespace Olive\Routing;
 
 
-use Olive\Routing\Controller;
 use Olive\Exceptions\ApiException;
 use Olive\Exceptions\H500;
 use Olive\Exceptions\OliveException;

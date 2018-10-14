@@ -243,17 +243,17 @@ abstract class Record implements RecordInterface {
     #region Escaping _ORIG
     public function htmlSpecialCharsEncode($origs = TRUE) {
         if($origs) foreach($this->_ORIGS as &$v)
-            $v = htmlspecialchars($v);
+            $v = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
         else foreach($this->_CHNGS as &$v)
-            $v = htmlspecialchars($v);
+            $v = htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
         return $this;
     }
 
     public function htmlSpecialCharsDecode($origs = TRUE) {
         if($origs) foreach($this->_ORIGS as &$v)
-            $v = htmlspecialchars_decode($v);
+            $v = htmlspecialchars_decode($v, ENT_QUOTES);
         else foreach($this->_CHNGS as &$v)
-            $v = htmlspecialchars_decode($v);
+            $v = htmlspecialchars_decode($v, ENT_QUOTES);
         return $this;
     }
     #endregion

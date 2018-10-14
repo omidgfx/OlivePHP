@@ -1,28 +1,87 @@
-<?php namespace Olive\Security\CSRFTokenizer;
+<?php namespace Olive\Security;
 
 use Olive\Exceptions\CSRFTokenExpired;
 use Olive\Exceptions\CSRFTokenInvalid;
 use Olive\Http\Session;
 use Olive\Util\Text;
 
-/**
- * Class CSRFToken
- * @package Olive\Security\CSRFTokenizer
- */
 class CSRFToken {
 
     #region Fields
     /** @var string */
-    public $key;
+    protected $key = NULL;
 
     /** @var string */
-    public $token;
+    protected $token;
 
     /** @var int */
-    public $time;
-    #endregion
+    protected $time;
 
-    #region Helpers
+    /**
+     * CSRFToken constructor.
+     * @param string $key (A-z, 0-9, _)
+     */
+    public function __construct($key = NULL) {
+        $this->key = $key;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getTime() {
+        return $this->time;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken() {
+        return $this->token;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getKey() {
+        return $this->key;
+    }
+
+
+    /**
+     * Renew the time of CSRFToken
+     * @return static
+     */
+    public function expand() {
+        $this->time = time();
+        return $this;
+    }
+
+    /**
+     * Re-Generate a new token
+     * @return static
+     */
+    public function renew() {
+        $this->token = static::token();
+        return $this;
+    }
+
+    /**
+     * Save CSRFToken in session
+     * @return static
+     */
+    public function save() {
+        Session::set(static::fixKey($this->key), "{$this->time}_$this->token");
+        return $this;
+    }
+    /**
+     * Revoke (remove) token from session
+     */
+    public function revoke() {
+        Session::delete(static::fixKey($this->key));
+    }
+    #endregion
 
     /**
      * Generate a CSRF token
@@ -32,13 +91,11 @@ class CSRFToken {
      *
      * @uses Text,Session
      */
-    public static function generate($key) {
-        $csrf        = new CSRFToken;
-        $csrf->key   = static::fixkey($key);
-        $csrf->time  = time();
-        $csrf->token = Text::random(32);
-        return $csrf->save();
-
+    public static function generate($key = NULL) {
+        return (new static($key))
+            ->expand()// time
+            ->renew()// token
+            ->save();
     }
 
     /**
@@ -50,7 +107,7 @@ class CSRFToken {
      * @throws CSRFTokenExpired
      * @throws CSRFTokenInvalid
      */
-    public static function check($key, $token, $timeout = NULL, $multiple = FALSE) {
+    public static function check($token, $key = NULL, $timeout = NULL, $multiple = FALSE) {
 
         $csrf = self::read($key);
         if($csrf == NULL)
@@ -59,7 +116,7 @@ class CSRFToken {
 
         if(!$multiple) $csrf->revoke();
 
-        $ok = $csrf->token == $token;
+        $ok = $csrf->token === $token;
 
         if(!$ok)
             throw new CSRFTokenInvalid;
@@ -70,17 +127,15 @@ class CSRFToken {
         return $csrf;
     }
 
-
-
     /**
      * @param string $key
      * @return null|static
      *
      * @uses Session::get
      */
-    public static function read($key) {
+    public static function read($key = NULL) {
 
-        $val = Session::get(static::getName($key));
+        $val = Session::get(static::fixKey($key));
         if($val == NULL) return NULL;
 
         $csrf      = new static;
@@ -101,37 +156,17 @@ class CSRFToken {
         return $csrf;
 
     }
-    #endregion
 
-    #region Non-static methods
-
-    /**
-     * @return static
-     */
-    public function save() {
-        Session::set(static::getName($this->key), "{$this->time}_$this->token");
-        return $this;
+    private static function token() {
+        return Text::random(32);
     }
 
-    /**
-     * @param string $key
-     * @return string
-     */
-    private static function getName($key) {
-        return '__osrcf_' . static::fixkey($key);
+    private static function fixKey($key) {
+        if($key === NULL)
+            $key = '';
+        $key .= '__ocsrf_';
+
+        return preg_replace('/[^A-z0-9_]+/', '', $key);
     }
 
-    /**
-     * Revoke (remove) token from session
-     */
-    public function revoke() {
-        Session::delete(static::getName($this->key));
-    }
-
-    private static function fixkey($key) {
-        return preg_replace('/[^a-zA-Z0-9_]+/', '', $key);
-    }
-
-
-    #endregion
 }

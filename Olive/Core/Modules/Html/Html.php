@@ -135,6 +135,26 @@ abstract class Html {
     }
 
     /**
+     * Escape HTML special characters in a string.
+     * @param string $value
+     * @param bool $doubleEncode
+     * @return string
+     */
+    public static function specialsEncode($value, $doubleEncode = FALSE) {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
+    }
+
+    /**
+     * Decode HTML special characters in a string.
+     * @param string $value
+     * @return string
+     */
+    public static function specialsDecode($value) {
+        return htmlspecialchars_decode($value, ENT_QUOTES);
+
+    }
+
+    /**
      * @param string $name Tag Name
      * @param array|string $attrs_or_content
      * @param string $content
