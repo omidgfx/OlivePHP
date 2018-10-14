@@ -1,7 +1,7 @@
 <?php namespace Olive\Routing;
 
 use Olive\Security\CSRFToken;
-use Olive\Html\Form as form;
+use Olive\Support\Html\Form as form;
 use Olive\Util\DateTime;
 
 

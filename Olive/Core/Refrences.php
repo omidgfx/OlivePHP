@@ -53,8 +53,8 @@ function json_dump($str, $return = FALSE) {
  * <b>{@see \Olive\Util\html::TAG_EMPTY }</b>
  * @return string
  */
-function tag($name, $attrs_or_content = NULL, $content = NULL, $tagtype = \Olive\Html\Html::TAG_AUTO_DETECT) {
-    return \Olive\Html\Html::tag($name, $attrs_or_content, $content, $tagtype);
+function tag($name, $attrs_or_content = NULL, $content = NULL, $tagtype = \Olive\Support\Html\Html::TAG_AUTO_DETECT) {
+    return \Olive\Support\Html\Html::tag($name, $attrs_or_content, $content, $tagtype);
 }
 
 if(!function_exists("mb_basename")) {

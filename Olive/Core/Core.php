@@ -36,7 +36,7 @@ abstract class Core {
 
         if(!file_exists($_p)) {
             # Internal
-            $_p = "Olive/Core/Modules/$module";
+            $_p = "Olive/Core/Support/$module";
             $_p .= is_dir($_p) ? "/loader.php" : '.php';
 
             if(!file_exists($_p))

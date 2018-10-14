@@ -1,4 +1,4 @@
-<?php namespace Olive\Html;
+<?php namespace Olive\Support\Html;
 
 use Olive\Exceptions\CSRFTokenInvalid;
 use Olive\Security\CSRFToken;
