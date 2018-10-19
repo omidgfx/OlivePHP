@@ -51,3 +51,5 @@ require_once 'Core/Util/DateTime.php';
 require_once 'Core/Util/TimeLapse.php';
 require_once 'Core/Util/Digit.php';
 require_once 'Core/Util/Text.php';
+
+Core::boot();

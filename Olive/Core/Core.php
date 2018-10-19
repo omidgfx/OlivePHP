@@ -10,6 +10,7 @@ use Olive\Routing\Controller;
 use Olive\Routing\Middleware;
 use Olive\Routing\Route;
 use Olive\Routing\RouteMiddler;
+use Olive\Util\Text;
 
 abstract class Core {
     /**
@@ -292,5 +293,14 @@ abstract class Core {
 
     }
 
-
+    public static function boot($path = NULL) {
+        if($path == NULL) $path = 'Olive/Autoloads';
+        $list = glob("$path/*");
+        foreach($list as $item)
+            if(is_dir($item))
+                self::boot($item);
+            elseif(Text::endsWith('.php', $item, TRUE))
+                /** @noinspection PhpIncludeInspection */
+                require_once $item;
+    }
 }
