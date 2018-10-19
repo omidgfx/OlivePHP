@@ -22,23 +22,6 @@ abstract class Linker {
         return self::$srcFull . trim($source, '/');
     }
 
-    /**
-     * ## Parse given `$url`
-     * * **Strings** _returns:_ `src($url)`
-     * * **Escaped strings** (strings they starts with back-slash \\) _returns:_ `substr($url, 1)`
-     * * **Array** [string,bool] with 2 elements _returns:_ `src(string, bool)`
-     * @param string|array $url
-     * @return string
-     */
-    public static function parse($url) {
-        if(is_array($url)) {
-            if(count($url) == 1)
-                $url[] = FALSE;
-            return src($url[0], $url[1]);
-        }
-        return $url[0] == '\\' ? substr($url, 1) : src($url);
-    }
-
     public static function srcEx($source, $full = FALSE, $full_port = '', $full_protocol = NULL) {
         if($full) return self::srcFull($source, $full_port, $full_protocol);
         return self::src($source);

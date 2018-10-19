@@ -121,8 +121,9 @@ abstract class Core {
         require_once $path;
 
 
-        $cn = "Olive\\Routing\\$name";
-
+        $cn = "\\Olive\\Routing\\$name";
+        if(!class_exists($cn))
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\Olive\\Routing` namespace" : NULL));
         $ctrl = new $cn($route);
 
         if(!$ctrl instanceof Controller)
@@ -166,6 +167,9 @@ abstract class Core {
 
 
         $cn = "Olive\\Routing\\$routeMiddler->name";
+        if(!class_exists($cn))
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\Olive\\Routing` namespace" : NULL));
+
         # Create a new instance of the MiddleWare handler
         /** @var Middleware $mdlr */
         $mdlr = new $cn;

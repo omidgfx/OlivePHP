@@ -24,16 +24,15 @@ abstract class manifest {
     # --- Security
     const HASH_SEED = 'some-random-text'; # Some random string for hashing. WARNING: use a unique hash_seed for each project, and never change it
 
-    # --- Data Engines
-    const USE_MYSQLI  = TRUE;
-    const USE_MONGODB = FALSE;
-    const USE_SQLITE  = FALSE;
-
+    # --- MySQLi
     const MYSQLI_HOST     = 'localhost';
     const MYSQLI_DBNAME   = 'mydb';
     const MYSQLI_USERNAME = 'root';
     const MYSQLI_PASSWORD = '';
 
+    # --- Auth
+    const AUTH_AUTHENTICATABLE_CLASS = '\Olive\MySQLi\Models\Test';
+    const AUTH_KEY                   = 'olive_auth'; // use for coockies and sessions
 
     # --- Other
     const DEFAULT_TIMEZONE               = 'Asia/Tehran'; # Default timezone for date and time system

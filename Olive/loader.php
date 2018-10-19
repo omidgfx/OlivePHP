@@ -24,11 +24,15 @@ register_shutdown_function(['Olive\Core', 'shutdownHandler']);
 require_once 'Core/Traits/Singleton.php';
 
 # Core: http
+require_once 'Core/Http/URL.php';
 require_once 'Core/Http/Cookie.php';
 require_once 'Core/Http/Session.php';
 require_once 'Core/Http/Req.php';
 require_once 'Core/Http/File.php';
 require_once 'Core/Http/Linker.php';
+
+# Core: Interfaces
+require_once 'Core/Interfaces/Authenticatable.php';
 
 # Core: routing
 require_once 'Core/Routing/Controller.php';

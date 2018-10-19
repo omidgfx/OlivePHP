@@ -106,7 +106,7 @@ abstract class Record implements RecordInterface {
 
     /**
      * @param int $id
-     * @return Record A Model or a View by id
+     * @return Record|Model|View A Model or a View by id
      * @throws MySQLiAdaptingException
      * @throws MySQLiConditionException
      * @throws MySQLiException

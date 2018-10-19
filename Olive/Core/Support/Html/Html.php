@@ -1,6 +1,7 @@
 <?php namespace Olive\Support\Html;
 
 use Olive\Http\Linker;
+use Olive\Http\URL;
 
 abstract class Html {
 
@@ -16,9 +17,10 @@ abstract class Html {
     #region Builders
 
     /**
-     * @param string|array $src see: {@see \Olive\util\html::parseURL() html::parseURL}
+     * @param string|array $src see: {@see URL::parse}
      * @param array $attribs
      * @return string
+     * @throws \Olive\Exceptions\URLException
      */
     public static function js($src, array $attribs = []) {
         $attribs['src'] = self::parseURL($src);
@@ -26,9 +28,10 @@ abstract class Html {
     }
 
     /**
-     * @param string|array $href see: {@see \Olive\util\html::parseURL() html::parseURL}
+     * @param string|array|URL $href see: {@see URL::parse}
      * @param array $attribs
      * @return string
+     * @throws \Olive\Exceptions\URLException
      */
     public static function css($href, array $attribs = []) {
 
@@ -44,10 +47,11 @@ abstract class Html {
     }
 
     /**
-     * @param string|array $src see: {@see \Olive\util\html::parseURL() html::parseURL}
+     * @param string|array $src see: {@see URL::parse}
      * @param string $alt
      * @param array $attribs
      * @return string
+     * @throws \Olive\Exceptions\URLException
      */
     public static function img($src, $alt = NULL, array $attribs = []) {
         $attribs['alt'] = $alt;
@@ -57,9 +61,10 @@ abstract class Html {
     }
 
     /**
-     * @param string|array $href see: {@see \Olive\util\html::parseURL() html::parseURL}
+     * @param string|array|URL $href see: {@see URL::parse}
      * @param array $attribs
      * @return string
+     * @throws \Olive\Exceptions\URLException
      */
     public static function favicon($href, $attribs = NULL) {
         $attribs = array_merge(['rel' => 'shortcut icon', 'type' => 'image/x-icon'], $attribs);
@@ -70,10 +75,11 @@ abstract class Html {
     }
 
     /**
-     * @param string|array $href see: {@see \Olive\util\html::parseURL() html::parseURL}
+     * @param string|array|URL $href see: {@see URL::parse}
      * @param string $content
      * @param array $attribs
      * @return string
+     * @throws \Olive\Exceptions\URLException
      */
     public static function a($href, $content = NULL, array $attribs = []) {
         $attribs['href'] = self::parseURL($href);
@@ -111,9 +117,10 @@ abstract class Html {
      * * **Array** [string,bool] with 2 elements _returns:_ `src(string, bool)`
      * @param string|array $url
      * @return string
+     * @throws \Olive\Exceptions\URLException
      */
     protected static function parseURL($url) {
-        return Linker::parse($url);
+        return URL::parse($url);
     }
 
     /**

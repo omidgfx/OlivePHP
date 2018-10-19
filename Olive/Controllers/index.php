@@ -1,48 +1,35 @@
 <?php namespace Olive\Routing;
 
-use Olive\Security\CSRFToken;
-use Olive\Support\Html\Form as form;
-use Olive\Util\DateTime;
-
+use Olive\Http\URL;
+use Olive\Support\Auth\Auth;
+use \Olive\Support\Html\Html as h;
 
 class index extends Controller {
 
     public function fnIndex($args = []) {
-        self::requireModule('html');
-        $csrf = CSRFToken::generate();
-        $dt = new DateTime;
-        ?>
-        <html>
-        <body>
-        <?php
-        echo form::open('\\#');
-        echo form::a('\\#', 'my title');
-        echo form::token($csrf);
-        echo form::nbsp(5);
-        echo form::select('', [
-            ''  => 'cc',
-            'a' => 'A',
-            'b' => 'B',
-            'c' => 'C',
-            'd' => 'D',
-            'e' => [
-                'ea' => 'EA',
-                'eb' => 'EB',
-                'ec' => 'EC',
-            ],
-        ], 'ec', [], ['' => ['disabled' => 'disabled']]);
+        self::requireModules(['Mysqli', 'Auth']);
+        Auth::prove('login');
 
-        echo form::radio('a',NULL,TRUE);
-        echo form::checkbox('a',NULL,TRUE);
-        echo form::color('a');
-        echo form::radio('s', $dt);
-        echo form::close();
+//        Auth::logout();
+//        var_dump(Auth::is());
+
+//        var_dump(Auth::attempt('name', 'pass'));
+
+//        $u = new URL('a?omid=aar');
+//        $u->addQuery('pejman', 'aa');
+
+//        var_dump($u,$u.'');
+
+//        echo $a=http_build_query($u->query);
+
+
+        self::requireModule('Html');
         ?>
-        </body>
-        </html>
+        <?= h::a([], 'ss') ?>
         <?php
+
     }
-
 }
+
 
 

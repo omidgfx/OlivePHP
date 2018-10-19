@@ -18,7 +18,8 @@ class HttpException extends OliveException {
 class OliveError extends OliveException {
     public $code, $file, $line, $message;
 }
-class OliveFatalError extends OliveError{
+
+class OliveFatalError extends OliveError {
 
 }
 
@@ -162,9 +163,14 @@ class A503 extends ApiException {
 }
 
 
-class CSRFTokenInvalid extends A403{
+class CSRFTokenInvalid extends H403 {
 
 }
-class CSRFTokenExpired extends A403{
+
+class CSRFTokenExpired extends H403 {
+
+}
+
+class URLException extends H500 {
 
 }
