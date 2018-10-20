@@ -9,5 +9,6 @@ require_once 'Engine/Record.php';
 require_once 'Engine/Model.php';
 require_once 'Engine/View.php';
 
-require_once 'Models.php';
-require_once 'Views.php';
+
+\Olive\Core::boot(__DIR__ . '/Models');
+\Olive\Core::boot(__DIR__ . '/Views');
