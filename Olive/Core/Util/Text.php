@@ -82,4 +82,32 @@ abstract class Text {
 
         return $out;
     }
+
+    /**
+     * ucfirst
+     *
+     * @param   string $str required
+     * @param   string $encoding default UTF-8
+     * @return  string
+     */
+    public static function ucfirst($str, $encoding = 'UTF-8') {
+        return $encoding
+            ? mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) . mb_substr($str, 1, mb_strlen($str, $encoding), $encoding)
+            : ucfirst($str);
+    }
+
+    /**
+     * lcfirst
+     *
+     * Does not strtoupper first
+     *
+     * @param   string $str required
+     * @param   string $encoding default UTF-8
+     * @return  string
+     */
+    public static function lcfirst($str, $encoding = 'UTF-8') {
+        return $encoding
+            ? mb_strtolower(mb_substr($str, 0, 1, $encoding), $encoding) . mb_substr($str, 1, mb_strlen($str, $encoding), $encoding)
+            : lcfirst($str);
+    }
 }
