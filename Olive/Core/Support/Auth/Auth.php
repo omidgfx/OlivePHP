@@ -101,7 +101,7 @@ abstract class Auth {
 
         # get authenticatable stored password
         $p = $authenticatable->{static::$class::authPasswordField()};
-        if($p !== $hashedPassword)
+        if($p != $hashedPassword)
             return new AuthResult(AuthResult::INVALID_PASSWORD);
 
         # success
