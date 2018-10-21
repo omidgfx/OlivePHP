@@ -174,3 +174,6 @@ class CSRFTokenExpired extends H403 {
 class URLException extends H500 {
 
 }
+class ValidatorException extends OliveException{
+
+}
