@@ -592,14 +592,16 @@ class Validator {
     /**
      * Process the validation errors and return an array of errors with field names as keys.
      *
-     * @param $convert_to_string
+     * @param bool $convertToString
      *
+     * @param bool $humanizeFieldName
      * @return array | null (if empty)
      * @throws ValidatorException
      */
-    public function getErrorsArray($convert_to_string = NULL) {
+    public function getErrorsArray($convertToString = FALSE, $humanizeFieldName = TRUE) {
         if(empty($this->errors)) {
-            return ($convert_to_string) ? NULL : [];
+
+            return ($convertToString) ? NULL : [];
         }
 
         $resp = [];
@@ -608,7 +610,7 @@ class Validator {
         $messages = $this->getMessages();
 
         foreach($this->errors as $e) {
-            $field = ucwords(str_replace(['_', '-'], chr(32), $e['field']));
+            $field = $humanizeFieldName ? ucwords(str_replace(['_', '-'], chr(32), $e['field'])) : $e['field'];
             $param = $e['param'];
 
             // Let's fetch explicitly if the field names exist
@@ -893,8 +895,8 @@ class Validator {
      * @param string $delimiter
      * @return string
      */
-    protected function filter_slug($str,$delimiter = '-') {
-        $slug      = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str))))), $delimiter));
+    protected function filter_slug($str, $delimiter = '-') {
+        $slug = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str))))), $delimiter));
         return $slug;
     }
 
