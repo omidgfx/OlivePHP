@@ -18,10 +18,10 @@ class Validator {
     protected static $instance = NULL;
 
     // Validation rules for execution
-    protected $validation_rules = [];
+    protected $validationRules = [];
 
     // Filter rules for execution
-    protected $filter_rules = [];
+    protected $filterRules = [];
 
     // Instance attribute containing errors from last run
     protected $errors = [];
@@ -30,13 +30,13 @@ class Validator {
     protected static $fields = [];
 
     // Custom validation methods
-    protected static $validation_methods = [];
+    protected static $validationMethods = [];
 
     // Custom validation methods error messages and custom ones
-    protected static $validation_methods_errors = [];
+    protected static $validationMethodsErrors = [];
 
     // Customer filter methods
-    protected static $filter_methods = [];
+    protected static $filterMethods = [];
 
 
     // ** ------------------------- Instance Helper ---------------------------- ** //
@@ -48,7 +48,7 @@ class Validator {
      * @throws ValidatorException
      */
 
-    public static function get_instance() {
+    public static function getInstance() {
         if(self::$instance === NULL) {
             self::$instance = new static();
         }
@@ -98,13 +98,13 @@ class Validator {
      * @return mixed True(boolean) or the array of error messages
      * @throws ValidatorException
      */
-    public static function is_valid(array $data, array $validators) {
-        $gump = self::get_instance();
+    public static function isValid(array $data, array $validators) {
+        $gump = self::getInstance();
 
-        $gump->validation_rules($validators);
+        $gump->validationRules($validators);
 
         if($gump->run($data) === FALSE) {
-            return $gump->get_readable_errors(FALSE);
+            return $gump->getReadableErrors(FALSE);
         } else {
             return TRUE;
         }
@@ -119,8 +119,8 @@ class Validator {
      * @return mixed
      * @throws ValidatorException
      */
-    public static function filter_input(array $data, array $filters) {
-        $gump = self::get_instance();
+    public static function filterInput(array $data, array $filters) {
+        $gump = self::getInstance();
 
         return $gump->filter($data, $filters);
     }
@@ -132,7 +132,7 @@ class Validator {
      * @throws ValidatorException
      */
     public function __toString() {
-        return $this->get_readable_errors(TRUE);
+        return $this->getReadableErrors(TRUE);
     }
 
     /**
@@ -144,7 +144,7 @@ class Validator {
      *
      * @return array
      */
-    public static function xss_clean(array $data) {
+    public static function xssClean(array $data) {
         foreach($data as $k => $v) {
             $data[$k] = filter_var($v, FILTER_SANITIZE_STRING);
         }
@@ -163,16 +163,16 @@ class Validator {
      *
      * @throws ValidatorException
      */
-    public static function add_validator($rule, $callback, $error_message = NULL) {
+    public static function addValidator($rule, $callback, $error_message = NULL) {
         $method = 'validate_' . $rule;
 
-        if(method_exists(__CLASS__, $method) || isset(self::$validation_methods[$rule])) {
+        if(method_exists(__CLASS__, $method) || isset(self::$validationMethods[$rule])) {
             throw new ValidatorException("Validator rule '$rule' already exists.");
         }
 
-        self::$validation_methods[$rule] = $callback;
+        self::$validationMethods[$rule] = $callback;
         if($error_message) {
-            self::$validation_methods_errors[$rule] = $error_message;
+            self::$validationMethodsErrors[$rule] = $error_message;
         }
 
         return TRUE;
@@ -188,14 +188,14 @@ class Validator {
      *
      * @throws ValidatorException
      */
-    public static function add_filter($rule, $callback) {
+    public static function addFilter($rule, $callback) {
         $method = 'filter_' . $rule;
 
-        if(method_exists(__CLASS__, $method) || isset(self::$filter_methods[$rule])) {
+        if(method_exists(__CLASS__, $method) || isset(self::$filterMethods[$rule])) {
             throw new ValidatorException("Filter rule '$rule' already exists.");
         }
 
-        self::$filter_methods[$rule] = $callback;
+        self::$filterMethods[$rule] = $callback;
 
         return TRUE;
     }
@@ -227,12 +227,12 @@ class Validator {
      *
      * @return array
      */
-    public function validation_rules(array $rules = []) {
+    public function validationRules(array $rules = []) {
         if(empty($rules)) {
-            return $this->validation_rules;
+            return $this->validationRules;
         }
 
-        return $this->validation_rules = $rules;
+        return $this->validationRules = $rules;
     }
 
     /**
@@ -242,12 +242,12 @@ class Validator {
      *
      * @return array
      */
-    public function filter_rules(array $rules = []) {
+    public function filterRules(array $rules = []) {
         if(empty($rules)) {
-            return $this->filter_rules;
+            return $this->filterRules;
         }
 
-        return $this->filter_rules = $rules;
+        return $this->filterRules = $rules;
     }
 
     /**
@@ -261,14 +261,14 @@ class Validator {
      * @throws ValidatorException
      */
     public function run(array $data, $check_fields = FALSE) {
-        $data = $this->filter($data, $this->filter_rules());
+        $data = $this->filter($data, $this->filterRules());
 
         $validated = $this->validate(
-            $data, $this->validation_rules()
+            $data, $this->validationRules()
         );
 
         if($check_fields === TRUE) {
-            $this->check_fields($data);
+            $this->checkFields($data);
         }
 
         if($validated !== TRUE) {
@@ -283,8 +283,8 @@ class Validator {
      *
      * @param array $data
      */
-    private function check_fields(array $data) {
-        $ruleset  = $this->validation_rules();
+    private function checkFields(array $data) {
+        $ruleset  = $this->validationRules();
         $mismatch = array_diff_key($data, $ruleset);
         $fields   = array_keys($mismatch);
 
@@ -431,8 +431,8 @@ class Validator {
                                 }
                             }
 
-                        } elseif(isset(self::$validation_methods[$rule])) {
-                            $result = call_user_func(self::$validation_methods[$rule], $field, $input, $param);
+                        } elseif(isset(self::$validationMethods[$rule])) {
+                            $result = call_user_func(self::$validationMethods[$rule], $field, $input, $param);
 
                             if($result === FALSE) {
                                 if(array_search($result['field'], array_column($this->errors, 'field')) === FALSE) {
@@ -462,7 +462,7 @@ class Validator {
      * @param string $field
      * @param string $readable_name
      */
-    public static function set_field_name($field, $readable_name) {
+    public static function setFieldName($field, $readable_name) {
         self::$fields[$field] = $readable_name;
     }
 
@@ -478,9 +478,9 @@ class Validator {
      *
      * @param array $array
      */
-    public static function set_field_names(array $array) {
+    public static function setFieldNames(array $array) {
         foreach($array as $field => $readable_name) {
-            self::set_field_name($field, $readable_name);
+            self::setFieldName($field, $readable_name);
         }
     }
 
@@ -491,9 +491,9 @@ class Validator {
      * @param string $message
      * @throws ValidatorException
      */
-    public static function set_error_message($rule, $message) {
-        self::get_instance();
-        self::$validation_methods_errors[$rule] = $message;
+    public static function setErrorMessage($rule, $message) {
+        self::getInstance();
+        self::$validationMethodsErrors[$rule] = $message;
     }
 
     /**
@@ -509,9 +509,9 @@ class Validator {
      * @param array $array
      * @throws ValidatorException
      */
-    public static function set_error_messages(array $array) {
+    public static function setErrorMessages(array $array) {
         foreach($array as $rule => $message) {
-            self::set_error_message($rule, $message);
+            self::setErrorMessage($rule, $message);
         }
     }
 
@@ -520,12 +520,12 @@ class Validator {
      *
      * @return array
      */
-    protected function get_messages() {
+    protected function getMessages() {
         $lang_file = __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $this->lang . '.php';
         /** @noinspection PhpIncludeInspection */
         $messages = require $lang_file;
 
-        if($validation_methods_errors = self::$validation_methods_errors) {
+        if($validation_methods_errors = self::$validationMethodsErrors) {
             $messages = array_merge($messages, $validation_methods_errors);
         }
         return $messages;
@@ -542,7 +542,7 @@ class Validator {
      * @throws ValidatorException
      * @throws ValidatorException
      */
-    public function get_readable_errors($convert_to_string = FALSE, $field_class = 'gump-field', $error_class = 'gump-error-message') {
+    public function getReadableErrors($convert_to_string = FALSE, $field_class = 'gump-field', $error_class = 'gump-error-message') {
         if(empty($this->errors)) {
             return ($convert_to_string) ? NULL : [];
         }
@@ -550,7 +550,7 @@ class Validator {
         $resp = [];
 
         // Error messages
-        $messages = $this->get_messages();
+        $messages = $this->getMessages();
 
         foreach($this->errors as $e) {
             $field = ucwords(str_replace($this->fieldCharsToRemove, chr(32), $e['field']));
@@ -597,7 +597,7 @@ class Validator {
      * @return array | null (if empty)
      * @throws ValidatorException
      */
-    public function get_errors_array($convert_to_string = NULL) {
+    public function getErrorsArray($convert_to_string = NULL) {
         if(empty($this->errors)) {
             return ($convert_to_string) ? NULL : [];
         }
@@ -605,7 +605,7 @@ class Validator {
         $resp = [];
 
         // Error messages
-        $messages = $this->get_messages();
+        $messages = $this->getMessages();
 
         foreach($this->errors as $e) {
             $field = ucwords(str_replace(['_', '-'], chr(32), $e['field']));
@@ -682,8 +682,8 @@ class Validator {
                         $value  = $this->$method($value, $params);
                     } elseif(function_exists($filter)) {
                         $value = $filter($value);
-                    } elseif(isset(self::$filter_methods[$filter])) {
-                        $value = call_user_func(self::$filter_methods[$filter], $value, $params);
+                    } elseif(isset(self::$filterMethods[$filter])) {
+                        $value = call_user_func(self::$filterMethods[$filter], $value, $params);
                     } else {
                         throw new ValidatorException("Filter method '$filter' does not exist.");
                     }
