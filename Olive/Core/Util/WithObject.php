@@ -24,4 +24,15 @@ class WithObject {
 
         return $this;
     }
+
+    /**
+     * @param array $assoc
+     * @param bool $run_all_callables
+     * @return $this
+     */
+    public function setArray(array $assoc, $run_all_callables = TRUE) {
+        foreach($assoc as $key => $value)
+            $this->set($key, $value, $run_all_callables);
+        return $this;
+    }
 }
