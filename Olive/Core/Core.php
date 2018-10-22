@@ -296,6 +296,9 @@ abstract class Core {
     public static function boot($path = NULL) {
         if($path == NULL) $path = 'Olive/Autoloads';
         $list = glob("$path/*");
+        usort($list, function($a, $b) {
+            return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b));
+        });
         foreach($list as $item)
             if(is_dir($item))
                 self::boot($item);
