@@ -1,4 +1,6 @@
-<?php namespace Olive\Exceptions;
+<?php namespace Olive\Support\Exceptions;
+
+use Olive\Exceptions\OliveException;
 
 class MySQLiException extends OliveException {
 

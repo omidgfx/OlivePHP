@@ -1,4 +1,4 @@
-<?php namespace Olive\MySQLi;
+<?php namespace Olive\Support\MySQLi;
 
 interface RecordInterface {
     /**

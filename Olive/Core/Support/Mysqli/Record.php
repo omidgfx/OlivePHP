@@ -1,9 +1,9 @@
-<?php namespace Olive\MySQLi;
+<?php namespace Olive\Support\MySQLi;
 
-use Olive\Exceptions\MySQLiAdaptingException;
-use Olive\Exceptions\MySQLiConditionException;
-use Olive\Exceptions\MySQLiException;
-use Olive\Exceptions\MySQLiRecordException;
+use Olive\Support\Exceptions\MySQLiAdaptingException;
+use Olive\Support\Exceptions\MySQLiConditionException;
+use Olive\Support\Exceptions\MySQLiException;
+use Olive\Support\Exceptions\MySQLiRecordException;
 use Olive\manifest;
 use Olive\Util\DateTime;
 

@@ -1,15 +1,14 @@
 <?php namespace Olive\Routing;
 
-use Olive\Http\URL;
-use Olive\Support\Auth\Auth;
+use Olive\Models\Test;
 use \Olive\Support\Html\Html as h;
 
 class index extends Controller {
 
     public function fnIndex($args = []) {
         self::requireModules(['Mysqli', 'Auth']);
-        Auth::prove('login');
-
+//        Auth::prove('login');
+        var_dump(Test::select());
 //        Auth::logout();
 //        var_dump(Auth::is());
 

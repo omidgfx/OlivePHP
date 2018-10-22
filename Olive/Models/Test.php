@@ -1,7 +1,7 @@
-<?php namespace Olive\MySQLi\Models;
+<?php namespace Olive\Models;
 
 use Olive\Auth\Authenticatable;
-use Olive\MySQLi\Model;
+use Olive\Support\MySQLi\Model;
 
 class Test extends Model implements Authenticatable {
 
@@ -15,9 +15,9 @@ class Test extends Model implements Authenticatable {
     /**
      * @param $identifier
      * @return static
-     * @throws \Olive\Exceptions\MySQLiAdaptingException
-     * @throws \Olive\Exceptions\MySQLiConditionException
-     * @throws \Olive\Exceptions\MySQLiException
+     * @throws \Olive\Support\Exceptions\MySQLiAdaptingException
+     * @throws \Olive\Support\Exceptions\MySQLiConditionException
+     * @throws \Olive\Support\Exceptions\MySQLiException
      */
     public static function authGetByIdentifier($identifier) {
         return self::select(['a' => $identifier], TRUE);
