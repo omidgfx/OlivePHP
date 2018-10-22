@@ -1,6 +1,6 @@
 <?php namespace Olive\Support\MySQLi;
 
-use Olive\Support\Exceptions\MySQLiConditionException;
+use Olive\Exceptions\MySQLiConditionException;
 
 class Condition {
 

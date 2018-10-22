@@ -1,7 +1,7 @@
 <?php namespace Olive\Support\MySQLi;
 
-use Olive\Support\Exceptions\MySQLiAdaptingException;
-use Olive\Support\Exceptions\MySQLiException;
+use Olive\Exceptions\MySQLiAdaptingException;
+use Olive\Exceptions\MySQLiException;
 use Olive\manifest;
 use Olive\Singleton;
 

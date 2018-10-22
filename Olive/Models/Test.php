@@ -13,11 +13,21 @@ class Test extends Model implements Authenticatable {
     }
 
     /**
+     * @return Test|Test[]
+     * @throws \Olive\Exceptions\MySQLiAdaptingException
+     * @throws \Olive\Exceptions\MySQLiConditionException
+     * @throws \Olive\Exceptions\MySQLiException
+     */
+    public function getA() {
+        return self::select([]);
+}
+
+    /**
      * @param $identifier
-     * @return static
-     * @throws \Olive\Support\Exceptions\MySQLiAdaptingException
-     * @throws \Olive\Support\Exceptions\MySQLiConditionException
-     * @throws \Olive\Support\Exceptions\MySQLiException
+     * @return Authenticatable|Test|Test[]
+     * @throws \Olive\Exceptions\MySQLiAdaptingException
+     * @throws \Olive\Exceptions\MySQLiConditionException
+     * @throws \Olive\Exceptions\MySQLiException
      */
     public static function authGetByIdentifier($identifier) {
         return self::select(['a' => $identifier], TRUE);
