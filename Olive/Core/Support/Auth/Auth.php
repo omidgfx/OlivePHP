@@ -200,14 +200,14 @@ abstract class Auth {
 
     /**
      * @param string|array|URL $fallbackUrl see: {@see URL::parse}
-     * @param string $refKey refrence get key, null=skip ref
+     * @param string $fallbackUrlKey fallbackURL get key, null=skip ref
      * @throws \Olive\Exceptions\URLException
      */
-    public static function prove($fallbackUrl = NULL, $refKey = 'ref') {
+    public static function prove($fallbackUrl = NULL, $fallbackUrlKey = 'ref') {
         $fallbackUrl = URL::parse($fallbackUrl);
-        if(!is_null($refKey)) {
+        if(!is_null($fallbackUrlKey)) {
             $ref = $_SERVER['REQUEST_URI'];
-            $fallbackUrl->addQuery($refKey, $ref);
+            $fallbackUrl->addQuery($fallbackUrlKey, $ref);
         }
         if(!static::is())
             Core::redirect($fallbackUrl);
