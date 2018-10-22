@@ -592,19 +592,16 @@ class Validator {
     /**
      * Process the validation errors and return an array of errors with field names as keys.
      *
-     * @param bool $convertToString
-     *
      * @param bool $humanizeFieldName
-     * @return array | null (if empty)
+     * @return array
      * @throws ValidatorException
      */
-    public function getErrorsArray($convertToString = FALSE, $humanizeFieldName = TRUE) {
-        if(empty($this->errors)) {
-
-            return ($convertToString) ? NULL : [];
-        }
+    public function getErrorsArray($humanizeFieldName = TRUE) {
 
         $resp = [];
+
+        if(empty($this->errors))
+            return $resp;
 
         // Error messages
         $messages = $this->getMessages();
