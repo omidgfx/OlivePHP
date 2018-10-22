@@ -78,16 +78,21 @@ abstract class Text {
     }
 
     /**
-     * @param $pattern
-     * @param string $textToValidate
-     * @return bool|string
+     * @param string $pattern '8-4-4-4-12'
+     * @return string
      */
-    public static function randomByPattern($pattern, $textToValidate = NULL) {
-        if($textToValidate === NULL)
-            return preg_replace_callback("(\d+)", function($match) {
-                return self::_random($match[0], 'abcdefghijklmnopqrstuvwxyz1234567890');
-            }, $pattern);
+    public static function randomByPattern($pattern) {
+        return preg_replace_callback("(\d+)", function($match) {
+            return self::_random($match[0], 'abcdefghijklmnopqrstuvwxyz1234567890');
+        }, $pattern);
+    }
 
+    /**
+     * @param string $pattern '8-4-4-4-12'
+     * @param string $text
+     * @return bool
+     */
+    public static function validateByPattern($pattern, $text) {
         # validation
         $rule = preg_replace_callback('(\d+)', function($match) {
             return '\w{' . $match[0] . '}';
@@ -95,7 +100,7 @@ abstract class Text {
 
         #check
 
-        preg_match($rule, $textToValidate, $matches);
+        preg_match($rule, $text, $matches);
         return $matches != [];
     }
 
