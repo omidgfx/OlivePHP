@@ -88,20 +88,27 @@ abstract class Text {
     }
 
     /**
-     * @param string $pattern '8-4-4-4-12'
+     * @param string|string[] $pattern '8-4-4-4-12'
      * @param string $text
      * @return bool
      */
     public static function validateByPattern($pattern, $text) {
-        # validation
-        $rule = preg_replace_callback('(\d+)', function($match) {
-            return '\w{' . $match[0] . '}';
-        }, '/^' . $pattern . '$/');
+        if(!is_array($pattern))
+            $pattern = [$pattern];
+        foreach($pattern as $p) {
 
-        #check
+            # validation
+            $rule = preg_replace_callback('(\d+)', function($match) {
+                return '\w{' . $match[0] . '}';
+            }, '/^' . $p . '$/');
 
-        preg_match($rule, $text, $matches);
-        return $matches != [];
+            #check
+
+            preg_match($rule, $text, $matches);
+            if($matches != [])
+                return TRUE;
+        }
+        return FALSE;
     }
 
     /**
