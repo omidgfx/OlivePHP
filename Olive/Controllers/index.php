@@ -8,7 +8,8 @@ class index extends Controller {
 
     public function fnIndex($args = []) {
         $a = Text::randomByPattern('8-4-4-4-12');
-        var_dump($a,strlen($a));
+        var_dump($a, strlen($a));
+        var_dump(Text::randomByPattern('8-4-4-4-12', $a));
 
 //        self::requireModules(['Mysqli', 'Auth']);
 //        Auth::prove('login');

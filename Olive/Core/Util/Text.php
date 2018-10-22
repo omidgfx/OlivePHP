@@ -77,10 +77,26 @@ abstract class Text {
         return self::_random($length, $chars);
     }
 
-    public static function randomByPattern($pattern) {
-        return preg_replace_callback("(\d+)", function($match) {
-            return self::_random($match[0], 'abcdefghijklmnopqrstuvwxyz1234567890');
-        }, $pattern);
+    /**
+     * @param $pattern
+     * @param string $textToValidate
+     * @return bool|string
+     */
+    public static function randomByPattern($pattern, $textToValidate = NULL) {
+        if($textToValidate === NULL)
+            return preg_replace_callback("(\d+)", function($match) {
+                return self::_random($match[0], 'abcdefghijklmnopqrstuvwxyz1234567890');
+            }, $pattern);
+
+        # validation
+        $rule = preg_replace_callback('(\d+)', function($match) {
+            return '\w{' . $match[0] . '}';
+        }, '/^' . $pattern . '$/');
+
+        #check
+
+        preg_match($rule, $textToValidate, $matches);
+        return $matches != [];
     }
 
     /**
