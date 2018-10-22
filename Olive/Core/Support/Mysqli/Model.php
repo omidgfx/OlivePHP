@@ -3,6 +3,7 @@
 use Olive\Exceptions\MySQLiAdaptingException;
 use Olive\Exceptions\MySQLiConditionException;
 use Olive\Exceptions\MySQLiException;
+use Olive\Util\Text;
 
 /**
  * @property $id
@@ -10,6 +11,26 @@ use Olive\Exceptions\MySQLiException;
  * @package Olive\MySQLi
  */
 abstract class Model extends Record {
+
+    #region Helpers
+
+    /**
+     * @param string $pattern
+     * @param string $column
+     * @return string
+     * @throws MySQLiAdaptingException
+     * @throws MySQLiConditionException
+     * @throws MySQLiException
+     */
+    public static function uniqueRandomPattern($pattern, $column) {
+        do {
+            $random = Text::randomByPattern($pattern);
+        } while(static::exists([$column => $random]));
+
+        return $random;
+    }
+
+    #endregion
 
     #region Writing methods
 
@@ -97,4 +118,5 @@ abstract class Model extends Record {
     }
 
     #endregion
+
 }
