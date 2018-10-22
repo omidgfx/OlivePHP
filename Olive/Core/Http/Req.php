@@ -7,8 +7,8 @@ abstract class req {
      * @return string
      */
     public static function ip() {
-        $client  = @$_SERVER['HTTP_CLIENT_IP'];
-        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+        $client  = $_SERVER['HTTP_CLIENT_IP'] ?? NULL;
+        $forward = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? NULL;
         $remote  = $_SERVER['REMOTE_ADDR'];
 
         if(filter_var($client, FILTER_VALIDATE_IP)) {
