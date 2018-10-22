@@ -70,11 +70,25 @@ abstract class Text {
     }
 
     public static function random($length, $viewingSuitable = FALSE) {
-
         $chars = $viewingSuitable
             ? 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789'//all letters minus (l,I)
             : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+        return self::_random($length, $chars);
+    }
+
+    public static function randomByPattern($pattern) {
+        return preg_replace_callback("(\d+)", function($match) {
+            return self::_random($match[0], 'abcdefghijklmnopqrstuvwxyz1234567890');
+        }, $pattern);
+    }
+
+    /**
+     * @param int $length
+     * @param string $chars
+     * @return string
+     */
+    private static function _random($length, $chars) {
         $max = strlen($chars) - 1;
         $out = '';
         for($i = 0; $i < $length; $i++)

@@ -2,13 +2,17 @@
 
 use Olive\Models\Test;
 use \Olive\Support\Html\Html as h;
+use Olive\Util\Text;
 
 class index extends Controller {
 
     public function fnIndex($args = []) {
-        self::requireModules(['Mysqli', 'Auth']);
+        $a = Text::randomByPattern('8-4-4-4-12');
+        var_dump($a,strlen($a));
+
+//        self::requireModules(['Mysqli', 'Auth']);
 //        Auth::prove('login');
-        var_dump(Test::select());
+//        var_dump(Test::select());
 //        Auth::logout();
 //        var_dump(Auth::is());
 
