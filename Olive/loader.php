@@ -14,6 +14,7 @@ error_reporting(DEBUG_MODE ? E_ALL : 0);
 
 # Core
 require_once 'Core/exceptions.php';
+require_once 'Core/References.php';
 require_once 'Core/Core.php';
 
 set_error_handler(['Olive\Core', 'errorHandler'], E_ALL);
@@ -50,8 +51,6 @@ require_once 'Core/Util/DateTime.php';
 require_once 'Core/Util/TimeLapse.php';
 require_once 'Core/Util/Digit.php';
 require_once 'Core/Util/Text.php';
-
-# Core: Refrences
-require_once 'Core/References.php';
+require_once 'Core/Util/WithObject.php';
 
 Core::boot();
