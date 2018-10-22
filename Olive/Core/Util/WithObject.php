@@ -18,7 +18,7 @@ class WithObject {
      */
     public function set(string $key, $value, $run_callable = TRUE) {
 
-        $this->object{$key} = is_callable($value) && $run_callable
+        $this->object->{$key} = is_callable($value) && $run_callable
             ? $value($this->object)
             : $value;
 
