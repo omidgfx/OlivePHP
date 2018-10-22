@@ -81,3 +81,10 @@ if(!function_exists("mb_basename")) {
         return $base;
     }
 }
+/**
+ * @param object $object
+ * @return \Olive\Util\WithObject
+ */
+function with($object) {
+    return new \Olive\Util\WithObject($object);
+}
