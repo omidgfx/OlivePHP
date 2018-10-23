@@ -216,4 +216,26 @@ abstract class req {
             return $_SERVER['REQUEST_METHOD'];
     }
 
+    /**
+     * @param string $level post|get|null=all
+     * @return string
+     */
+    public static function report($level = NULL) {
+        $dec    = function($var) {
+            $out = [];
+            foreach($var as $k => $v)
+                $out[$k] = urldecode($v);
+            return $out;
+        };
+        $vars   = $level == NULL ? ['Post' => $_POST, 'Get' => $dec($_GET)] : ($level == 'get' ? ['Get' => $dec($_GET)] : ['Post' => $_POST]);
+        $url    = rtrim($_SERVER['HTTP_HOST'], '/') . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
+        $report = "$url\n";
+        foreach($vars as $key => $var) {
+            $report .= "\n$key:\t{";
+            foreach($var as $k => $v)
+                $report .= "\n\t$k:\t$v";
+            $report.="\n}";
+        }
+        return $report;
+    }
 }

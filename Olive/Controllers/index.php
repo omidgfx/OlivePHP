@@ -1,5 +1,6 @@
 <?php namespace Olive\Routing;
 
+use Olive\Http\req;
 use \Olive\Support\Html\Html as h;
 use Olive\Util\Text;
 
@@ -8,6 +9,7 @@ class index extends Controller {
     public function fnIndex($args = []) {
         $a = Text::randomByPattern('4-2-8');
         var_dump($a, strlen($a));
+        req::report();
 //        var_dump(Text::randomByPattern('8-4-4-4-12', $a));
 
 //        self::requireModules(['Mysqli', 'Auth']);
