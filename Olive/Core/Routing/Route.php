@@ -2,8 +2,7 @@
 
 class Route {
     public  $controller = NULL;
-    public  $action     = CONTROLLER_INDEX;
-    public  $url;
+    public  $action     = 'Index';
     private $extras     = [];
     /**
      * @var string[]

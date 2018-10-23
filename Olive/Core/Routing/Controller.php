@@ -3,7 +3,6 @@
 use Olive\Core;
 
 abstract class Controller extends Core {
-
     /** @var Route */
     private $route;
 

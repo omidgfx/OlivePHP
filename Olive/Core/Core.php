@@ -133,12 +133,12 @@ abstract class Core {
         # Validate action
         if($action === NULL)
             # Unspecified action
-            $action = CONTROLLER_INDEX;
+            $action = 'Index';
         elseif(!method_exists($ctrl, "fn$action")) {
             # Method not exists
             # Use Index method
             $params = array_merge([$action], $params);
-            $action = CONTROLLER_INDEX;
+            $action = 'Index';
         }
 
         # Handle request to the controller
