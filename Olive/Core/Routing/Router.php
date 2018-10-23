@@ -43,11 +43,7 @@ class Router {
         $r->controller             = '_error';
         $r->arguments['exception'] = new H404('ROUTERING FAILED.');
 
-        $route = ltrim(urldecode(parse_url($_SERVER['PATH_INFO'] ?? '', PHP_URL_PATH)), '/');
-
-        $route = rtrim($route, '');
-        if($route === NULL)
-            return $r;
+        $route = trim(urldecode(parse_url($_SERVER['PATH_INFO'] ?? '', PHP_URL_PATH)), '/');
 
         # Pass the route
         $route = $this->bypass($route);
