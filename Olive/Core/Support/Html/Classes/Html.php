@@ -1,6 +1,5 @@
 <?php namespace Olive\Support\Html;
 
-use Olive\Http\Linker;
 use Olive\Http\URL;
 
 abstract class Html {
