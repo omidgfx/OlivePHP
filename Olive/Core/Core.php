@@ -25,28 +25,44 @@ abstract class Core {
 
 
     /**
-     * @param string $module use the name of php files/directories under olive/modules. if your module has multiple files, you can put them in a single folder together and create a _module.php for your module start handler
+     * ##RequireModule
+     * Boot, Require and start modules
+     *
+     * ###Perform scenario (priority):
+     * > 1. <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`.php`</font>
+     * > 2. <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`/loader.php`</font>
+     * > 3. {@see self::Boot Boot} module directory from<br>
+     *    <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`/`</font><br><br>
+     * > 4. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`.php`</font>
+     * > 5. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/loader.php`</font>
+     * > 6. {@see self::Boot Boot} module directory from<br>
+     *    <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/`</font>
+     *
+     *
+     *
+     * @param string $module
      * @throws OliveFatalError
      */
     public static function requireModule($module) {
+        $places = ['Olive/Core/Support', 'Olive/Modules'];
 
-        # External modules
-
-        $_p = "Olive/Modules/$module";
-        $_p .= is_dir($_p) ? "/loader.php" : '.php';
-
-        if(!file_exists($_p)) {
-            # Internal
-            $_p = "Olive/Core/Support/$module";
-            $_p .= is_dir($_p) ? "/loader.php" : '.php';
-
-            if(!file_exists($_p))
-                throw new OliveFatalError("Module not found '$_p'");
+        foreach($places as $place) {
+            if(file_exists($path = "$place/$module.php")){
+                /** @noinspection PhpIncludeInspection */
+                require_once $path;
+                return;
+            }
+            if(is_dir("$place/$module")){
+                if(file_exists($path="$place/$module/loader.php")){
+                    /** @noinspection PhpIncludeInspection */
+                    require_once $path;
+                    return;
+                }
+                static::boot("$place/$module");
+                return;
+            }
         }
-
-        /** @noinspection PhpIncludeInspection */
-        require_once $_p;
-
+        throw new OliveFatalError("Module not found '$module'");
     }
 
     /**
@@ -293,17 +309,44 @@ abstract class Core {
 
     }
 
-    public static function boot($path = NULL) {
-        if($path == NULL) $path = 'Olive/Autoloads';
+    /**
+     * ##Boot given directory
+     * Requires all php files in directory (recursively)
+     * <div style="color:orange;padding-top:0">
+     * * Sub-directories are first priority to boot
+     * * Underscore prefix (_) has most priority in require
+     * </font>
+     *
+     * @param $path
+     */
+    public static function boot($path) {
+
+        if(is_null($path)) return;
+
+        # read files and folders
         $list = glob("$path/*");
-        usort($list, function($a, $b) {
-            return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b));
-        });
-        foreach($list as $item)
+        $dirs = $files = [];
+
+        foreach($list as $item) {
             if(is_dir($item))
-                self::boot($item);
-            elseif(Text::endsWith('.php', $item, TRUE))
-                /** @noinspection PhpIncludeInspection */
-                require_once $item;
+                $dirs[] = $item;
+            elseif(Text::endsWith('.php', $item, FALSE))
+                $files[] = $item;
+        }
+        unset($list);
+
+        # sort
+        $sorter = function($a, $b) { return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b)); };
+        usort($dirs, $sorter);
+        usort($files, $sorter);
+
+        # recursive call boot for folders
+        foreach($dirs as $dir)
+            self::boot($dir);
+
+        # require files
+        foreach($files as $item)
+            /** @noinspection PhpIncludeInspection */
+            require_once $item;
     }
 }
