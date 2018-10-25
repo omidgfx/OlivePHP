@@ -32,7 +32,7 @@ abstract class Core {
      * ###Perform scenario (priority):
      * > 1. <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`.php`</font>
      * > 2. <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`/loader.php`</font>
-     * > 3. {@see self::boot Boot}s module directory from<br>
+     * > 3. {@see Core::boot Boot}s module directory from<br>
      *    <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`/`</font><br><br>
      * > 4. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`.php`</font>
      * > 5. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/loader.php`</font>
