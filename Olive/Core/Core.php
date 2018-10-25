@@ -15,6 +15,7 @@ use Olive\Util\Text;
 abstract class Core {
     /**
      * @param string[] $modules
+     * @uses Core::requireModule()
      * @see Core::requireModule()
      * @throws OliveFatalError
      */
@@ -35,7 +36,7 @@ abstract class Core {
      *    <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`/`</font><br><br>
      * > 4. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`.php`</font>
      * > 5. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/loader.php`</font>
-     * > 6. {@see self::Boot Boot} module directory from<br>
+     * > 6. {@see Core::boot Boot}s module directory from<br>
      *    <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/`</font>
      *
      *
@@ -47,13 +48,13 @@ abstract class Core {
         $places = ['Olive/Core/Support', 'Olive/Modules'];
 
         foreach($places as $place) {
-            if(file_exists($path = "$place/$module.php")){
+            if(file_exists($path = "$place/$module.php")) {
                 /** @noinspection PhpIncludeInspection */
                 require_once $path;
                 return;
             }
-            if(is_dir("$place/$module")){
-                if(file_exists($path="$place/$module/loader.php")){
+            if(is_dir("$place/$module")) {
+                if(file_exists($path = "$place/$module/loader.php")) {
                     /** @noinspection PhpIncludeInspection */
                     require_once $path;
                     return;
@@ -325,6 +326,8 @@ abstract class Core {
 
         # read files and folders
         $list = glob("$path/*");
+        if(count($list) == 0)
+            return;
         $dirs = $files = [];
 
         foreach($list as $item) {
