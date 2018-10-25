@@ -53,4 +53,4 @@ require_once 'Core/Util/Digit.php';
 require_once 'Core/Util/Text.php';
 require_once 'Core/Util/WithObject.php';
 
-Core::boot();
+Core::boot('Olive/Boot');
