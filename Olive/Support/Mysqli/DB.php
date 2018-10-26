@@ -41,6 +41,7 @@ class DB extends MySQLiConnection {
         $orderby = $this->adaptOrderBy($orderby);
 
         # query
+        /** @noinspection SqlNoDataSourceInspection */
         $query = "SELECT $columns FROM $table"
                  . ($where ? " WHERE $where" : '')
                  . ($orderby ? " ORDER BY $orderby" : "")
@@ -76,6 +77,7 @@ class DB extends MySQLiConnection {
         $str_vals = implode(',', $str_vals);
 
         # query
+        /** @noinspection SqlNoDataSourceInspection */
         $query = "INSERT INTO $table $fields VALUES $str_vals";
 
         # insert
@@ -114,6 +116,7 @@ class DB extends MySQLiConnection {
         $condition = $this->adaptCondition($condition);
 
         # query
+        /** @noinspection SqlNoDataSourceInspection */
         $query = "UPDATE $table SET $set" . ($condition ? " WHERE $condition" : '');
 
         # update
@@ -137,6 +140,7 @@ class DB extends MySQLiConnection {
         $condition = $this->adaptCondition($condition);
 
         # query
+        /** @noinspection SqlNoDataSourceInspection */
         $query = "DELETE FROM $table" . ($condition ? " WHERE $condition" : '');
 
         # delete
