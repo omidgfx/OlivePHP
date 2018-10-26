@@ -521,7 +521,7 @@ class Validator {
      * @return array
      */
     protected function getMessages() {
-        $lang_file = __DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $this->lang . '.php';
+        $lang_file = __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $this->lang . '.php';
         /** @noinspection PhpIncludeInspection */
         $messages = require $lang_file;
 
