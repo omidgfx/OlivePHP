@@ -50,7 +50,7 @@ class Validator {
 
     public static function getInstance() {
         if(self::$instance === NULL) {
-            self::$instance = new static();
+            self::$instance = new static;
         }
         return self::$instance;
     }
@@ -79,7 +79,7 @@ class Validator {
 
     public function __construct($lang = 'en') {
         if($lang) {
-            $lang_file = __DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $lang . '.php';
+            $lang_file = __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php';
 
             if(file_exists($lang_file)) {
                 $this->lang = $lang;
