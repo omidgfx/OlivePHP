@@ -1,6 +1,4 @@
-<?php
-
-namespace Olive;
+<?php namespace Olive;
 
 use Olive\Exceptions\H404;
 use Olive\Exceptions\H501;
@@ -10,7 +8,6 @@ use Olive\Routing\Controller;
 use Olive\Routing\Middleware;
 use Olive\Routing\Route;
 use Olive\Routing\RouteMiddler;
-use Olive\Util\Text;
 
 abstract class Core {
     /**
@@ -324,7 +321,7 @@ abstract class Core {
         foreach($list as $item) {
             if(is_dir($item))
                 $dirs[] = $item;
-            elseif(Text::endsWith('.php', $item, FALSE))
+            elseif(strtolower(substr($item, -4)) == '.php')
                 $files[] = $item;
         }
         unset($list);
