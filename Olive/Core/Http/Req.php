@@ -231,7 +231,7 @@ abstract class req {
         };
 
         $vars['URL'] = rtrim($_SERVER['HTTP_HOST'], '/') . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
-        $vars += $level == NULL ? ['Post' => $_POST, 'Get' => $dec($_GET)] : ($level == 'get' ? ['Get' => $dec($_GET)] : ['Post' => $_POST]);
+        $vars        += $level == NULL ? ['Post' => $_POST, 'Get' => $dec($_GET)] : ($level == 'get' ? ['Get' => $dec($_GET)] : ['Post' => $_POST]);
 
 
 
@@ -241,5 +241,13 @@ abstract class req {
 
         return json_encode($vars, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
+    }
+
+    /**
+     * @param null $fallback
+     * @return null
+     */
+    public static function referer($fallback = NULL) {
+        return $_SERVER['HTTP_REFERER'] ?? $fallback;
     }
 }
