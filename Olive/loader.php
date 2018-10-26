@@ -5,7 +5,6 @@ date_default_timezone_set("GMT");
 mb_language('uni');
 mb_internal_encoding('UTF-8');
 
-
 # Prepare manifest
 require_once 'manifest.php';
 require_once 'References.php';
