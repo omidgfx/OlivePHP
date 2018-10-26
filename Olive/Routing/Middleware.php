@@ -11,7 +11,7 @@ abstract class Middleware extends Core {
     public abstract function perform(Route $route, $args = []);
 
     public static function getPath($ctrl) {
-        return "Olive/Middlewares/$ctrl.php";
+        return "App/Middlewares/$ctrl.php";
     }
 
     public static function exists($short_name) {

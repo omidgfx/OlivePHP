@@ -1,6 +1,6 @@
 <?php namespace Olive\Models;
 
-use Olive\Auth\Authenticatable;
+use Olive\Interfaces\Authenticatable;
 use Olive\Support\MySQLi\Model;
 
 class Test extends Model implements Authenticatable {

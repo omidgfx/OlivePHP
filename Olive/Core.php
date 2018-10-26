@@ -16,7 +16,7 @@ abstract class Core {
     /**
      * @param string[] $modules
      * @uses Core::requireModule()
-     * @see Core::requireModule()
+     * @see  Core::requireModule()
      * @throws OliveFatalError
      */
     public static function requireModules(array $modules) {
@@ -30,14 +30,14 @@ abstract class Core {
      * Boot, Require and start modules
      *
      * ###Perform scenario (priority):
-     * > 1. <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`.php`</font>
-     * > 2. <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`/loader.php`</font>
+     * > 1. <font color="orange">`Olive/Support/`</font><b color="lime">`$module`</b><font color="orange">`.php`</font>
+     * > 2. <font color="orange">`Olive/Support/`</font><b color="lime">`$module`</b><font color="orange">`/loader.php`</font>
      * > 3. {@see Core::boot Boot}s module directory from<br>
-     *    <font color="orange">`Olive/Core/Support/`</font><b color="lime">`$module`</b><font color="orange">`/`</font><br><br>
-     * > 4. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`.php`</font>
-     * > 5. <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/loader.php`</font>
+     *    <font color="orange">`Olive/Support/`</font><b color="lime">`$module`</b><font color="orange">`/`</font><br><br>
+     * > 4. <font color="#ff8888">`App/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`.php`</font>
+     * > 5. <font color="#ff8888">`App/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/loader.php`</font>
      * > 6. {@see Core::boot Boot}s module directory from<br>
-     *    <font color="#ff8888">`Olive/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/`</font>
+     *    <font color="#ff8888">`App/Modules/`</font><b color="lime">`$module`</b><font color="#ff8888">`/`</font>
      *
      *
      *
@@ -45,7 +45,7 @@ abstract class Core {
      * @throws OliveFatalError
      */
     public static function requireModule($module) {
-        $places = ['Olive/Core/Support', 'Olive/Modules'];
+        $places = ['Olive/Support', 'App/Modules'];
 
         foreach($places as $place) {
             if(file_exists($path = "$place/$module.php")) {
@@ -75,7 +75,7 @@ abstract class Core {
     public static function renderView($view_name, $params = [], $layout = NULL) {
         ob_start();
 
-        $vars = self::requireScript("Olive/Views/$view_name.php", $params);
+        $vars = self::requireScript("App/Views/$view_name.php", $params);
 
         if(!isset($vars['layout']))
             $vars['layout'] = $layout;
@@ -85,15 +85,6 @@ abstract class Core {
         $viewContent = ob_get_clean();
 
         self::renderLayout($layout, array_merge($params, ['content' => $viewContent]));
-    }
-
-    /**
-     * @param string $widget
-     * @param array $vars associated array, keys are variables name and accessible in rendering widget
-     * @throws H404
-     */
-    public static function renderWidget($widget, $vars = []) {
-        self::requireScript("Olive/Widgets/$widget.php", $vars);
     }
 
     /**
@@ -139,9 +130,9 @@ abstract class Core {
         require_once $path;
 
 
-        $cn = "\\Olive\\Routing\\$name";
+        $cn = "\\App\\Controllers\\$name";
         if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\Olive\\Routing` namespace" : NULL));
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers` namespace" : NULL));
         $ctrl = new $cn($route);
 
         if(!$ctrl instanceof Controller)
@@ -184,9 +175,9 @@ abstract class Core {
         require_once $path;
 
 
-        $cn = "Olive\\Routing\\$routeMiddler->name";
+        $cn = "App\\Middlewares\\$routeMiddler->name";
         if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\Olive\\Routing` namespace" : NULL));
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\App\\Middlewares` namespace" : NULL));
 
         # Create a new instance of the MiddleWare handler
         /** @var Middleware $mdlr */
@@ -263,7 +254,7 @@ abstract class Core {
         }
 
         ob_start();
-        $res            = self::requireScript("Olive/Layouts/$layout.php", $vars);
+        $res            = self::requireScript("App/Layouts/$layout.php", $vars);
         $layout_content = ob_get_clean();
         if(isset($res['parent_layout'])) {
             self::renderLayout($res['parent_layout'], array_merge($vars, ['content' => $layout_content]));
@@ -351,5 +342,16 @@ abstract class Core {
         foreach($files as $item)
             /** @noinspection PhpIncludeInspection */
             require_once $item;
+    }
+
+    public static function loadBootables($path) {
+        # read files and folders
+        $list = glob("$path/*.boot");
+        if(count($list) == 0)
+            return;
+        # boot
+        foreach($list as $item) if(is_dir($item))
+            self::boot($item);
+
     }
 }

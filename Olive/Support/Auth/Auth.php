@@ -1,6 +1,6 @@
 <?php namespace Olive\Support\Auth;
 
-use Olive\Auth\Authenticatable;
+use Olive\Interfaces\Authenticatable;
 use Olive\Core;
 use Olive\Http\{Cookie, Session, URL};
 use Olive\manifest;

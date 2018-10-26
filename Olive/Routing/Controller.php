@@ -18,7 +18,7 @@ abstract class Controller extends Core {
      * @return string
      */
     public static function getPath($ctrl) {
-        return "Olive/Controllers/$ctrl.php";
+        return "App/Controllers/$ctrl.php";
     }
 
     /**

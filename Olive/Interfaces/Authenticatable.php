@@ -1,4 +1,4 @@
-<?php namespace Olive\Auth;
+<?php namespace Olive\Interfaces;
 
 interface Authenticatable {
 

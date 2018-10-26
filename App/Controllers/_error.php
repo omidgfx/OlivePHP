@@ -1,9 +1,10 @@
-<?php namespace Olive\Routing;
+<?php namespace Olive\Controllers;
 
 
 use Olive\Exceptions\ApiException;
 use Olive\Exceptions\H500;
 use Olive\Exceptions\OliveException;
+use Olive\Routing\Controller;
 
 class _error extends Controller {
     public function fnIndex($args = []) {

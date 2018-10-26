@@ -26,7 +26,6 @@ function srcExt($source, $full = FALSE, $full_port = '', $full_protocol = NULL) 
     return Olive\Http\Linker::srcEx($source, $full, $full_port, $full_protocol);
 }
 
-
 function json_dump($str, $return = FALSE) {
 
     $s = json_encode($str);
@@ -85,6 +84,7 @@ if(!function_exists("mb_basename")) {
  * @param object $object
  * @return \Olive\Util\WithObject
  */
+
 function with($object) {
     return new \Olive\Util\WithObject($object);
 }

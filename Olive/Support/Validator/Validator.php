@@ -79,7 +79,7 @@ class Validator {
 
     public function __construct($lang = 'en') {
         if($lang) {
-            $lang_file = __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php';
+            $lang_file = __DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $lang . '.php';
 
             if(file_exists($lang_file)) {
                 $this->lang = $lang;
@@ -521,7 +521,7 @@ class Validator {
      * @return array
      */
     protected function getMessages() {
-        $lang_file = __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $this->lang . '.php';
+        $lang_file = __DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $this->lang . '.php';
         /** @noinspection PhpIncludeInspection */
         $messages = require $lang_file;
 

@@ -1,6 +1,4 @@
-<?php
-
-namespace Olive;
+<?php namespace Olive;
 
 use Olive\Routing\RouteBypass;
 use Olive\Routing\RouteMiddler;

@@ -1,6 +1,7 @@
 <?php namespace Olive\Support\Auth;
 
-use Olive\Auth\Authenticatable;
+
+use Olive\Interfaces\Authenticatable;
 
 class AuthResult {
     const INVALID_PASSWORD   = -1;
