@@ -1,4 +1,7 @@
-<?php namespace Olive\Routing;
+<?php namespace App\Routing;
+
+use Olive\Routing\Middleware;
+use Olive\Routing\Route;
 
 class mi extends Middleware {
 

@@ -1,4 +1,4 @@
-<?php namespace Olive\Controllers;
+<?php namespace App\Controllers;
 
 
 use Olive\Exceptions\ApiException;
