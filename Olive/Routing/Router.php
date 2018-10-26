@@ -16,7 +16,7 @@ class Router {
 
         # add route bypasses from the manifest
         # Find out the route and render the corresponding controller.
-        manifest::routerBypasses($this);
+        manifest::routerMapping($this);
 
         # Find route
         $route = $this->route();

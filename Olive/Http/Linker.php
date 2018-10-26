@@ -6,18 +6,18 @@ abstract class Linker {
     private static $src, $srcFull;
 
     public static function src($source) {
-        if(!self::$src) self::$src = self::push(manifest::ROOT);
+        if(!self::$src) self::$src = self::push(manifest::ROOT_DIR);
         return self::$src . trim($source, '/');
     }
 
     public static function srcFull($source, $port = '', $protocol = NULL) {
         if(!self::$srcFull) {
-            $r = manifest::ROOT;
+            $r = manifest::ROOT_DIR;
 
             if($r == '/') $r = '';
             if($r != '') $r = $r . '/';
             $p             = $protocol == NULL ? (self::isConnectionSecure() ? 's' : NULL) : $protocol;
-            self::$srcFull = 'http' . $p . '://' . manifest::HOST . $port . '/' . $r;
+            self::$srcFull = 'http' . $p . '://' . manifest::DOMAIN . $port . '/' . $r;
         }
         return self::$srcFull . trim($source, '/');
     }
