@@ -341,7 +341,7 @@ abstract class Core {
             require_once $item;
     }
 
-    public static function loadBootables($path) {
+    public static function startApp($path = 'App') {
         # read files and folders
         $list = glob("$path/*.boot");
         if(count($list) == 0)

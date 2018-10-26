@@ -1,4 +1,4 @@
-<?php namespace Olive;
+<?php
 
 # set defaults
 date_default_timezone_set("GMT");
@@ -11,14 +11,13 @@ require_once 'manifest.php';
 require_once 'References.php';
 require_once 'Core.php';
 
+# Boot parts
 $parts = ['Exceptions', 'Traits', 'Http', 'Routing', 'Security', 'Util'];
-foreach($parts as $part) Core::boot("Olive/$part");
+foreach($parts as $part) \Olive\Core::boot("Olive/$part");
 
 # Environment config
 error_reporting(DEBUG_MODE ? E_ALL : 0);
-
 set_error_handler(['Olive\Core', 'errorHandler'], E_ALL);
 register_shutdown_function(['Olive\Core', 'shutdownHandler']);
 
-
-Core::loadBootables('App');
+\Olive\Core::startApp();
