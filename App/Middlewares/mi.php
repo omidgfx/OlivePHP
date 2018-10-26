@@ -1,4 +1,4 @@
-<?php namespace App\Routing;
+<?php namespace App\Middlewares;
 
 use Olive\Routing\Middleware;
 use Olive\Routing\Route;
