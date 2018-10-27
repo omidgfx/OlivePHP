@@ -39,11 +39,11 @@ class MySQLiConnection extends \mysqli {
                 return self::val($vns);
             }, $value);
         }
-        if($value === NULL)
+        if(is_null($value))
             return 'NULL';
-        elseif(is_bool($value))
-            return $value ? "b'1'" : "b'0'";
-        elseif(is_numeric($value))
+        elseif(is_bool($value)) {
+            return $value === TRUE ? "1" : "0";
+        } elseif(is_numeric($value))
             return "'" . strval($value) . "'";
         else
             return "'" . $this->escape_string($value) . "'";
