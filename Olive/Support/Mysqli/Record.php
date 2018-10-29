@@ -34,7 +34,7 @@ abstract class Record implements RecordInterface {
 
     public function __clone() {
         $this->unset('id');
-        $this->htmlSpecialCharsDecode()->syncChanged();
+        $this->syncChanged();
     }
 
     /**

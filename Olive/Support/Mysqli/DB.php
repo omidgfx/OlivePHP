@@ -246,7 +246,7 @@ class DB extends MySQLiConnection {
     public function fetch(\mysqli_result $mysqli_result, $class_name = 'stdClass') {
         $out = [];
         while($o = $mysqli_result->fetch_object($class_name))
-            $out[] = $o instanceof Record ? $o->syncOriginal()->htmlSpecialCharsEncode() : $o;
+            $out[] = $o instanceof Record ? $o->syncOriginal() : $o;
         return $out;
     }
 

@@ -46,26 +46,24 @@ abstract class Model extends Record {
 
     /**
      * @param bool $syncOriginal syncOriginal after save successfully
-     * @param bool $htmlSpecialCharsEncode Encode originals after save successfully and syncOriginal
      * @return Model
      * @throws MySQLiAdaptingException
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function save($syncOriginal = TRUE, $htmlSpecialCharsEncode = TRUE) {
+    public function save($syncOriginal = TRUE) {
         if($this->id === NULL)
-            return $this->insert($syncOriginal, $htmlSpecialCharsEncode);
-        return $this->update($syncOriginal, $htmlSpecialCharsEncode);
+            return $this->insert($syncOriginal);
+        return $this->update($syncOriginal);
     }
 
     /**
      * @param bool $syncOriginal syncOriginal after insert successfully
-     * @param bool $htmlSpecialCharsEncode Encode originals after insert successfully and syncOriginal
      * @return $this
      * @throws MySQLiAdaptingException
      * @throws MySQLiException
      */
-    protected function insert($syncOriginal = TRUE, $htmlSpecialCharsEncode = TRUE) {
+    protected function insert($syncOriginal = TRUE) {
         # changes
         $changes = $this->getChanges();
 
@@ -79,11 +77,8 @@ abstract class Model extends Record {
         $this->id = $db->insert_id;
 
         # normalize record
-        if($syncOriginal) {
-            if($htmlSpecialCharsEncode)
-                $this->htmlSpecialCharsEncode(FALSE);
+        if($syncOriginal)
             $this->syncOriginal();
-        }
 
         # make chain
         return $this;
@@ -91,13 +86,12 @@ abstract class Model extends Record {
 
     /**
      * @param bool $syncOriginal syncOriginal after update successfully
-     * @param bool $htmlSpecialCharsEncode Encode originals after update successfully and syncOriginal
      * @return $this
      * @throws MySQLiAdaptingException
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    protected function update($syncOriginal = TRUE, $htmlSpecialCharsEncode = TRUE) {
+    protected function update($syncOriginal = TRUE) {
         # changes
         $changes = $this->getChanges();
         if($changes == []) // nothing to save
@@ -109,11 +103,10 @@ abstract class Model extends Record {
         $db->update(static::table(), $changes, Condition::where('id', $this->id));
 
         # normalize record
-        if($syncOriginal) {
-            if($htmlSpecialCharsEncode)
-                $this->htmlSpecialCharsEncode(FALSE);
+        if($syncOriginal)
             $this->syncOriginal();
-        }
+
+        # make chain
         return $this;
     }
 
