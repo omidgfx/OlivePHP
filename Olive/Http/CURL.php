@@ -39,7 +39,7 @@ class CURL {
      * @param bool $state
      * @return CURL
      */
-    public function setLLVerifyPeer($state = FALSE) {
+    public function setSSLVerifyPeer($state = FALSE) {
         return $this->setOption(CURLOPT_SSL_VERIFYPEER, $state);
     }
 
