@@ -46,7 +46,7 @@ class MySQLiConnection extends \mysqli {
         } elseif(is_numeric($value))
             return "'" . strval($value) . "'";
         else
-            return "'" . $this->escape_string($value) . "'";
+            return "'" . $this->escape_string(mb_convert_encoding($value, 'utf-8')) . "'";
     }
     #endregion
 
