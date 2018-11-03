@@ -1,4 +1,4 @@
 <?php
 
-require_once 'olive/loader.php';
+require_once 'Olive/loader.php';
 new Olive\Routing\Router;
