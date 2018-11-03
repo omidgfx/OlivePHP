@@ -88,3 +88,15 @@ if(!function_exists("mb_basename")) {
 function with($object) {
     return new \Olive\Util\WithObject($object);
 }
+
+
+/**
+ * @param $baseDir
+ * @param $path
+ * @return bool
+ */
+function isSubdirOf($baseDir, $path) {
+    $baseReal = realpath($baseDir);
+    $pathReal = realpath($path);
+    return \Olive\Util\Text::startsWith($baseReal, $pathReal);
+}
