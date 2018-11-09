@@ -10,19 +10,19 @@ abstract class Linker {
         return self::$src . trim($source, '/');
     }
 
-    public static function srcFull($source, $port = '', $protocol = NULL) {
+    public static function srcFull($source, $port = '', $protocol = null) {
         if(!self::$srcFull) {
             $r = manifest::ROOT_DIR;
 
             if($r == '/') $r = '';
             if($r != '') $r = $r . '/';
-            $p             = $protocol == NULL ? (self::isConnectionSecure() ? 's' : NULL) : $protocol;
+            $p             = $protocol == null ? (self::isConnectionSecure() ? 's' : null) : $protocol;
             self::$srcFull = 'http' . $p . '://' . manifest::DOMAIN . $port . '/' . $r;
         }
         return self::$srcFull . trim($source, '/');
     }
 
-    public static function srcEx($source, $full = FALSE, $full_port = '', $full_protocol = NULL) {
+    public static function srcEx($source, $full = false, $full_port = '', $full_protocol = null) {
         if($full) return self::srcFull($source, $full_port, $full_protocol);
         return self::src($source);
     }
@@ -33,7 +33,7 @@ abstract class Linker {
     }
 
 
-    private static function push($str, $char = '/', $left = TRUE, $right = TRUE) {
+    private static function push($str, $char = '/', $left = true, $right = true) {
         if(!$str)
             return $str;
         //push left

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'validate_required'                 => 'Bagian {field} harus diisi',
     'validate_valid_email'              => 'Bagian {field} harus berisi alamat email yang benar',
     'validate_max_len'                  => 'Bagian {field} harus memiliki {param} karakter atau kurang',
@@ -44,9 +44,9 @@ return array(
     'validate_valid_array_size_lesser'  => 'Bagian {field} harus berupa array dengan ukuran lebih kecil atau sama dengan {param}',
     'validate_valid_array_size_equal'   => 'Bagian {field} harus berupa array dengan ukuran {param}',
     'validate_valid_persian_name'       => 'Bagian {field} seharusnya berisi nama Persian/Dari atau Arabic',
-	'validate_valid_eng_per_pas_name'   => 'Bagian {field} seharusnya berisi nama English, Persian/Dari/Pashtu atau Arabic',
-	'validate_valid_persian_digit'      => 'Bagian {field} seharusnya berisi angka dalam bahasa Persian/Dari atau Arabic',
-	'validate_valid_persian_text'       => 'Bagian {field} seharusnya berisi teks dalam bahasa Persian/Dari atau Arabic ',
-	'validate_valid_pashtu_text'        => 'Bagian {field} seharusnya berisi teks dalam bahasa Pashtu',
+    'validate_valid_eng_per_pas_name'   => 'Bagian {field} seharusnya berisi nama English, Persian/Dari/Pashtu atau Arabic',
+    'validate_valid_persian_digit'      => 'Bagian {field} seharusnya berisi angka dalam bahasa Persian/Dari atau Arabic',
+    'validate_valid_persian_text'       => 'Bagian {field} seharusnya berisi teks dalam bahasa Persian/Dari atau Arabic ',
+    'validate_valid_pashtu_text'        => 'Bagian {field} seharusnya berisi teks dalam bahasa Pashtu',
     'validate_valid_twitter'            => 'Bagian {field} bukan merupakan format alamat twitter yang benar',
-);
+];

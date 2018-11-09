@@ -44,7 +44,7 @@ abstract class Session {
      * @param      mixed $fallback
      * @return mixed|null $fallback
      */
-    public static function get($key, $fallback = NULL) {
+    public static function get($key, $fallback = null) {
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $fallback;
     }
 
@@ -63,10 +63,10 @@ abstract class Session {
      * @param null $fallback
      * @return mixed|null
      */
-    public static function dispose($key, $fallback = NULL) {
+    public static function dispose($key, $fallback = null) {
         $v = self::get($key);
         unset($_SESSION[$key]);
-        return $v == NULL ? $fallback : $v;
+        return $v == null ? $fallback : $v;
     }
 
     /**

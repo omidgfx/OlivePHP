@@ -23,7 +23,7 @@ class CURL {
             $this->setOption($key, $value);
 
         # set return transfer
-        $this->setReturnTransfer(TRUE);
+        $this->setReturnTransfer(true);
 
     }
 
@@ -31,7 +31,7 @@ class CURL {
      * @param bool $state
      * @return CURL
      */
-    public function setReturnTransfer($state = TRUE) {
+    public function setReturnTransfer($state = true) {
         return $this->setOption(CURLOPT_RETURNTRANSFER, $state);
     }
 
@@ -39,7 +39,7 @@ class CURL {
      * @param bool $state
      * @return CURL
      */
-    public function setSSLVerifyPeer($state = FALSE) {
+    public function setSSLVerifyPeer($state = false) {
         return $this->setOption(CURLOPT_SSL_VERIFYPEER, $state);
     }
 
@@ -65,7 +65,7 @@ class CURL {
      * @param bool $close
      * @return $this
      */
-    public function exec($close = TRUE) {
+    public function exec($close = true) {
         $this->result = curl_exec($this->resource);
         if($close) curl_close($this->resource);
         return $this;
@@ -100,7 +100,7 @@ class CURL {
      * <i>json</i> cannot be decoded or if the encoded
      * data is deeper than the recursion limit.
      */
-    public function jsonDecodeResult($assoc = TRUE, $depth = 512, $options = 0) {
+    public function jsonDecodeResult($assoc = true, $depth = 512, $options = 0) {
         return json_decode($this->getResult(), $assoc, $depth, $options);
     }
 

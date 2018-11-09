@@ -51,8 +51,8 @@ abstract class Model extends Record {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function save($syncOriginal = TRUE) {
-        if($this->id === NULL)
+    public function save($syncOriginal = true) {
+        if($this->id === null)
             return $this->insert($syncOriginal);
         return $this->update($syncOriginal);
     }
@@ -63,7 +63,7 @@ abstract class Model extends Record {
      * @throws MySQLiAdaptingException
      * @throws MySQLiException
      */
-    protected function insert($syncOriginal = TRUE) {
+    protected function insert($syncOriginal = true) {
         # changes
         $changes = $this->getChanges();
 
@@ -91,7 +91,7 @@ abstract class Model extends Record {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    protected function update($syncOriginal = TRUE) {
+    protected function update($syncOriginal = true) {
         # changes
         $changes = $this->getChanges();
         if($changes == []) // nothing to save

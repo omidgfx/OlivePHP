@@ -23,7 +23,7 @@ abstract class Html {
      */
     public static function js($src, array $attribs = []) {
         $attribs['src'] = self::parseURL($src);
-        return self::tag('script', $attribs, NULL, self::TAG_NORMAL);
+        return self::tag('script', $attribs, null, self::TAG_NORMAL);
     }
 
     /**
@@ -42,7 +42,7 @@ abstract class Html {
 
         $attribs['href'] = self::parseURL($href);
 
-        return self::tag('link', $attribs, NULL, self::TAG_EMPTY);
+        return self::tag('link', $attribs, null, self::TAG_EMPTY);
     }
 
     /**
@@ -52,11 +52,11 @@ abstract class Html {
      * @return string
      * @throws \Olive\Exceptions\URLException
      */
-    public static function img($src, $alt = NULL, array $attribs = []) {
+    public static function img($src, $alt = null, array $attribs = []) {
         $attribs['alt'] = $alt;
         if($src)
             $attribs = self::parseURL($src);
-        return self::tag('img', $attribs, NULL, self::TAG_EMPTY);
+        return self::tag('img', $attribs, null, self::TAG_EMPTY);
     }
 
     /**
@@ -65,12 +65,12 @@ abstract class Html {
      * @return string
      * @throws \Olive\Exceptions\URLException
      */
-    public static function favicon($href, $attribs = NULL) {
+    public static function favicon($href, $attribs = null) {
         $attribs = array_merge(['rel' => 'shortcut icon', 'type' => 'image/x-icon'], $attribs);
 
         $attribs['href'] = self::parseURL($href);
 
-        return self::tag('link', $attribs, NULL, self::TAG_EMPTY);
+        return self::tag('link', $attribs, null, self::TAG_EMPTY);
     }
 
     /**
@@ -80,7 +80,7 @@ abstract class Html {
      * @return string
      * @throws \Olive\Exceptions\URLException
      */
-    public static function a($href, $content = NULL, array $attribs = []) {
+    public static function a($href, $content = null, array $attribs = []) {
         $attribs['href'] = self::parseURL($href);
         return self::tag('a', $attribs, self::entitiesEncode($content), self::TAG_NORMAL);
     }
@@ -102,7 +102,7 @@ abstract class Html {
      */
     public static function meta($name, $content, array $attribs = []) {
         $attribs = array_merge(['name' => $name, 'content' => $content], $attribs);
-        return self::tag('meta', $attribs, NULL, self::TAG_EMPTY);
+        return self::tag('meta', $attribs, null, self::TAG_EMPTY);
     }
 
     #endregion
@@ -128,7 +128,7 @@ abstract class Html {
      * @return string
      */
     public static function entitiesEncode($value) {
-        return htmlentities($value, ENT_QUOTES, "UTF-8", FALSE);
+        return htmlentities($value, ENT_QUOTES, "UTF-8", false);
     }
 
     /**
@@ -146,7 +146,7 @@ abstract class Html {
      * @param bool $doubleEncode
      * @return string
      */
-    public static function specialsEncode($value, $doubleEncode = FALSE) {
+    public static function specialsEncode($value, $doubleEncode = false) {
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
     }
 
@@ -171,7 +171,7 @@ abstract class Html {
      * <b>{@see \Olive\Util\html::TAG_EMPTY }</b>
      * @return string
      */
-    public static function tag($name, $attrs_or_content = NULL, $content = NULL, $tagtype = self::TAG_AUTO_DETECT) {
+    public static function tag($name, $attrs_or_content = null, $content = null, $tagtype = self::TAG_AUTO_DETECT) {
         $attrs = '';
         if(is_array($attrs_or_content))
             foreach($attrs_or_content as $attr => $val) {

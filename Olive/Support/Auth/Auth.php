@@ -17,7 +17,7 @@ abstract class Auth {
     protected static $class = manifest::AUTH_AUTHENTICATABLE_CLASS;
 
     /** @var Authenticatable */
-    public static $authenticated = NULL;
+    public static $authenticated = null;
     #endregion
 
     #region Public mehtods
@@ -48,7 +48,7 @@ abstract class Auth {
      */
     public static function is() {
 
-        $ret = function($state, $authenticatable = NULL) {
+        $ret = function($state, $authenticatable = null) {
             if($state)
                 static::setAuthenticated($authenticatable);
             else
@@ -56,13 +56,13 @@ abstract class Auth {
             return $state;
         };
 
-        if(static::$authenticated !== NULL)
-            return $ret(TRUE, static::$authenticated);
+        if(static::$authenticated !== null)
+            return $ret(true, static::$authenticated);
 
         $restored = static::getSavedDecrypted();
 
-        if($restored == NULL)
-            return $ret(FALSE);
+        if($restored == null)
+            return $ret(false);
 
         $identifier  = $restored[0][0];
         $hashedlvl_1 = $restored[0][1];
@@ -80,7 +80,7 @@ abstract class Auth {
     public static function logout() {
         Session::delete(manifest::AUTH_KEY);
         Cookie::delete(manifest::AUTH_KEY);
-        static::setAuthenticated(NULL);
+        static::setAuthenticated(null);
     }
 
     #endregion
@@ -96,7 +96,7 @@ abstract class Auth {
         $authenticatable = static::getAuthenticatable($identifier);
 
         # check for existance
-        if($authenticatable == NULL)
+        if($authenticatable == null)
             return new AuthResult(AuthResult::INVALID_IDENTIFIER);
 
         # get authenticatable stored password
@@ -129,15 +129,15 @@ abstract class Auth {
     protected static function getSavedDecrypted() {
         # session
         $auth = static::decrypt($authString = Session::get(manifest::AUTH_KEY));
-        if($auth !== NULL)
+        if($auth !== null)
             return [$auth, static::SAVE_SESSION, $authString];
 
         # cookie
         $auth = static::decrypt($authString = Cookie::get(manifest::AUTH_KEY));
-        if($auth !== NULL)
+        if($auth !== null)
             return [$auth, static::SAVE_COOKIE, $authString];
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -145,7 +145,7 @@ abstract class Auth {
      * @return Authenticatable
      */
     protected static function getAuthenticatable($identifier) {
-        if(static::$authenticated === NULL)
+        if(static::$authenticated === null)
             return static::$class::authGetByIdentifier($identifier);
         return static::$authenticated;
     }
@@ -175,12 +175,12 @@ abstract class Auth {
      * @return array|null
      */
     protected static function decrypt($authString) {
-        if($authString == NULL)
-            return NULL;
+        if($authString == null)
+            return null;
         $authString = base64_decode($authString);
         $authString = explode(':', $authString);
 
-        if(count($authString) != 2) return NULL;
+        if(count($authString) != 2) return null;
 
         return [
             base64_decode($authString[0]),
@@ -203,7 +203,7 @@ abstract class Auth {
      * @param string $fallbackUrlKey fallbackURL get key, null=skip ref
      * @throws \Olive\Exceptions\URLException
      */
-    public static function prove($fallbackUrl = NULL, $fallbackUrlKey = 'ref') {
+    public static function prove($fallbackUrl = null, $fallbackUrlKey = 'ref') {
         $fallbackUrl = URL::parse($fallbackUrl);
         if(!is_null($fallbackUrlKey)) {
             $ref = $_SERVER['REQUEST_URI'];

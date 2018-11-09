@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'validate_required'                 => 'El campo {field} es requerido',
     'validate_valid_email'              => 'El campo {field} debe ser una dirección de correo electrónico válida',
     'validate_max_len'                  => 'El campo {field} no puede tener más de {param} caracteres de longitud',
@@ -43,4 +43,4 @@ return array(
     'validate_valid_array_size_greater' => 'El campo {field} debe ser un arreglo con el tamaño, igual o mayor que {param}',
     'validate_valid_array_size_lesser'  => 'El campo {field} debe ser un arreglo con el tamaño, igual o menor que {param}',
     'validate_valid_array_size_equal'   => 'El campo {field} debe ser un arreglo con el tamaño igual a {param}',
-);
+];

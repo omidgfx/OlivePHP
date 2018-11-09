@@ -69,7 +69,7 @@ abstract class Core {
      * @param string $layout name of layout, by passing null, uses $layout in view
      * @throws H404
      */
-    public static function renderView($view_name, $params = [], $layout = NULL) {
+    public static function renderView($view_name, $params = [], $layout = null) {
         ob_start();
 
         $vars = self::requireScript("App/Views/$view_name.php", $params);
@@ -93,7 +93,7 @@ abstract class Core {
      */
     public static function RenderRoute(Route $route, $middlers = []) {
         try {
-            $next = TRUE;
+            $next = true;
             /** @var RouteMiddler $middler */
             foreach($middlers as $middler) {
                 $next = self::RenderMiddleware($middler, $route);
@@ -105,7 +105,7 @@ abstract class Core {
         } catch(\Exception $e) {
             //Handle the exception
             $route->arguments['exception'] = $e;
-            self::RenderController('_error', NULL, $route->arguments, $route);
+            self::RenderController('_error', null, $route->arguments, $route);
         }
     }
 
@@ -117,7 +117,7 @@ abstract class Core {
      * @throws H404
      * @throws H501
      */
-    public static function RenderController($name, $action = NULL, $params = [], &$route = NULL) {
+    public static function RenderController($name, $action = null, $params = [], &$route = null) {
         # Include controller file
         $path = Controller::getPath($name);
         if(!Controller::exists($name))
@@ -129,14 +129,14 @@ abstract class Core {
 
         $cn = "\\App\\Controllers\\$name";
         if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers` namespace" : NULL));
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers` namespace" : null));
         $ctrl = new $cn($route);
 
         if(!$ctrl instanceof Controller)
-            throw new H501('Controller class' . (DEBUG_MODE ? " in `$path`" : NULL) . ' is not an instace of Olive\Routing\Controller');
+            throw new H501('Controller class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Controller');
 
         # Validate action
-        if($action === NULL)
+        if($action === null)
             # Unspecified action
             $action = 'Index';
         elseif(!method_exists($ctrl, "fn$action")) {
@@ -174,14 +174,14 @@ abstract class Core {
 
         $cn = "App\\Middlewares\\$routeMiddler->name";
         if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\App\\Middlewares` namespace" : NULL));
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\App\\Middlewares` namespace" : null));
 
         # Create a new instance of the MiddleWare handler
         /** @var Middleware $mdlr */
         $mdlr = new $cn;
 
         if(!$mdlr instanceof Middleware)
-            throw new H501('Middleware class' . (DEBUG_MODE ? " in `$path`" : NULL) . ' is not an instace of Olive\Routing\Middleware');
+            throw new H501('Middleware class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Middleware');
 
 
         # Handle request to the MiddleWare
@@ -207,7 +207,7 @@ abstract class Core {
      * @param bool $replace
      * @param null|int $response_code look at (<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">List_of_HTTP_status_codes</a>) for more information.
      */
-    public static function setHeader($name, $value, $replace = TRUE, $response_code = NULL) {
+    public static function setHeader($name, $value, $replace = true, $response_code = null) {
         if($value)
             $s = "$name: $value";
         else
@@ -244,7 +244,7 @@ abstract class Core {
      * @throws H404
      */
     private static function renderLayout($layout, $vars = []) {
-        if($layout == NULL) {
+        if($layout == null) {
             echo $vars['content'];
 
             return;
@@ -266,7 +266,7 @@ abstract class Core {
      * @param null $errcontext
      * @throws OliveError
      */
-    public final static function errorHandler($code, $message, $file, $line, $errcontext = NULL) {
+    public final static function errorHandler($code, $message, $file, $line, $errcontext = null) {
         $e              = new OliveError;
         $e->code        = $code;
         $e->message     = $message;
@@ -277,7 +277,7 @@ abstract class Core {
     }
 
     public final static function shutdownHandler() {
-        if(($error = error_get_last()) !== NULL) {
+        if(($error = error_get_last()) !== null) {
             $exception          = new OliveFatalError;
             $exception->code    = $error["type"];
             $exception->message = $error["message"];

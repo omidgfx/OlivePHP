@@ -51,7 +51,7 @@ class Router {
         # Parse the route string
         $route = explode('/', $route);
         if(isset($route[0])) {
-            while(TRUE) {
+            while(true) {
                 $r->controller = $route[0];
                 $r->action     = isset($route[1]) ? $route[1] : 'Index';
                 $r->arguments  = array_slice($route, 2);

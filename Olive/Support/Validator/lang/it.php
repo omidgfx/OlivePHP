@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'validate_required'                 => 'Il campo {field} è obbligatorio',
     'validate_valid_email'              => 'Il campo {field} deve essere un indirizzo email valido',
     'validate_max_len'                  => 'Il campo {field} deve essere di {param} caratteri o inferiore',
@@ -42,5 +42,5 @@ return array(
     'validate_valid_json_string'        => 'Il campo {field} deve contenere una stringa in formato JSON corretto',
     'validate_valid_array_size_greater' => 'Il campo {field} deve essere un array di dimensioni maggiori o uguali a {param}',
     'validate_valid_array_size_lesser'  => 'Il campo {field} deve essere un array di dimensioni minori o uguali a {param}',
-    'validate_valid_array_size_equal'   => 'Il campo {field} deve essere un array di dimensioni uguali a {param}'
-);
+    'validate_valid_array_size_equal'   => 'Il campo {field} deve essere un array di dimensioni uguali a {param}',
+];

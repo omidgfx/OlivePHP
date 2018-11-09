@@ -2,7 +2,7 @@
 
 use Olive\Exceptions\PhotoException;
 
-abstract class Photos{
+abstract class Photos {
 
     public static function resize($file, $w, $new) {
         $info = getimagesize($file);
@@ -47,8 +47,8 @@ abstract class Photos{
         return getimagesize($file);
     }
 
-    public static function cropSquare($file, $new = NULL) {
-        $new    = $new ? $new : $file;
+    public static function cropSquare($file, $new = null) {
+        $new = $new ? $new : $file;
 
         $r      = getimagesize($file);
         $width  = $r[0];

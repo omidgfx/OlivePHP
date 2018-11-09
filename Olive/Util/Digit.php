@@ -34,7 +34,7 @@ abstract class Digit {
      *
      * @return string
      */
-    public static function en2fa($string, $prettify = FALSE) {
+    public static function en2fa($string, $prettify = false) {
         $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         $num     = range(0, 9);
         if($prettify)
@@ -49,7 +49,7 @@ abstract class Digit {
      *
      * @return mixed
      */
-    public static function fa2en($string, $prettify = FALSE) {
+    public static function fa2en($string, $prettify = false) {
         $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         $num     = range(0, 9);
         if($prettify)

@@ -63,6 +63,6 @@ class RouteBypass {
             return $route;
         }
 
-        return FALSE;
+        return false;
     }
 }

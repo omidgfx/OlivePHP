@@ -42,7 +42,7 @@ class MySQLiConnection extends \mysqli {
         if(is_null($value))
             return 'NULL';
         elseif(is_bool($value)) {
-            return $value === TRUE ? "1" : "0";
+            return $value === true ? "1" : "0";
         } elseif(is_numeric($value))
             return "'" . strval($value) . "'";
         else
@@ -59,7 +59,7 @@ class MySQLiConnection extends \mysqli {
      */
     public function query($query, $resultmode = MYSQLI_STORE_RESULT) {
         $r = parent::query($query, $resultmode);
-        if($r === FALSE)
+        if($r === false)
             throw new MySQLiException($this->error, $this->errno);
         return $r;
     }
@@ -74,7 +74,7 @@ class MySQLiConnection extends \mysqli {
      * @return string
      * @throws MySQLiAdaptingException
      */
-    protected function escapeNames($name, $allow_arrays = TRUE) {
+    protected function escapeNames($name, $allow_arrays = true) {
 
         $esc = function($name) {
             if($name[0] == '`') return $name;

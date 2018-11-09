@@ -20,9 +20,10 @@ trait Singleton {
      * @return self
      */
     public static function getInstance() {
-        if (self::$singleton === false)
-            self::$singleton = new self();
+        if(self::$singleton === false)
+            self::$singleton = new self;
         return self::$singleton;
     }
+
     protected abstract function __instance();
 }

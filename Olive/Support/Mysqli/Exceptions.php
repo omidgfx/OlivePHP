@@ -7,10 +7,11 @@ class MySQLiException extends OliveException {
 class MySQLiConditionException extends MySQLiException {
 
 }
-class MySQLiAdaptingException extends MySQLiException{
+
+class MySQLiAdaptingException extends MySQLiException {
 
 }
 
-class MySQLiRecordException extends MySQLiException{
+class MySQLiRecordException extends MySQLiException {
 
 }

@@ -214,13 +214,13 @@
         <?php
         /** @var Exception $e */
         $___er = function($e) use (&$___er) {
-            if($e == NULL) return;
+            if($e == null) return;
 
             ?>
             <li>
                 <div class="olive-err-traceheading">
                     <?= ($msg = $e->getMessage()); ?>
-                    <h2><?= (DEBUG_MODE ? get_class($e) . ' ' : NULL) . $e->getCode() ?></h2>
+                    <h2><?= (DEBUG_MODE ? get_class($e) . ' ' : null) . $e->getCode() ?></h2>
                     <?php if($msg): ?>
                         <a class="g" href="https://www.google.com/search?q=<?= urlencode($msg) ?>" target="_blank"></a>
                         <a class="s" href="https://stackoverflow.com/search?q=<?= urlencode($msg) ?>" target="_blank"></a>

@@ -8,7 +8,7 @@ abstract class Cookie {
      * @param string $key
      */
     public static function delete($key) {
-        self::set($key, NULL, time() - 3600);
+        self::set($key, null, time() - 3600);
     }
 
     /**
@@ -16,8 +16,8 @@ abstract class Cookie {
      * @param $val
      * @param int|null $expire
      */
-    public static function set($key, $val, $expire = NULL) {
-        $expire = $expire === NULL ? time() + manifest::COOKIE_EXPIRE : $expire;
+    public static function set($key, $val, $expire = null) {
+        $expire = $expire === null ? time() + manifest::COOKIE_EXPIRE : $expire;
         setcookie($key, $val, $expire, manifest::COOKIE_PATH);
     }
 
@@ -26,7 +26,7 @@ abstract class Cookie {
      * @param mixed $fallback
      * @return mixed
      */
-    public static function get($key, $fallback = NULL) {
+    public static function get($key, $fallback = null) {
         return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $fallback;
     }
 
@@ -53,9 +53,9 @@ abstract class Cookie {
                     setcookie($name, '', time() - 1000, '/');
                 }
             }
-            return TRUE;
+            return true;
         } catch(\Exception $e) {
-            return FALSE;
+            return false;
         }
     }
 }

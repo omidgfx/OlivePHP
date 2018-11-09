@@ -29,7 +29,7 @@ abstract class manifest {
     const COOKIE_PATH   = '/';
     const COOKIE_EXPIRE = 864000; # 10 days
     # Automatically initialize sessions for every requests. RECOMANDED: TRUE
-    const AUTO_INIT_SESSION = TRUE;
+    const AUTO_INIT_SESSION = true;
     #endregion
 
     #region Security
@@ -58,4 +58,4 @@ abstract class manifest {
 
 }
 
-define('DEBUG_MODE', TRUE);
+define('DEBUG_MODE', true);

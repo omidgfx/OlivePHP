@@ -14,7 +14,7 @@ abstract class Text {
         $lines  = explode("\n", $str);
         $firsts = array_slice($lines, 0, $num);
 
-        return implode("\n", $firsts) . ((count($lines) > $num && $ellip != NULL) ? $ellip : NULL);
+        return implode("\n", $firsts) . ((count($lines) > $num && $ellip != null) ? $ellip : null);
     }
 
     /**
@@ -25,18 +25,18 @@ abstract class Text {
      *
      * @return bool
      */
-    public static function startsWith($search, $text, $ignoreCase = FALSE) {
+    public static function startsWith($search, $text, $ignoreCase = false) {
 
         if(is_array($search)) {
             foreach($search as $d)
-                if(self::startsWith($d, $text, $ignoreCase)) return TRUE;
+                if(self::startsWith($d, $text, $ignoreCase)) return true;
 
-            return FALSE;
+            return false;
         }
         $search = $ignoreCase ? strtolower($search) : $search;
         $text   = $ignoreCase ? strtolower($text) : $text;
 
-        return $search === "" || mb_strrpos($text, $search, -mb_strlen($text)) !== FALSE;
+        return $search === "" || mb_strrpos($text, $search, -mb_strlen($text)) !== false;
 
     }
 
@@ -48,19 +48,19 @@ abstract class Text {
      *
      * @return bool
      */
-    public static function endsWith($search, $text, $ignoreCase = FALSE) {
+    public static function endsWith($search, $text, $ignoreCase = false) {
         if(is_array($search)) {
             foreach($search as $d)
-                if(self::endsWith($d, $text, $ignoreCase)) return TRUE;
+                if(self::endsWith($d, $text, $ignoreCase)) return true;
 
-            return FALSE;
+            return false;
         }
 
 
         $search = $ignoreCase ? strtolower($search) : $search;
         $text   = $ignoreCase ? strtolower($text) : $text;
 
-        return $search === "" || (($temp = mb_strlen($text) - mb_strlen($search)) >= 0 && mb_strpos($text, $search, $temp) !== FALSE);
+        return $search === "" || (($temp = mb_strlen($text) - mb_strlen($search)) >= 0 && mb_strpos($text, $search, $temp) !== false);
     }
 
     public static function limit($text, $count = 20) {
@@ -69,7 +69,7 @@ abstract class Text {
         return $text;
     }
 
-    public static function random($length, $viewingSuitable = FALSE) {
+    public static function random($length, $viewingSuitable = false) {
         $chars = $viewingSuitable
             ? 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789'//all letters minus (l,I)
             : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -106,9 +106,9 @@ abstract class Text {
 
             preg_match($rule, $text, $matches);
             if($matches != [])
-                return TRUE;
+                return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**

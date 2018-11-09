@@ -9,7 +9,7 @@
  * @param bool $full
  * @return string
  */
-function src($source = '', $full = FALSE) {
+function src($source = '', $full = false) {
     if($full)
         return Olive\Http\Linker::srcFull($source);
     return Olive\Http\Linker::src($source);
@@ -22,11 +22,11 @@ function src($source = '', $full = FALSE) {
  * @param null $full_protocol
  * @return string
  */
-function srcExt($source, $full = FALSE, $full_port = '', $full_protocol = NULL) {
+function srcExt($source, $full = false, $full_port = '', $full_protocol = null) {
     return Olive\Http\Linker::srcEx($source, $full, $full_port, $full_protocol);
 }
 
-function json_dump($str, $return = FALSE) {
+function json_dump($str, $return = false) {
 
     $s = json_encode($str);
     if($return) return $s;
@@ -38,7 +38,7 @@ function json_dump($str, $return = FALSE) {
     header("Content-Length: " . strlen($s));
     echo $s;
 
-    return NULL;
+    return null;
 }
 
 /**
@@ -52,7 +52,7 @@ function json_dump($str, $return = FALSE) {
  * <b>{@see \Olive\Util\html::TAG_EMPTY }</b>
  * @return string
  */
-function tag($name, $attrs_or_content = NULL, $content = NULL, $tagtype = \Olive\Support\Html\Html::TAG_AUTO_DETECT) {
+function tag($name, $attrs_or_content = null, $content = null, $tagtype = \Olive\Support\Html\Html::TAG_AUTO_DETECT) {
     return \Olive\Support\Html\Html::tag($name, $attrs_or_content, $content, $tagtype);
 }
 

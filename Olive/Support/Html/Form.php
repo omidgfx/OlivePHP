@@ -62,7 +62,7 @@ abstract class Form extends Html {
         return '</form>';
     }
 
-    public static function input($name, $value = NULL, $type = self::T_TEXT, $attribs = []) {
+    public static function input($name, $value = null, $type = self::T_TEXT, $attribs = []) {
 
         $attribs['type']  = $type;
         $attribs['name']  = $name;
@@ -72,12 +72,12 @@ abstract class Form extends Html {
 
     }
 
-    public static function hidden($name, $value = NULL, $attribs = []) {
+    public static function hidden($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_HIDDEN, $attribs);
     }
 
     public static function token(CSRFToken $csrf) {
-        if($csrf == NULL)
+        if($csrf == null)
             throw new CSRFTokenInvalid('Missing CSRFToken object');
 
         $out = '';
@@ -86,31 +86,31 @@ abstract class Form extends Html {
         return $out . static::hidden('_csrf_token', $csrf->getToken());
     }
 
-    public static function text($name, $value = NULL, $attribs = []) {
+    public static function text($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_TEXT, $attribs);
     }
 
-    public static function number($name, $value = NULL, $attribs = []) {
+    public static function number($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_NUMBER, $attribs);
     }
 
     public static function password($name, $attribs = []) {
-        return static::input($name, NULL, static::T_PASSWORD, $attribs);
+        return static::input($name, null, static::T_PASSWORD, $attribs);
     }
 
-    public static function range($name, $value = NULL, $attribs = []) {
+    public static function range($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_RANGE, $attribs);
     }
 
-    public static function email($name, $value = NULL, $attribs = []) {
+    public static function email($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_EMAIL, $attribs);
     }
 
-    public static function tel($name, $value = NULL, $attribs = []) {
+    public static function tel($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_TEL, $attribs);
     }
 
-    public static function date($name, $value = NULL, $attribs = []) {
+    public static function date($name, $value = null, $attribs = []) {
         if(is_object($value)) {
             if($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-m-d');
@@ -120,7 +120,7 @@ abstract class Form extends Html {
         return static::input($name, $value, static::T_DATE, $attribs);
     }
 
-    public static function datetime($name, $value = NULL, $attribs = []) {
+    public static function datetime($name, $value = null, $attribs = []) {
         if(is_object($value)) {
             if($value instanceof DateTime)
                 $value = $value->legacyFormat(DateTime::RFC3339);
@@ -130,7 +130,7 @@ abstract class Form extends Html {
         return static::input($name, $value, static::T_DATETIME, $attribs);
     }
 
-    public static function datetimeLocal($name, $value = NULL, $attribs = []) {
+    public static function datetimeLocal($name, $value = null, $attribs = []) {
         if(is_object($value)) {
             if($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-m-d\TH:i');
@@ -140,7 +140,7 @@ abstract class Form extends Html {
         return static::input($name, $value, static::T_DATETIME_LOCAL, $attribs);
     }
 
-    public static function time($name, $value = NULL, $attribs = []) {
+    public static function time($name, $value = null, $attribs = []) {
         if(is_object($value)) {
             if($value instanceof DateTime)
                 $value = $value->legacyFormat('H:i');
@@ -150,7 +150,7 @@ abstract class Form extends Html {
         return static::input($name, $value, static::T_TIME, $attribs);
     }
 
-    public static function week($name, $value = NULL, $attribs = []) {
+    public static function week($name, $value = null, $attribs = []) {
         if(is_object($value)) {
             if($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-\WW');
@@ -160,7 +160,7 @@ abstract class Form extends Html {
         return static::input($name, $value, static::T_WEEK, $attribs);
     }
 
-    public static function month($name, $value = NULL, $attribs = []) {
+    public static function month($name, $value = null, $attribs = []) {
         if(is_object($value)) {
             if($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-m');
@@ -171,24 +171,24 @@ abstract class Form extends Html {
     }
 
 
-    public static function url($name, $value = NULL, $attribs = []) {
+    public static function url($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_URL, $attribs);
     }
 
-    public static function color($name, $value = NULL, $attribs = []) {
+    public static function color($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_COLOR, $attribs);
     }
 
-    public static function file($name, $value = NULL, $attribs = []) {
+    public static function file($name, $value = null, $attribs = []) {
         return static::input($name, $value, static::T_FILE, $attribs);
     }
 
-    public static function textarea($name, $value = NULL, $encode = FALSE, $attribs = []) {
+    public static function textarea($name, $value = null, $encode = false, $attribs = []) {
         $attribs['name'] = $name;
         return static::tag('textarea', $attribs, $encode ? self::specialsEncode($value) : $value);
     }
 
-    public static function select($name, $list = [], $selected = NULL,
+    public static function select($name, $list = [], $selected = null,
                                   array $selectAttribs = [],
                                   array $optionsAttribs = [],
                                   array $optgroupsAttribs = []) {
@@ -202,12 +202,12 @@ abstract class Form extends Html {
         return self::tag('select', $selectAttribs, $html, static::TAG_NORMAL);
     }
 
-    public static function checkbox($name, $value = 1, $checked = FALSE, $attribs = []) {
+    public static function checkbox($name, $value = 1, $checked = false, $attribs = []) {
         if($checked) $attribs['checked'] = 'checked';
         return static::input($name, $value, static::T_CHECKBOX, $attribs);
     }
 
-    public static function radio($name, $value = NULL, $checked = FALSE, $attribs = []) {
+    public static function radio($name, $value = null, $checked = false, $attribs = []) {
 
         if($checked) $attribs['checked'] = 'checked';
 
@@ -216,7 +216,7 @@ abstract class Form extends Html {
     #endregion
 
     #region Inner helpers
-    protected static function optgroup($list, $label, $selected = NULL, $optionsAtrribs = [], $attribs = []) {
+    protected static function optgroup($list, $label, $selected = null, $optionsAtrribs = [], $attribs = []) {
 
         $attribs['label'] = $label;
         $g                = '';
@@ -228,7 +228,7 @@ abstract class Form extends Html {
         return static::tag('optgroup', $attribs, $g);
     }
 
-    private static function option($value = NULL, $content = NULL, $selected = FALSE, $attribs = []) {
+    private static function option($value = null, $content = null, $selected = false, $attribs = []) {
         if($value != '')
             $attribs['value'] = $value;
         if($selected) $attribs['selected'] = 'selected';

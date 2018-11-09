@@ -1,5 +1,5 @@
 <?php /** @var Exception $exception
- *@var mixed $code
+ * @var mixed $code
  */ ?>
 <!doctype html>
 <html lang="en">

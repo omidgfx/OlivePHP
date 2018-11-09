@@ -18,7 +18,7 @@ class AuthResult {
      * @param int $result
      * @param Authenticatable $authenticatable
      */
-    public function __construct($result, $authenticatable = NULL) {
+    public function __construct($result, $authenticatable = null) {
         $this->result          = $result;
         $this->authenticatable = $authenticatable;
     }

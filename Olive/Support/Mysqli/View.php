@@ -5,6 +5,6 @@
  * Class View
  * @package Olive\MySQLi
  */
-abstract class View extends Record{
+abstract class View extends Record {
 
 }

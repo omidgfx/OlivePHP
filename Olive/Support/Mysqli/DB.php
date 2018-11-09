@@ -24,7 +24,7 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function select($table, $condition = NULL, $limit = NULL, $columns = NULL, $orderby = NULL, $execute = TRUE) {
+    public function select($table, $condition = null, $limit = null, $columns = null, $orderby = null, $execute = true) {
         # table
         $table = $this->escapeNames($table);
 
@@ -59,9 +59,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiAdaptingException
      * @throws MySQLiException
      */
-    public function insert($table, $fields, $arrayOfCorrespondingValues, $execute = TRUE) {
+    public function insert($table, $fields, $arrayOfCorrespondingValues, $execute = true) {
         # table
-        $table = $this->escapeNames($table, FALSE);
+        $table = $this->escapeNames($table, false);
 
         # fields
         $fields = '(' . $this->escapeNames($fields) . ')';
@@ -94,16 +94,16 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function update($table, $set, $condition = NULL, $execute = TRUE) {
+    public function update($table, $set, $condition = null, $execute = true) {
         # table
-        $table = $this->escapeNames($table, FALSE);
+        $table = $this->escapeNames($table, false);
 
         #set
         if(is_array($set)) {
             $sets = [];
             foreach($set as $field => $value) {
                 if(!$field) throw new MySQLiAdaptingException('Field name is empty');
-                $field  = $this->escapeNames($field, FALSE);
+                $field  = $this->escapeNames($field, false);
                 $value  = $this->val($value);
                 $sets[] = "$field=$value";
             }
@@ -132,9 +132,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function delete($table, $condition, $execute = TRUE) {
+    public function delete($table, $condition, $execute = true) {
         # table
-        $table = $this->escapeNames($table, FALSE);
+        $table = $this->escapeNames($table, false);
 
         # condition
         $condition = $this->adaptCondition($condition);
@@ -156,9 +156,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function count($table, $condition = NULL, $execute = TRUE) {
+    public function count($table, $condition = null, $execute = true) {
         # query
-        $query = $this->select($table, $condition, NULL, '\\count(*)', NULL, FALSE);
+        $query = $this->select($table, $condition, null, '\\count(*)', null, false);
 
         # update
         return $execute ? $this->query($query)->num_rows : $query;
@@ -172,9 +172,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiAdaptingException
      * @throws MySQLiException
      */
-    public function tableColumns($table, $execute = TRUE) {
+    public function tableColumns($table, $execute = true) {
         # table
-        $table = $this->escapeNames($table, FALSE);
+        $table = $this->escapeNames($table, false);
 
         # query
         $query = "SHOW COLUMNS FROM $table";
@@ -191,9 +191,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiAdaptingException
      * @throws MySQLiException
      */
-    public function columnEnums($table, $column, $execute = TRUE) {
+    public function columnEnums($table, $column, $execute = true) {
         # table
-        $table = $this->escapeNames($table, FALSE);
+        $table = $this->escapeNames($table, false);
 
         # column
         $column = $this->val($column);
@@ -227,9 +227,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function exists($table, $condition = NULL) {
+    public function exists($table, $condition = null) {
         # query
-        $query = $this->select($table, $condition, NULL, NULL, NULL, FALSE);
+        $query = $this->select($table, $condition, null, null, null, false);
 
         # execute SQL
         return $this->query($query)->num_rows > 0;
@@ -257,11 +257,11 @@ class DB extends MySQLiConnection {
      */
     public function fetchSingle(\mysqli_result $mysqli_result, $class_name = 'stdClass') {
         $r = $this->fetch($mysqli_result, $class_name);
-        if($r == []) return NULL;
+        if($r == []) return null;
         return $r[0];
     }
 
-    public function fetchArray(\mysqli_result $mysqli_result, $associate = TRUE) {
+    public function fetchArray(\mysqli_result $mysqli_result, $associate = true) {
         $r         = [];
         $associate = $associate ? MYSQLI_ASSOC : MYSQLI_NUM;
         while($f = $mysqli_result->fetch_array($associate))
@@ -283,9 +283,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function selectRecord($class_name, $condition = NULL, $limit = NULL, $columns = NULL, $orderby = NULL) {
+    public function selectRecord($class_name, $condition = null, $limit = null, $columns = null, $orderby = null) {
         $r = $this->selectRecords($class_name, $condition, $limit, $columns, $orderby);
-        if($r == []) return NULL;
+        if($r == []) return null;
         return $r[0];
     }
 
@@ -300,7 +300,7 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public function selectRecords($class_name, $condition = NULL, $limit = NULL, $columns = NULL, $orderby = NULL) {
+    public function selectRecords($class_name, $condition = null, $limit = null, $columns = null, $orderby = null) {
         /** @var Record $class_name */
         $r = $this->select($class_name::table(), $condition, $limit, $columns, $orderby);
         return $this->fetch($r, $class_name);
@@ -320,7 +320,7 @@ class DB extends MySQLiConnection {
             $db->begin_transaction();
             $run();
             $db->commit();
-            return TRUE;
+            return true;
         } catch(\Exception $e) {
             $db->rollback();
             return $e;
@@ -343,7 +343,7 @@ class DB extends MySQLiConnection {
             return $condition;
         elseif($condition instanceof Condition)
             return $condition->parse();
-        return NULL;
+        return null;
     }
 
     /**
@@ -364,7 +364,7 @@ class DB extends MySQLiConnection {
      * @throws MySQLiAdaptingException
      */
     protected function adaptLimit($limit) {
-        if($limit == NULL) return NULL;
+        if($limit == null) return null;
         if(is_array($limit)) {
             if(count($limit) != 2)
                 throw new MySQLiAdaptingException('Invalid limit array count.');

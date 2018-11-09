@@ -2,7 +2,8 @@
 
 Core::requireModule('Auth/Authenticatable');
 
-use Olive\Core;use Olive\Interfaces\Authenticatable;
+use Olive\Core;
+use Olive\Interfaces\Authenticatable;
 use Olive\Support\MySQLi\Model;
 
 class Test extends Model implements Authenticatable {
@@ -22,7 +23,7 @@ class Test extends Model implements Authenticatable {
      */
     public function getA() {
         return self::select([]);
-}
+    }
 
     /**
      * @param $identifier
@@ -32,7 +33,7 @@ class Test extends Model implements Authenticatable {
      * @throws \Olive\Exceptions\MySQLiException
      */
     public static function authGetByIdentifier($identifier) {
-        return self::select(['a' => $identifier], TRUE);
+        return self::select(['a' => $identifier], true);
     }
 
     /**

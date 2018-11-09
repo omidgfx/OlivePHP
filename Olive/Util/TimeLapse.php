@@ -5,7 +5,7 @@ class TimeLapse {
     public $y, $m, $w, $d, $h, $i, $s;
     private                        $mode;
 
-    private static $formatters = NULL;
+    private static $formatters = null;
 
     /**
      * TimeLapse constructor.
@@ -121,8 +121,8 @@ class TimeLapse {
      * @param string $locale
      * @return mixed
      */
-    public function format($full = TRUE, $locale = 'en_US') {
-        if(self::$formatters == NULL)
+    public function format($full = true, $locale = 'en_US') {
+        if(self::$formatters == null)
             self::setFormatters();
 
         # Lowercase first 2 letters

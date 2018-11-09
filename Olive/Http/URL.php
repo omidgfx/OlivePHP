@@ -16,20 +16,20 @@ class URL {
     #endregion
 
     #region Options
-    private $relative = TRUE;
-    private $full     = FALSE;
+    private $relative = true;
+    private $full     = false;
 
     #endregion
 
-    public function __construct($url = NULL) {
+    public function __construct($url = null) {
 
-        if($url == NULL)
+        if($url == null)
             return;
 
         # parse
         $u = parse_url($url);
 
-        if($u === FALSE)
+        if($u === false)
             throw new URLException('Invalid url');
 
         # fill this
@@ -57,7 +57,7 @@ class URL {
      * @return URL
      * @throws URLException
      */
-    public static function make($url = NULL, $relative = TRUE, $full = FALSE) {
+    public static function make($url = null, $relative = true, $full = false) {
         $u           = new self($url);
         $u->relative = $relative;
         $u->full     = $full;
@@ -75,7 +75,7 @@ class URL {
      */
     public static function parse($array) {
         $url  = $array;
-        $full = FALSE;
+        $full = false;
         if(is_array($array) and $array) {
             if(count($array) != 1)
                 $full = !!$array[1];
@@ -83,7 +83,7 @@ class URL {
         } elseif($array instanceof self)
             return $array;
 
-        $u = self::make($url, TRUE, $full);
+        $u = self::make($url, true, $full);
         return $u;
     }
 
@@ -242,7 +242,7 @@ class URL {
 
         $url = '';
         if(!is_null($this->scheme)) {
-            $this->relative = FALSE;
+            $this->relative = false;
             $url            .= $this->scheme . '://';
         }
 
@@ -260,7 +260,7 @@ class URL {
                 $url .= '@';
 
 
-            $this->full = FALSE;
+            $this->full = false;
             $url        .= $this->host;
 
         }
@@ -274,7 +274,7 @@ class URL {
             if($url != '') $url .= '/';
 
             if($this->path[0] == '\\') {
-                $this->relative = FALSE;
+                $this->relative = false;
                 $url            .= substr($this->path, 1);
             } else
                 $url .= $this->path;

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'validate_required'                 => 'Поле {field} является обязательным',
     'validate_valid_email'              => 'Поле {field} должно быть Email адресом',
     'validate_max_len'                  => 'Поле {field} должно быть максимум {param} символов',
@@ -43,4 +43,4 @@ return array(
     'validate_valid_array_size_greater' => 'Поле {field} должно содержать минимум {param} значений',
     'validate_valid_array_size_lesser'  => 'Поле {field} должно содержать максимум {param} значений',
     'validate_valid_array_size_equal'   => 'Поле {field} должно содержать ровно {param} значений',
-);
+];

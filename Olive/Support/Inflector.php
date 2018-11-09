@@ -193,7 +193,7 @@ class Inflector {
      * @param   bool $allow_non_ascii whether to remove non ascii
      * @return  string                    translated string
      */
-    public static function ascii($str, $allow_non_ascii = FALSE) {
+    public static function ascii($str, $allow_non_ascii = false) {
         // Translate unicode characters to their simpler counterparts
         $foreign_characters = [
             '/æ|ǽ/'                                 => 'ae',
@@ -284,7 +284,7 @@ class Inflector {
      * @param   bool $allow_non_ascii whether to allow non ascii
      * @return  string                    the new title
      */
-    public static function friendlyTitle($str, $sep = '-', $lowercase = FALSE, $allow_non_ascii = FALSE) {
+    public static function friendlyTitle($str, $sep = '-', $lowercase = false, $allow_non_ascii = false) {
         // Remove tags
         $str = filter_var($str, FILTER_SANITIZE_STRING);
 
@@ -315,7 +315,7 @@ class Inflector {
         $str = trim($str, $sep);
 
         // And convert to lowercase if needed
-        if($lowercase === TRUE) {
+        if($lowercase === true) {
             $str = mb_strtolower($str);
         }
 
@@ -330,11 +330,11 @@ class Inflector {
      * @param   bool $lowercase lowercase string and upper case first
      * @return  string  the human version of given string
      */
-    public static function humanize($str, $sep = '_', $lowercase = TRUE) {
+    public static function humanize($str, $sep = '_', $lowercase = true) {
         // Allow dash, otherwise default to underscore
         $sep = $sep != '-' ? '_' : $sep;
 
-        if($lowercase === TRUE) {
+        if($lowercase === true) {
             $str = \Olive\Util\Text::ucfirst($str);
         }
 
@@ -397,7 +397,7 @@ class Inflector {
      * @param   bool $force_singular whether to singularize the table name or not
      * @return  string  the class name
      */
-    public static function classify($name, $force_singular = TRUE) {
+    public static function classify($name, $force_singular = true) {
         $class = ($force_singular) ? static::singularize($name) : $name;
         return static::words_to_upper($class);
     }

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'validate_required'                 => '{field} الزامی میباشد',
     'validate_valid_email'              => '{field} باید یک آدرس ایمیل معتبر باشد ',
     'validate_max_len'                  => '{field} باید حد اکثر {param} کاراکتر یا کمتر باشد',
@@ -44,8 +44,8 @@ return array(
     'validate_valid_array_size_lesser'  => '{field} باید یک آرایه که اندازه آن مساوی یا کوچکتر از {param} باشد',
     'validate_valid_array_size_equal'   => '{field} باید یک آرایه که اندازه آن برابر با {param} باشد',
     'validate_valid_persian_name'       => '{field} باید یک نام معتبر فارسی/دری یا عربی باشد',
-	'validate_valid_eng_per_pas_name'   => '{field} باید یک نام معتبر انگلیسی، فارسی/دری، پشتو یا عربی باشد',
-	'validate_valid_persian_digit'      => '{field} باید یک عدد معتبر با فرمت فارسی/دری/پشتو یا عربی باشد',
-	'validate_valid_persian_text'       => '{field} باید یک متن معتبر به زبان فارسی/دری باشد',
-	'validate_valid_pashtu_text'        => '{field} باید یک متن معتبر به زبان پشتو باشد',
-);
+    'validate_valid_eng_per_pas_name'   => '{field} باید یک نام معتبر انگلیسی، فارسی/دری، پشتو یا عربی باشد',
+    'validate_valid_persian_digit'      => '{field} باید یک عدد معتبر با فرمت فارسی/دری/پشتو یا عربی باشد',
+    'validate_valid_persian_text'       => '{field} باید یک متن معتبر به زبان فارسی/دری باشد',
+    'validate_valid_pashtu_text'        => '{field} باید یک متن معتبر به زبان پشتو باشد',
+];

@@ -11,6 +11,6 @@ class mi extends Middleware {
      * @return bool
      */
     public function perform(Route $route, $args = []) {
-        return TRUE;
+        return true;
     }
 }

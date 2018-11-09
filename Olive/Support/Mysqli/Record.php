@@ -28,7 +28,7 @@ abstract class Record implements RecordInterface {
             : (
             isset($this->_ORIGS[$name])
                 ? $this->_ORIGS[$name]
-                : NULL
+                : null
             );
     }
 
@@ -62,7 +62,7 @@ abstract class Record implements RecordInterface {
      * @param string $name <b>NULL</b>: reset all original
      * @return $this
      */
-    public function undo($name = NULL) {
+    public function undo($name = null) {
         if($name) unset($this->_CHNGS[$name]);
         else $this->_CHNGS = [];
         return $this;
@@ -72,7 +72,7 @@ abstract class Record implements RecordInterface {
      * @param string|NULL $name
      * @return $this
      */
-    public function unset(string $name = NULL) {
+    public function unset(string $name = null) {
         if($name) unset($this->_ORIGS[$name], $this->_CHNGS[$name]);
         else $this->_CHNGS = $this->_ORIGS = [];
         return $this;
@@ -98,7 +98,7 @@ abstract class Record implements RecordInterface {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public static function select($condition = NULL, $single = FALSE, $limit = NULL, $columns = NULL, $orderby = NULL) {
+    public static function select($condition = null, $single = false, $limit = null, $columns = null, $orderby = null) {
         if($single)
             return DB::getInstance()->selectRecord(static::class, $condition, $limit, $columns, $orderby);
         return DB::getInstance()->selectRecords(static::class, $condition, $limit, $columns, $orderby);
@@ -112,7 +112,7 @@ abstract class Record implements RecordInterface {
      * @throws MySQLiException
      */
     public static function selectById($id) {
-        return self::select(new Condition('id', $id), TRUE);
+        return self::select(new Condition('id', $id), true);
     }
 
     /**
@@ -123,7 +123,7 @@ abstract class Record implements RecordInterface {
      * @throws MySQLiException
      * @see DB::count()
      */
-    public static function count($condition = NULL) {
+    public static function count($condition = null) {
         return DB::getInstance()->count(static::table(), $condition);
     }
 
@@ -134,7 +134,7 @@ abstract class Record implements RecordInterface {
      * @throws MySQLiConditionException
      * @throws MySQLiException
      */
-    public static function exists($condition = NULL) {
+    public static function exists($condition = null) {
         # db
         $db = DB::getInstance();
 
@@ -150,7 +150,7 @@ abstract class Record implements RecordInterface {
      * @throws MySQLiRecordException
      */
     public function pull() {
-        if($this->id == NULL)
+        if($this->id == null)
             throw new MySQLiRecordException('Invalid id');
         $new          = static::selectById($this->id);
         $this->_ORIGS = $new->_ORIGS;
@@ -171,8 +171,8 @@ abstract class Record implements RecordInterface {
      * @uses \Olive\Util\DateTime
      * @return null|DateTime|string
      */
-    public function getDateTime($column = 'date', $options = [], $pattern = manifest::DEFAULT_DATETIME_PATTERN_SHORT, $fallback = NULL) {
-        if($this->{$column} == NULL)
+    public function getDateTime($column = 'date', $options = [], $pattern = manifest::DEFAULT_DATETIME_PATTERN_SHORT, $fallback = null) {
+        if($this->{$column} == null)
             return $fallback;
 
         # default option
@@ -225,10 +225,10 @@ abstract class Record implements RecordInterface {
      * @param string $association
      * @return array|Record[]|static[] An array of all record's column values. if association parameter was a name of a column then returns an associated array with same values
      */
-    public static function extract($column, $records, $association = NULL) {
+    public static function extract($column, $records, $association = null) {
         $arr = [];
 
-        if($association == NULL)
+        if($association == null)
             foreach($records as $record)
                 $arr[] = $record->{$column};
         else

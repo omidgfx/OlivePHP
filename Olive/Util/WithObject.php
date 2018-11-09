@@ -16,7 +16,7 @@ class WithObject {
      * @param bool $run_callable
      * @return $this
      */
-    public function set(string $key, $value, $run_callable = TRUE) {
+    public function set(string $key, $value, $run_callable = true) {
 
         $this->object->{$key} = is_callable($value) && $run_callable
             ? $value($this->object)
@@ -30,7 +30,7 @@ class WithObject {
      * @param bool $run_all_callables
      * @return $this
      */
-    public function setArray(array $assoc, $run_all_callables = TRUE) {
+    public function setArray(array $assoc, $run_all_callables = true) {
         foreach($assoc as $key => $value)
             $this->set($key, $value, $run_all_callables);
         return $this;

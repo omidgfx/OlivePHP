@@ -1,14 +1,14 @@
 <?php namespace Olive\Exceptions;
 
 class OliveException extends \Exception {
-    protected $code = NULL;
+    protected $code = null;
 }
 
 class HttpException extends OliveException {
     protected $http_response_code = 0;
 
-    function __construct($message = "", $code = NULL, OliveException $previous = NULL) {
-        $this->code = $code !== NULL ? $code : $this->http_response_code;
+    function __construct($message = "", $code = null, OliveException $previous = null) {
+        $this->code = $code !== null ? $code : $this->http_response_code;
 
         parent::__construct($message, $this->code, $previous);
     }
@@ -174,6 +174,7 @@ class CSRFTokenExpired extends H403 {
 class URLException extends H500 {
 
 }
-class ValidatorException extends OliveException{
+
+class ValidatorException extends OliveException {
 
 }

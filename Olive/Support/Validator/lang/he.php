@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'validate_required'                 => 'שדה {field} הינו חובה',
     'validate_valid_email'              => 'שדה {field} מוכרח להיות כתובת דוא"ל חוקית',
     'validate_max_len'                  => 'שדה {field} מוכרח להיות {param} תווים או פחות',
@@ -43,4 +43,4 @@ return array(
     'validate_valid_array_size_greater' => 'שדה {field} מוכרח להיות מערך בעל גודל, שווה ל, או גבוה מ {param}',
     'validate_valid_array_size_lesser'  => 'שדה {field} מוכרח להיות מערך עם גודל, שווה או נמוך מ {param}',
     'validate_valid_array_size_equal'   => 'שדה {field} מוכרח להיות מערך עם גודל שווה ל {param}',
-);
+];

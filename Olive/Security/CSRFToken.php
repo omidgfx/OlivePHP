@@ -9,7 +9,7 @@ class CSRFToken {
 
     #region Fields
     /** @var string */
-    protected $key = NULL;
+    protected $key = null;
 
     /** @var string */
     protected $token;
@@ -21,7 +21,7 @@ class CSRFToken {
      * CSRFToken constructor.
      * @param string $key (A-z, 0-9, _)
      */
-    public function __construct($key = NULL) {
+    public function __construct($key = null) {
         $this->key = $key;
     }
 
@@ -75,6 +75,7 @@ class CSRFToken {
         Session::set(static::fixKey($this->key), "{$this->time}_$this->token");
         return $this;
     }
+
     /**
      * Revoke (remove) token from session
      */
@@ -91,7 +92,7 @@ class CSRFToken {
      *
      * @uses Text,Session
      */
-    public static function generate($key = NULL) {
+    public static function generate($key = null) {
         return (new static($key))
             ->expand()// time
             ->renew()// token
@@ -107,10 +108,10 @@ class CSRFToken {
      * @throws CSRFTokenExpired
      * @throws CSRFTokenInvalid
      */
-    public static function check($token, $key = NULL, $timeout = NULL, $multiple = FALSE) {
+    public static function check($token, $key = null, $timeout = null, $multiple = false) {
 
         $csrf = self::read($key);
-        if($csrf == NULL)
+        if($csrf == null)
             throw new CSRFTokenInvalid;
 
 
@@ -133,25 +134,25 @@ class CSRFToken {
      *
      * @uses Session::get
      */
-    public static function read($key = NULL) {
+    public static function read($key = null) {
 
         $val = Session::get(static::fixKey($key));
-        if($val == NULL) return NULL;
+        if($val == null) return null;
 
         $csrf      = new static;
         $csrf->key = $key;
 
         $val = explode('_', $val);
-        if(count($val) != 2) return NULL;
+        if(count($val) != 2) return null;
 
 
         $time = $val[0];
-        if(!is_numeric($time)) return NULL;
+        if(!is_numeric($time)) return null;
 
         $csrf->time = intval($time);
 
         $csrf->token = $val[1];
-        if(strlen($csrf->token) != 32) return NULL;
+        if(strlen($csrf->token) != 32) return null;
 
         return $csrf;
 
@@ -162,7 +163,7 @@ class CSRFToken {
     }
 
     private static function fixKey($key) {
-        if($key === NULL)
+        if($key === null)
             $key = '';
         $key .= '__ocsrf_';
 

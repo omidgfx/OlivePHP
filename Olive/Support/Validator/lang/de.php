@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'validate_required'                 => 'Das Feld "{field}" ist erforderlich.',
     'validate_valid_email'              => 'Das Feld "{field}" muss eine g&uuml;ltige E-Mail-Adresse sein.',
     'validate_max_len'                  => 'Das Feld "{field}" darf maximal {param} Zeichen enthalten.',
@@ -43,4 +43,4 @@ return array(
     'validate_valid_array_size_greater' => 'Das Feld "{field}" muss ein Array mit einer Gr&ouml;&szlig;e gr&ouml;&szlig;ergleich {param} sein.',
     'validate_valid_array_size_lesser'  => 'Das Feld "{field}" muss ein Array mit einer Gr&ouml;&szlig;e kleinergleich {param} sein.',
     'validate_valid_array_size_equal'   => 'Das Feld "{field}" muss ein Array mit einer Gr&ouml;&szlig;e gleich {param} sein.',
-);
+];

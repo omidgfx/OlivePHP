@@ -41,7 +41,7 @@ class Condition {
      * @throws MySQLiConditionException
      */
     public function __construct(...$args) {
-        if(self::$dbConnection === NULL)
+        if(self::$dbConnection === null)
             self::$dbConnection = MySQLiConnection::getInstance();
         $this->append($args, self:: AND);
         return $this;
@@ -119,12 +119,12 @@ class Condition {
                 if(is_array($v)) {
                     //advanced condition
                     $n = $v[0];
-                    if(strpos($n, '`') === FALSE)
+                    if(strpos($n, '`') === false)
                         $n = "`$n`";
                     $operator = strtoupper($v[1]);
                     $value    = $v[2];
 
-                    $secure_value = FALSE;
+                    $secure_value = false;
                     switch($operator) {
                         case self::like:
                         case self::notLike:
@@ -132,7 +132,7 @@ class Condition {
                                 continue;
                             if(is_array($value)) {
                                 $value        = implode(" OR $n $operator ", self::val($value));
-                                $secure_value = TRUE;
+                                $secure_value = true;
                             }
                             break;
                         case self::in:
@@ -140,7 +140,7 @@ class Condition {
                             if(!is_array($value))
                                 throw new MySQLiConditionException('The parameter passed to IN operator must be array.');
                             $value        = '(' . implode(',', self::val($value)) . ')';
-                            $secure_value = TRUE;
+                            $secure_value = true;
                             break;
                         default:
                             break;
@@ -153,9 +153,9 @@ class Condition {
                     $raw .= ($raw == '' ? '' : ' AND ') . $v;
                 } else {
                     //simple condition
-                    if(strpos($n, '`') === FALSE)
+                    if(strpos($n, '`') === false)
                         $n = "`$n`";
-                    if($v === NULL)
+                    if($v === null)
                         $c = "$n IS NULL";
                     else {
                         $v = self::$dbConnection->escape_string($v);
@@ -169,10 +169,10 @@ class Condition {
             return "$arg";
         elseif($arg instanceof self) {
             $arg = $arg->parse();
-            if($arg == '') return NULL;
+            if($arg == '') return null;
             return "($arg)";
         }
-        return NULL;
+        return null;
     }
 
     /**

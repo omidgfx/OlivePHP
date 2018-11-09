@@ -7,8 +7,8 @@ abstract class req {
      * @return string
      */
     public static function ip() {
-        $client  = $_SERVER['HTTP_CLIENT_IP'] ?? NULL;
-        $forward = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? NULL;
+        $client  = $_SERVER['HTTP_CLIENT_IP'] ?? null;
+        $forward = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
         $remote  = $_SERVER['REMOTE_ADDR'];
 
         if(filter_var($client, FILTER_VALIDATE_IP)) {
@@ -30,7 +30,7 @@ abstract class req {
      *
      * @return mixed
      */
-    public static function get($key, $fallback = NULL) {
+    public static function get($key, $fallback = null) {
         if(isset($_GET[$key]) && $_GET[$key] != '')
             return $_GET[$key];
 
@@ -45,7 +45,7 @@ abstract class req {
      */
     public static function getInt($key, $fallback = 0) {
         $g = self::get($key);
-        if($g == NULL) return $fallback;
+        if($g == null) return $fallback;
         if(is_numeric($g)) return intval($g);
 
         return $fallback;
@@ -59,7 +59,7 @@ abstract class req {
      */
     public static function postInt($key, $fallback = 0) {
         $g = self::post($key);
-        if($g == NULL) return $fallback;
+        if($g == null) return $fallback;
         if(is_numeric($g)) return intval($g);
 
         return $fallback;
@@ -73,7 +73,7 @@ abstract class req {
      *
      * @return mixed
      */
-    public static function request($key, $fallback = NULL) {
+    public static function request($key, $fallback = null) {
         if(isset($_REQUEST[$key]) && $_REQUEST[$key] != '')
             return $_REQUEST[$key];
 
@@ -88,7 +88,7 @@ abstract class req {
      */
     public static function requestInt($key, $fallback = 0) {
         $g = self::request($key);
-        if($g == NULL) return $fallback;
+        if($g == null) return $fallback;
         if(is_numeric($g)) return intval($g);
 
         return $fallback;
@@ -102,7 +102,7 @@ abstract class req {
      *
      * @return mixed
      */
-    public static function post($key, $fallback = NULL) {
+    public static function post($key, $fallback = null) {
         if(isset($_POST[$key]) && $_POST[$key] != '')
             return $_POST[$key];
 
@@ -115,7 +115,7 @@ abstract class req {
      *
      * @return File
      */
-    public static function file($key, $fallBack = NULL) {
+    public static function file($key, $fallBack = null) {
         if(isset($_FILES[$key]))
             return new File($_FILES[$key]);
 
@@ -131,20 +131,20 @@ abstract class req {
         if(is_array($posts)) {
             foreach($posts as $str)
                 if(!isset($_POST[$str]))
-                    return FALSE;
+                    return false;
         } else return isset($_POST[$posts]);
 
-        return TRUE;
+        return true;
     }
 
     public static function inGets($gets) {
         if(is_array($gets)) {
             foreach($gets as $str)
                 if(!isset($_GET[$str]) || $_GET[$str] == '')
-                    return FALSE;
+                    return false;
         } else return isset($_GET[$gets]) || $_GET[$gets] == '';
 
-        return TRUE;
+        return true;
     }
 
     public static function posts($keys) {
@@ -209,7 +209,7 @@ abstract class req {
      *
      * @return bool|string
      */
-    public static function method($desire = NULL) {
+    public static function method($desire = null) {
         if($desire) {
             return strtolower($_SERVER['REQUEST_METHOD']) == strtolower($desire);
         } else
@@ -221,7 +221,7 @@ abstract class req {
      * @param string $level post|get|null=all
      * @return string
      */
-    public static function report($extras = NULL, $level = NULL) {
+    public static function report($extras = null, $level = null) {
 
         $dec = function($var) {
             $out = [];
@@ -231,7 +231,7 @@ abstract class req {
         };
 
         $vars['URL'] = rtrim($_SERVER['HTTP_HOST'], '/') . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
-        $vars        += $level == NULL ? ['Post' => $_POST, 'Get' => $dec($_GET)] : ($level == 'get' ? ['Get' => $dec($_GET)] : ['Post' => $_POST]);
+        $vars        += $level == null ? ['Post' => $_POST, 'Get' => $dec($_GET)] : ($level == 'get' ? ['Get' => $dec($_GET)] : ['Post' => $_POST]);
 
 
 
@@ -247,7 +247,7 @@ abstract class req {
      * @param null $fallback
      * @return null
      */
-    public static function referer($fallback = NULL) {
+    public static function referer($fallback = null) {
         return $_SERVER['HTTP_REFERER'] ?? $fallback;
     }
 }
