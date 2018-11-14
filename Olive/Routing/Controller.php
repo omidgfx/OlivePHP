@@ -26,7 +26,8 @@ abstract class Controller extends Core {
      * @return bool
      */
     public static function exists($short_name) {
-        return file_exists(self::getPath($short_name));
+        $path = self::getPath($short_name);
+        return isSubdirOf("App/Controllers", $path) && file_exists($path);
     }
 
 

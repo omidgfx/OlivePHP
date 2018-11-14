@@ -126,8 +126,7 @@ abstract class Core {
         /** @noinspection PhpIncludeInspection */
         require_once $path;
 
-
-        $cn = "\\App\\Controllers\\$name";
+        $cn = "\\App\\Controllers\\" . str_replace('/', '\\', $name);
         if(!class_exists($cn))
             throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers` namespace" : null));
         $ctrl = new $cn($route);
