@@ -1,15 +1,12 @@
 <?php namespace Olive;
 
-use Olive\Exceptions\H404;
-use Olive\Exceptions\H501;
 use Olive\Exceptions\OliveError;
 use Olive\Exceptions\OliveFatalError;
-use Olive\Routing\Controller;
-use Olive\Routing\Middleware;
-use Olive\Routing\Route;
-use Olive\Routing\RouteMiddler;
 
 abstract class Core {
+
+    //region Includers and boot handlers
+
     /**
      * @param string[] $modules
      * @uses Core::requireModule()
@@ -20,7 +17,6 @@ abstract class Core {
         foreach($modules as $module)
             self::requireModule($module);
     }
-
 
     /**
      * ##RequireModule
@@ -61,240 +57,6 @@ abstract class Core {
             }
         }
         throw new OliveFatalError("Module not found '$module'");
-    }
-
-    /**
-     * @param string $view_name
-     * @param array $params associated array, keys are variables name and accessible in rendering view and layout
-     * @param string $layout name of layout, by passing null, uses $layout in view
-     * @throws H404
-     */
-    public static function renderView($view_name, $params = [], $layout = null) {
-        ob_start();
-
-        $vars = self::requireScript("App/Views/$view_name.php", $params);
-
-        if(!isset($vars['layout']))
-            $vars['layout'] = $layout;
-        elseif(!$layout)
-            $layout = $vars['layout'];
-
-        $viewContent = ob_get_clean();
-
-        self::renderLayout($layout, array_merge($params, ['content' => $viewContent]));
-    }
-
-    /**
-     * @param Route $route
-     * @param RouteMiddler[] $middlers
-     * @throws H404
-     * @throws H501
-     *
-     */
-    public static function RenderRoute(Route $route, $middlers = []) {
-        try {
-            $next = true;
-            /** @var RouteMiddler $middler */
-            foreach($middlers as $middler) {
-                $next = self::RenderMiddleware($middler, $route);
-                if(!$next) break;
-            }
-            //Render the controller
-            if($next)
-                self::RenderController($route->controller, $route->action, $route->arguments, $route);
-        } catch(\Exception $e) {
-            //Handle the exception
-            $route->arguments['exception'] = $e;
-            self::RenderController('_error', null, $route->arguments, $route);
-        }
-    }
-
-    /**
-     * @param $name
-     * @param null $action
-     * @param array $params
-     * @param null $route
-     * @throws H404
-     * @throws H501
-     */
-    public static function RenderController($name, $action = null, $params = [], &$route = null) {
-        # Include controller file
-        $path = Controller::getPath($name);
-        if(!Controller::exists($name))
-            throw new H404(DEBUG_MODE ? "Controller not found: $path" : 'Page not found.');
-
-        /** @noinspection PhpIncludeInspection */
-        require_once $path;
-
-        $cn = "\\App\\Controllers\\" . str_replace('/', '\\', $name);
-        if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers` namespace" : null));
-        $ctrl = new $cn($route);
-
-        if(!$ctrl instanceof Controller)
-            throw new H501('Controller class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Controller');
-
-        # Validate action
-        if($action === null)
-            # Unspecified action
-            $action = 'Index';
-        elseif(!method_exists($ctrl, "fn$action")) {
-            # Method not exists
-            # Use Index method
-            $params = array_merge([$action], $params);
-            $action = 'Index';
-        }
-
-        # Handle request to the controller
-        $action = "fn$action";
-
-        $parEnc = [];
-        foreach($params as $p => $k)
-            $parEnc[$p] = is_string($k) ? urlencode($k) : $k;
-        $ctrl->$action($parEnc);
-
-    }
-
-    /**
-     * @param RouteMiddler $routeMiddler
-     * @param Route $route
-     * @return bool
-     * @throws H404
-     * @throws H501
-     */
-    public static function RenderMiddleware(RouteMiddler $routeMiddler, Route $route) {
-        # Include MiddleWare file
-        $path = Middleware::getPath($routeMiddler->name);
-        if(!file_exists($path))
-            throw new H404(DEBUG_MODE ? "Middleware not found: $path" : 'Page not found.');
-        /** @noinspection PhpIncludeInspection */
-        require_once $path;
-
-
-        $cn = "App\\Middlewares\\$routeMiddler->name";
-        if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\App\\Middlewares` namespace" : null));
-
-        # Create a new instance of the MiddleWare handler
-        /** @var Middleware $mdlr */
-        $mdlr = new $cn;
-
-        if(!$mdlr instanceof Middleware)
-            throw new H501('Middleware class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Middleware');
-
-
-        # Handle request to the MiddleWare
-
-        $argEnc = [];
-        foreach($route->arguments as $p => $k)
-            $argEnc[$p] = is_string($k) ? urlencode($k) : $k;
-        return $mdlr->perform($route, $argEnc);
-
-    }
-
-    /**
-     * @param string $target_url
-     */
-    public static function redirect($target_url) {
-        self::setHeader('Location', $target_url);
-        die;
-    }
-
-    /**
-     * @param string $name
-     * @param string $value
-     * @param bool $replace
-     * @param null|int $response_code look at (<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">List_of_HTTP_status_codes</a>) for more information.
-     */
-    public static function setHeader($name, $value, $replace = true, $response_code = null) {
-        if($value)
-            $s = "$name: $value";
-        else
-            $s = $name;
-        header($s, $replace, $response_code);
-    }
-
-    /**
-     * @param int $response_code look at (<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">List_of_HTTP_status_codes</a>) for more information.
-     */
-    public static function setHttpResponseCode($response_code) {
-        http_response_code($response_code);
-    }
-
-    /**
-     * @param string $path script php related path
-     * @param array $variables
-     * @return array defined variables in script
-     * @throws H404
-     */
-    public static function requireScript($path, $variables = []) {
-        if(!file_exists($path))
-            throw new H404(DEBUG_MODE ? $path : 'Resource not found.');
-        extract($variables);
-        /** @noinspection PhpIncludeInspection */
-        require $path;
-
-        return get_defined_vars();
-    }
-
-    /**
-     * @param $layout
-     * @param array $vars
-     * @throws H404
-     */
-    private static function renderLayout($layout, $vars = []) {
-        if($layout == null) {
-            echo $vars['content'];
-
-            return;
-        }
-
-        ob_start();
-        $res            = self::requireScript("App/Layouts/$layout.php", $vars);
-        $layout_content = ob_get_clean();
-        if(isset($res['parent_layout'])) {
-            self::renderLayout($res['parent_layout'], array_merge($vars, ['content' => $layout_content]));
-        } else echo $layout_content;
-    }
-
-    /**
-     * @param $code
-     * @param $message
-     * @param $file
-     * @param $line
-     * @param null $errcontext
-     * @throws OliveError
-     */
-    public final static function errorHandler($code, $message, $file, $line, $errcontext = null) {
-        $e              = new OliveError;
-        $e->code        = $code;
-        $e->message     = $message;
-        $e->file        = $file;
-        $e->line        = $line;
-        $e->{'context'} = $errcontext;
-        throw $e;
-    }
-
-    public final static function shutdownHandler() {
-        if(($error = error_get_last()) !== null) {
-            $exception          = new OliveFatalError;
-            $exception->code    = $error["type"];
-            $exception->message = $error["message"];
-            $exception->file    = $error["file"];
-            $exception->line    = $error["line"];
-
-            if(DEBUG_MODE) {
-                echo "<div style='background:#fafafa;color:#777;margin: 10px;border: 1px solid #ddd;padding: 10px;border-radius: 8px'><h1><span style='color:red'>Fatal error captured:</span></h1>",
-                "<pre>";
-                print_r($error);
-                echo "</pre></div>";
-            } else {
-                ob_clean();
-                http_response_code(500);
-                echo "<h1 style='color:red;text-align:center;'>FATAL ERROR</h1>";
-            }
-        }
-
     }
 
     /**
@@ -340,6 +102,54 @@ abstract class Core {
             require_once $item;
     }
 
+    //endregion
+
+    //region Error Handlers
+
+    /**
+     * @param $code
+     * @param $message
+     * @param $file
+     * @param $line
+     * @param null $errcontext
+     * @throws OliveError
+     */
+    public final static function errorHandler($code, $message, $file, $line, $errcontext = null) {
+        $e              = new OliveError;
+        $e->code        = $code;
+        $e->message     = $message;
+        $e->file        = $file;
+        $e->line        = $line;
+        $e->{'context'} = $errcontext;
+        throw $e;
+    }
+
+    public final static function shutdownHandler() {
+        if(($error = error_get_last()) !== null) {
+            $exception          = new OliveFatalError;
+            $exception->code    = $error["type"];
+            $exception->message = $error["message"];
+            $exception->file    = $error["file"];
+            $exception->line    = $error["line"];
+
+            if(DEBUG_MODE) {
+                echo "<div style='background:#fafafa;color:#777;margin: 10px;border: 1px solid #ddd;padding: 10px;border-radius: 8px'><h1><span style='color:red'>Fatal error captured:</span></h1>",
+                "<pre>";
+                print_r($error);
+                echo "</pre></div>";
+            } else {
+                ob_clean();
+                http_response_code(500);
+                echo "<h1 style='color:red;text-align:center;'>FATAL ERROR</h1>";
+            }
+        }
+
+    }
+
+    //endregion
+
+    //region App
+
     public static function startApp($path = 'App') {
         # read files and folders
         $list = glob("$path/*.boot");
@@ -350,4 +160,7 @@ abstract class Core {
             self::boot($item);
 
     }
+
+    //endregion
+
 }

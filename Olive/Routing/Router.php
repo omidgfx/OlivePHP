@@ -1,16 +1,23 @@
 <?php namespace Olive\Routing;
 
-use Olive\Core;
 use Olive\Exceptions\H404;
+use Olive\Exceptions\H501;
 use Olive\manifest;
 
 
 class Router {
+
+    //region Fields
+
     /** @var RouteBypass[] */
     private $bypasses = [];
 
     /** @var RouteMiddler[] */
     private $middlers = [];
+
+    //endregion
+
+    //region Constructors
 
     public function __construct() {
 
@@ -22,9 +29,12 @@ class Router {
         $route = $this->route();
 
         # Render Route
-        Core::RenderRoute($route, $this->middlers);
+        self::RenderRoute($route, $this->middlers);
     }
 
+    //endregion
+
+    //region Routing
 
     public function addBypass(RouteBypass $bypass) {
         $this->bypasses[] = $bypass;
@@ -82,5 +92,118 @@ class Router {
         return $routeBypass;
     }
 
+    //endregion
+
+    //region Renderers
+
+    /**
+     * @param Route $route
+     * @param RouteMiddler[] $middlers
+     * @throws H404
+     * @throws H501
+     *
+     */
+    private static function RenderRoute(Route $route, $middlers = []) {
+        try {
+            $next = true;
+            /** @var RouteMiddler $middler */
+            foreach($middlers as $middler) {
+                $next = self::RenderMiddleware($middler, $route);
+                if(!$next) break;
+            }
+            //Render the controller
+            if($next)
+                self::RenderController($route->controller, $route->action, $route->arguments, $route);
+        } catch(\Exception $e) {
+            //Handle the exception
+            $route->arguments['exception'] = $e;
+            self::RenderController('_error', null, $route->arguments, $route);
+        }
+    }
+
+    /**
+     * @param $name
+     * @param null $action
+     * @param array $params
+     * @param null $route
+     * @throws H404
+     * @throws H501
+     */
+    private static function RenderController($name, $action = null, $params = [], &$route = null) {
+        # Include controller file
+        $path = Controller::getPath($name);
+        if(!Controller::exists($name))
+            throw new H404(DEBUG_MODE ? "Controller not found: $path" : 'Page not found.');
+
+        /** @noinspection PhpIncludeInspection */
+        require_once $path;
+
+        $cn = "\\App\\Controllers\\" . str_replace('/', '\\', $name);
+        if(!class_exists($cn))
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers` namespace" : null));
+        $ctrl = new $cn($route);
+
+        if(!$ctrl instanceof Controller)
+            throw new H501('Controller class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Controller');
+
+        # Validate action
+        if($action === null)
+            # Unspecified action
+            $action = 'Index';
+        elseif(!method_exists($ctrl, "fn$action")) {
+            # Method not exists
+            # Use Index method
+            $params = array_merge([$action], $params);
+            $action = 'Index';
+        }
+
+        # Handle request to the controller
+        $action = "fn$action";
+
+        $parEnc = [];
+        foreach($params as $p => $k)
+            $parEnc[$p] = is_string($k) ? urlencode($k) : $k;
+        $ctrl->$action($parEnc);
+
+    }
+
+    /**
+     * @param RouteMiddler $routeMiddler
+     * @param Route $route
+     * @return bool
+     * @throws H404
+     * @throws H501
+     */
+    private static function RenderMiddleware(RouteMiddler $routeMiddler, Route $route) {
+        # Include MiddleWare file
+        $path = Middleware::getPath($routeMiddler->name);
+        if(!file_exists($path))
+            throw new H404(DEBUG_MODE ? "Middleware not found: $path" : 'Page not found.');
+        /** @noinspection PhpIncludeInspection */
+        require_once $path;
+
+
+        $cn = "App\\Middlewares\\$routeMiddler->name";
+        if(!class_exists($cn))
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\App\\Middlewares` namespace" : null));
+
+        # Create a new instance of the MiddleWare handler
+        /** @var Middleware $mdlr */
+        $mdlr = new $cn;
+
+        if(!$mdlr instanceof Middleware)
+            throw new H501('Middleware class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Middleware');
+
+
+        # Handle request to the MiddleWare
+
+        $argEnc = [];
+        foreach($route->arguments as $p => $k)
+            $argEnc[$p] = is_string($k) ? urlencode($k) : $k;
+        return $mdlr->perform($route, $argEnc);
+
+    }
+
+    //endregion
 
 }

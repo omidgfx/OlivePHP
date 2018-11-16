@@ -26,19 +26,13 @@ function srcExt($source, $full = false, $full_port = '', $full_protocol = null) 
     return Olive\Http\Linker::srcEx($source, $full, $full_port, $full_protocol);
 }
 
-function json_dump($str, $return = false) {
-
-    $s = json_encode($str);
-    if($return) return $s;
-
-    header("Pragma: no-cache");
-    header("Cache-Control: no-cache, must-revalidate");
-    header("Keep-Alive: timeout=5, max=100");
-    header("Content-Type: application/json");
-    header("Content-Length: " . strlen($s));
-    echo $s;
-
-    return null;
+/**
+ * @param mixed $content
+ * @param bool $alive
+ * @param bool $preventCache
+ */
+function json_dump($content, $alive = false, $preventCache = false) {
+    \Olive\Http\End::jsonDump($content, $alive, $preventCache);
 }
 
 /**

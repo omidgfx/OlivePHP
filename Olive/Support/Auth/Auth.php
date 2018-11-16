@@ -1,8 +1,7 @@
 <?php namespace Olive\Support\Auth;
 
 use Olive\Interfaces\Authenticatable;
-use Olive\Core;
-use Olive\Http\{Cookie, Session, URL};
+use Olive\Http\{Cookie, End, Session, URL};
 use Olive\manifest;
 
 abstract class Auth {
@@ -210,7 +209,7 @@ abstract class Auth {
             $fallbackUrl->addQuery($fallbackUrlKey, $ref);
         }
         if(!static::is())
-            Core::redirect($fallbackUrl);
+            End::redirect($fallbackUrl);
     }
 
     #endregion
