@@ -94,3 +94,7 @@ function isSubdirOf($baseDir, $path) {
     $pathReal = realpath($path);
     return \Olive\Util\Text::startsWith($baseReal, $pathReal);
 }
+
+function redirect($target_url){
+    \Olive\Http\End::redirect($target_url);
+}
