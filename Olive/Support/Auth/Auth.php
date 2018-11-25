@@ -30,7 +30,7 @@ abstract class Auth {
     public static function attempt($identifier, $passowrd, $save = self::SAVE_COOKIE) {
 
         # check
-        $authResult = static::check($identifier, $passowrd);
+        $authResult = static::check($identifier, self::hash($passowrd, 3));
         self::setAuthenticated($authResult->authenticatable);
 
         if($authResult->isSucceed()) {
