@@ -271,13 +271,13 @@ class URL {
 
 
         if(!is_null($this->path)) {
-            if($url != '') $url .= '/';
+//            if($url != '') $url .= '/';
 
             if($this->path[0] == '\\') {
                 $this->relative = false;
                 $url            .= substr($this->path, 1);
             } else
-                $url .= $this->path;
+                $url .= '/' . ltrim($this->path, '/');
         }
 
         if($this->query != [])
