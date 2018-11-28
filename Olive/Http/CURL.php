@@ -88,10 +88,11 @@ class CURL {
 
     /**
      * @param array|string $fields
+     * @param bool $asQuery
      * @return CURL
      */
-    public function setPostFields($fields) {
-        return $this->setOption(CURLOPT_POSTFIELDS, $fields);
+    public function setPostFields($fields, $asQuery = false) {
+        return $this->setOption(CURLOPT_POSTFIELDS, $asQuery ? http_build_query($fields) : $fields);
     }
 
     /**
