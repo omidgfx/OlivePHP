@@ -112,7 +112,7 @@ class CURL {
     public function exec($close = true) {
 
         if($this->headers)
-            $this->setOption(CURLOPT_HEADER, $this->headers);
+            $this->setOption(CURLOPT_HTTPHEADER, $this->headers);
 
         $this->result = curl_exec($this->resource);
         if($close) curl_close($this->resource);
