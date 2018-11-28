@@ -5,6 +5,7 @@ class CURL {
     /** @var resource */
     private $resource;
     private $result;
+    private $headers = [];
 
     /**
      * CURL constructor.
@@ -28,6 +29,32 @@ class CURL {
     }
 
     /**
+     * @param array $headers
+     * @return CURL
+     */
+    public function setHeaders($headers) {
+        $this->headers = $headers;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders() {
+        return $this->headers;
+    }
+
+    /**
+     * @param $name
+     * @param $val
+     * @return CURL
+     */
+    public function addHeader($name, $val) {
+        $this->headers[] = "$name: $val";
+        return $this;
+    }
+
+    /**
      * @param bool $state
      * @return CURL
      */
@@ -44,7 +71,23 @@ class CURL {
     }
 
     /**
-     * @param array $fields
+     * @param int $state
+     * @return CURL
+     */
+    public function setSSLVerifyHost($state = 0) {
+        return $this->setOption(CURLOPT_SSL_VERIFYHOST, $state);
+    }
+
+    /**
+     * @param string $method
+     * @return CURL
+     */
+    public function setCustomRequest($method = 'POST') {
+        return $this->setOption(CURLOPT_CUSTOMREQUEST, $method);
+    }
+
+    /**
+     * @param array|string $fields
      * @return CURL
      */
     public function setPostFields($fields) {
@@ -66,6 +109,10 @@ class CURL {
      * @return $this
      */
     public function exec($close = true) {
+
+        if($this->headers)
+            $this->setOption(CURLOPT_HEADER, $this->headers);
+
         $this->result = curl_exec($this->resource);
         if($close) curl_close($this->resource);
         return $this;
