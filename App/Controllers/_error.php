@@ -4,6 +4,7 @@
 use Olive\Exceptions\ApiException;
 use Olive\Exceptions\H500;
 use Olive\Exceptions\OliveException;
+use Olive\Http\Response;
 use Olive\Routing\Controller;
 
 class _error extends Controller {
@@ -22,7 +23,7 @@ class _error extends Controller {
         if(!$code || !in_array($code, [400, 401, 402, 403, 404, 500, 501, 503]))
             $rcode = 500;
 
-        self::setHttpResponseCode($rcode);
+        Response::setHttpCode($rcode);
 
         if($e instanceof ApiException) {
             echo $e->getMessage();

@@ -32,7 +32,7 @@ function srcExt($source, $full = false, $full_port = '', $full_protocol = null) 
  * @param bool $preventCache
  */
 function json_dump($content, $alive = false, $preventCache = false) {
-    \Olive\Http\End::jsonDump($content, $alive, $preventCache);
+    \Olive\Http\Response::jsonDump($content, $alive, $preventCache);
 }
 
 /**
@@ -96,5 +96,5 @@ function isSubdirOf($baseDir, $path) {
 }
 
 function redirect($target_url){
-    \Olive\Http\End::redirect($target_url);
+    \Olive\Http\Response::redirect($target_url);
 }

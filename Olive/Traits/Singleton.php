@@ -1,4 +1,4 @@
-<?php namespace Olive;
+<?php namespace Olive\Traits;
 
 trait Singleton {
     /**
@@ -11,7 +11,7 @@ trait Singleton {
      * singleton constructor.
      */
     public function __construct() {
-        $this->__instance();
+        $this->__singleton();
     }
 
 
@@ -25,5 +25,5 @@ trait Singleton {
         return self::$singleton;
     }
 
-    protected abstract function __instance();
+    protected abstract function __singleton();
 }

@@ -7,16 +7,15 @@ mb_internal_encoding('UTF-8');
 
 # Prepare manifest
 require_once __DIR__ . '/../manifest.php';
-require_once 'References.php';
-require_once 'Core.php';
+require_once __DIR__ . '/References.php';
 
-# Boot parts
-$parts = ['Exceptions', 'Traits', 'Http', 'Routing', 'Security', 'Util'];
-foreach($parts as $part) \Olive\Core::boot("Olive/$part");
+# Pre Boot parts
+spl_autoload_register(function($psr) {
+    /** @noinspection PhpIncludeInspection */
+    require_once __DIR__ . "/../" . $psr . ".php";
+}, true, true);
 
 # Environment config
 error_reporting(DEBUG_MODE ? E_ALL : 0);
 set_error_handler(['Olive\Core', 'errorHandler'], E_ALL);
 register_shutdown_function(['Olive\Core', 'shutdownHandler']);
-
-\Olive\Core::startApp();

@@ -3,13 +3,13 @@
 use Olive\Exceptions\MySQLiAdaptingException;
 use Olive\Exceptions\MySQLiException;
 use Olive\manifest;
-use Olive\Singleton;
+use Olive\Traits\Singleton;
 
 class MySQLiConnection extends \mysqli {
     use Singleton;
 
     #region Constructors
-    protected function __instance() {
+    protected function __singleton() {
 
         # Connect
         @$this->connect(

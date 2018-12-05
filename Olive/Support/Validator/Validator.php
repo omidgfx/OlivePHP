@@ -1,6 +1,6 @@
 <?php /** @noinspection RequiredAttributes */
 
-namespace Olive\Support;
+namespace Olive\Support\Validator;
 
 use Olive\Exceptions\ValidatorException;
 

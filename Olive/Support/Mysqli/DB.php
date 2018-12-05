@@ -4,7 +4,7 @@
 use Olive\Exceptions\MySQLiAdaptingException;
 use Olive\Exceptions\MySQLiConditionException;
 use Olive\Exceptions\MySQLiException;
-use Olive\Singleton;
+use Olive\Traits\Singleton;
 
 class DB extends MySQLiConnection {
 

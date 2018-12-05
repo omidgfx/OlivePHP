@@ -38,23 +38,20 @@ abstract class Core {
      * @throws OliveFatalError
      */
     public static function requireModule($module) {
-        $places = ['Olive/Support', 'App/Modules'];
 
-        foreach($places as $place) {
-            if(file_exists($path = "$place/$module.php")) {
+        if(file_exists($path = "App/Modules/$module.php")) {
+            /** @noinspection PhpIncludeInspection */
+            require_once $path;
+            return;
+        }
+        if(is_dir("App/Modules/$module")) {
+            if(file_exists($path = "App/Modules/$module/loader.php")) {
                 /** @noinspection PhpIncludeInspection */
                 require_once $path;
                 return;
             }
-            if(is_dir("$place/$module")) {
-                if(file_exists($path = "$place/$module/loader.php")) {
-                    /** @noinspection PhpIncludeInspection */
-                    require_once $path;
-                    return;
-                }
-                static::boot("$place/$module");
-                return;
-            }
+            static::boot("App/Modules/$module");
+            return;
         }
         throw new OliveFatalError("Module not found '$module'");
     }

@@ -1,4 +1,4 @@
-<?php namespace Olive\Support;
+<?php namespace Olive\Support\Photos;
 
 use Olive\Exceptions\PhotoException;
 

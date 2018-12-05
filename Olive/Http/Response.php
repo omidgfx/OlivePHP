@@ -1,6 +1,6 @@
 <?php namespace Olive\Http;
 
-abstract class End {
+abstract class Response {
 
     //region Helers
 
@@ -29,7 +29,7 @@ abstract class End {
     /**
      * @param int $response_code look at (<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">List_of_HTTP_status_codes</a>) for more information.
      */
-    public static function setHttpResponseCode($response_code) {
+    public static function setHttpCode($response_code) {
         http_response_code($response_code);
     }
 
