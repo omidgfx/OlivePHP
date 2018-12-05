@@ -19,3 +19,5 @@ spl_autoload_register(function($psr) {
 error_reporting(DEBUG_MODE ? E_ALL : 0);
 set_error_handler(['Olive\Core', 'errorHandler'], E_ALL);
 register_shutdown_function(['Olive\Core', 'shutdownHandler']);
+
+\Olive\Core::startApp();
