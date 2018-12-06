@@ -99,6 +99,7 @@ class URL {
 
     /**
      * @param string $scheme
+     * @return URL
      */
     public function setScheme($scheme) {
         $this->scheme = $scheme;
@@ -114,6 +115,7 @@ class URL {
 
     /**
      * @param string $host
+     * @return URL
      */
     public function setHost($host) {
         $this->host = $host;
@@ -129,6 +131,7 @@ class URL {
 
     /**
      * @param int $port
+     * @return URL
      */
     public function setPort($port) {
         $this->port = $port;
@@ -144,6 +147,7 @@ class URL {
 
     /**
      * @param string $user
+     * @return URL
      */
     public function setUser($user) {
         $this->user = $user;
@@ -159,6 +163,7 @@ class URL {
 
     /**
      * @param string $pass
+     * @return URL
      */
     public function setPass($pass) {
         $this->pass = $pass;
@@ -174,6 +179,7 @@ class URL {
 
     /**
      * @param string $path
+     * @return URL
      */
     public function setPath($path) {
         $this->path = $path;
@@ -189,6 +195,7 @@ class URL {
 
     /**
      * @param array $query
+     * @return URL
      */
     public function setQuery($query) {
         $this->query = $query;
@@ -204,6 +211,7 @@ class URL {
 
     /**
      * @param string $fragment
+     * @return URL
      */
     public function setFragment($fragment) {
         $this->fragment = $fragment;
