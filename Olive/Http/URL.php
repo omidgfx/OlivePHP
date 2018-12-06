@@ -102,6 +102,7 @@ class URL {
      */
     public function setScheme($scheme) {
         $this->scheme = $scheme;
+        return $this;
     }
 
     /**
@@ -116,6 +117,7 @@ class URL {
      */
     public function setHost($host) {
         $this->host = $host;
+        return $this;
     }
 
     /**
@@ -130,6 +132,7 @@ class URL {
      */
     public function setPort($port) {
         $this->port = $port;
+        return $this;
     }
 
     /**
@@ -144,6 +147,7 @@ class URL {
      */
     public function setUser($user) {
         $this->user = $user;
+        return $this;
     }
 
     /**
@@ -158,6 +162,7 @@ class URL {
      */
     public function setPass($pass) {
         $this->pass = $pass;
+        return $this;
     }
 
     /**
@@ -172,6 +177,7 @@ class URL {
      */
     public function setPath($path) {
         $this->path = $path;
+        return $this;
     }
 
     /**
@@ -186,6 +192,7 @@ class URL {
      */
     public function setQuery($query) {
         $this->query = $query;
+        return $this;
     }
 
     /**
@@ -200,6 +207,7 @@ class URL {
      */
     public function setFragment($fragment) {
         $this->fragment = $fragment;
+        return $this;
     }
 
     #endregion
@@ -234,6 +242,13 @@ class URL {
         $this->full = $full;
     }
 
+    public function append($path) {
+        if(empty($this->path))
+            $this->path = $path;
+        else
+            $this->path .= '/' . ltrim($path, '/');
+        return $this;
+    }
     #endregion
 
     #region Magic methods
