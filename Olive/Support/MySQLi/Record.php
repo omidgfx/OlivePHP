@@ -84,6 +84,15 @@ abstract class Record implements RecordInterface {
     public function toArray() {
         return array_merge($this->_ORIGS, $this->_CHNGS);
     }
+
+    /**
+     * @uses htmlentities
+     * @param string $name Field name
+     * @return string
+     */
+    public function escape($name) {
+        return htmlentities($this->$name, ENT_QUOTES, 'UTF-8', false);
+    }
     #endregion
 
     #region DB related methods
