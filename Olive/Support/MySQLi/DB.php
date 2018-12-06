@@ -158,10 +158,10 @@ class DB extends MySQLiConnection {
      */
     public function count($table, $condition = null, $execute = true) {
         # query
-        $query = $this->select($table, $condition, null, '\\count(*)', null, false);
+        $query = $this->select($table, $condition, null, '\\count(*) as __count', null, false);
 
         # update
-        return $execute ? $this->query($query)->num_rows : $query;
+        return $execute ? $this->fetchArray($this->query($query))[0]['__count'] : $query;
 
     }
 
