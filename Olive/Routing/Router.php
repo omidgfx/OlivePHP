@@ -135,12 +135,9 @@ class Router {
         if(!Controller::exists($name))
             throw new H404(DEBUG_MODE ? "Controller not found: $path" : 'Page not found.');
 
-        /** @noinspection PhpIncludeInspection */
-        require_once $path;
-
         $cn = "\\App\\Controllers\\" . str_replace('/', '\\', $name);
         if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers` namespace" : null));
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers\\{Path}` namespace" : null));
         $ctrl = new $cn($route);
 
         if(!$ctrl instanceof Controller)
@@ -179,13 +176,10 @@ class Router {
         $path = Middleware::getPath($routeMiddler->name);
         if(!file_exists($path))
             throw new H404(DEBUG_MODE ? "Middleware not found: $path" : 'Page not found.');
-        /** @noinspection PhpIncludeInspection */
-        require_once $path;
-
 
         $cn = "App\\Middlewares\\$routeMiddler->name";
         if(!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\App\\Middlewares` namespace" : null));
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Middler class in `$path` must be under `\\App\\Middlewares\\{Path}` namespace" : null));
 
         # Create a new instance of the MiddleWare handler
         /** @var Middleware $mdlr */
