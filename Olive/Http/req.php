@@ -140,9 +140,9 @@ abstract class req {
     public static function inGets($gets) {
         if(is_array($gets)) {
             foreach($gets as $str)
-                if(!isset($_GET[$str]) || $_GET[$str] == '')
+                if(!isset($_GET[$str]))
                     return false;
-        } else return isset($_GET[$gets]) || $_GET[$gets] == '';
+        } else return isset($_GET[$gets]);
 
         return true;
     }
