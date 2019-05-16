@@ -115,7 +115,7 @@ abstract class Record implements RecordInterface {
 
     /**
      * @param int $id
-     * @return Record|Model|View A Model or a View by id
+     * @return static A Model or a View by id
      * @throws MySQLiAdaptingException
      * @throws MySQLiConditionException
      * @throws MySQLiException
@@ -217,8 +217,8 @@ abstract class Record implements RecordInterface {
     #region Helpers
     /**
      * @param string $column
-     * @param Record[]|static[] $records
-     * @return Record[]|static[] An associated array based on column
+     * @param Record[] $records
+     * @return static[] An associated array based on column
      */
     public static function associateBy($column, $records) {
         $arr = [];
@@ -230,9 +230,9 @@ abstract class Record implements RecordInterface {
 
     /**
      * @param string $column
-     * @param Record[]|static[] $records
+     * @param Record[] $records
      * @param string $association
-     * @return array|Record[]|static[] An array of all record's column values. if association parameter was a name of a column then returns an associated array with same values
+     * @return mixed[] An array of all record's column values. if association parameter was a name of a column then returns an associated array with same values
      */
     public static function extract($column, $records, $association = null) {
         $arr = [];
