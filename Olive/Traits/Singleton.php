@@ -1,6 +1,7 @@
 <?php namespace Olive\Traits;
 
-trait Singleton {
+trait Singleton
+{
     /**
      * Store the singleton object.
      */
@@ -20,7 +21,7 @@ trait Singleton {
      * @return self
      */
     public static function getInstance() {
-        if(self::$singleton === false)
+        if (self::$singleton === false)
             self::$singleton = new self;
         return self::$singleton;
     }

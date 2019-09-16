@@ -12,7 +12,8 @@ use Olive\Util\DateTime;
  * Class Record
  * @package Olive\MySQLi
  */
-abstract class Record implements RecordInterface {
+abstract class Record implements RecordInterface
+{
 
     #region Changings
     private $_ORIGS = [];
@@ -38,9 +39,9 @@ abstract class Record implements RecordInterface {
     }
 
     /**
+     * @return $this
      * @internal
      * Sync seted changes as original record that is stored in databse.<br><b>This method runs automatically on fetching instace of Record.</b>
-     * @return $this
      */
     public function syncOriginal() {
         $this->_ORIGS = $this->toArray();
@@ -63,7 +64,7 @@ abstract class Record implements RecordInterface {
      * @return $this
      */
     public function undo($name = null) {
-        if($name) unset($this->_CHNGS[$name]);
+        if ($name) unset($this->_CHNGS[$name]);
         else $this->_CHNGS = [];
         return $this;
     }
@@ -73,7 +74,7 @@ abstract class Record implements RecordInterface {
      * @return $this
      */
     public function unset(string $name = null) {
-        if($name) unset($this->_ORIGS[$name], $this->_CHNGS[$name]);
+        if ($name) unset($this->_ORIGS[$name], $this->_CHNGS[$name]);
         else $this->_CHNGS = $this->_ORIGS = [];
         return $this;
     }
@@ -86,9 +87,9 @@ abstract class Record implements RecordInterface {
     }
 
     /**
-     * @uses htmlentities
      * @param string $name Field name
      * @return string
+     * @uses htmlentities
      */
     public function escape($name) {
         return htmlentities($this->$name, ENT_QUOTES, 'UTF-8', false);
@@ -108,7 +109,7 @@ abstract class Record implements RecordInterface {
      * @throws MySQLiException
      */
     public static function select($condition = null, $single = false, $limit = null, $columns = null, $orderby = null) {
-        if($single)
+        if ($single)
             return DB::getInstance()->selectRecord(static::class, $condition, $limit, $columns, $orderby);
         return DB::getInstance()->selectRecords(static::class, $condition, $limit, $columns, $orderby);
     }
@@ -159,7 +160,7 @@ abstract class Record implements RecordInterface {
      * @throws MySQLiRecordException
      */
     public function pull() {
-        if($this->id == null)
+        if ($this->id == null)
             throw new MySQLiRecordException('Invalid id');
         $new          = static::selectById($this->id);
         $this->_ORIGS = $new->_ORIGS;
@@ -177,11 +178,11 @@ abstract class Record implements RecordInterface {
      * @param string|null $pattern <b>Null</b> returns an instance of {@see \Olive\Util\DateTime Olive DateTime}<br>
      * <b>string</b> returns a formatted date-time string. Read more about {@see \Olive\Util\DateTime::format pattern syntax}
      * @param mixed $fallback
-     * @uses \Olive\Util\DateTime
      * @return null|DateTime|string
+     * @uses \Olive\Util\DateTime
      */
     public function getDateTime($column = 'date', $options = [], $pattern = manifest::DEFAULT_DATETIME_PATTERN_SHORT, $fallback = null) {
-        if($this->{$column} == null)
+        if ($this->{$column} == null)
             return $fallback;
 
         # default option
@@ -222,7 +223,7 @@ abstract class Record implements RecordInterface {
      */
     public static function associateBy($column, $records) {
         $arr = [];
-        foreach($records as $model) {
+        foreach ($records as $model) {
             $arr[$model->{$column}] = $model;
         }
         return $arr;
@@ -237,11 +238,11 @@ abstract class Record implements RecordInterface {
     public static function extract($column, $records, $association = null) {
         $arr = [];
 
-        if($association == null)
-            foreach($records as $record)
+        if ($association == null)
+            foreach ($records as $record)
                 $arr[] = $record->{$column};
         else
-            foreach($records as $record)
+            foreach ($records as $record)
                 $arr[$record->{$association}] = $record->{$column};
 
         return $arr;

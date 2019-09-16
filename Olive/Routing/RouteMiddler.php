@@ -1,6 +1,7 @@
 <?php namespace Olive\Routing;
 
-class RouteMiddler {
+class RouteMiddler
+{
     public $name;
 
     public function __construct($name) {

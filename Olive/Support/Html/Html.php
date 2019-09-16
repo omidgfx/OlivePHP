@@ -2,7 +2,8 @@
 
 use Olive\Http\URL;
 
-abstract class Html {
+abstract class Html
+{
 
     #region Consts: TAG_*
 
@@ -54,7 +55,7 @@ abstract class Html {
      */
     public static function img($src, $alt = null, array $attribs = []) {
         $attribs['alt'] = $alt;
-        if($src)
+        if ($src)
             $attribs = self::parseURL($src);
         return self::tag('img', $attribs, null, self::TAG_EMPTY);
     }
@@ -173,18 +174,18 @@ abstract class Html {
      */
     public static function tag($name, $attrs_or_content = null, $content = null, $tagtype = self::TAG_AUTO_DETECT) {
         $attrs = '';
-        if(is_array($attrs_or_content))
-            foreach($attrs_or_content as $attr => $val) {
-                if(is_array($val)) $val = implode(' ', $val);
+        if (is_array($attrs_or_content))
+            foreach ($attrs_or_content as $attr => $val) {
+                if (is_array($val)) $val = implode(' ', $val);
                 $val = self::entitiesEncode($val);
-                if(is_int($attr)) $attrs .= "$val "; # prop
+                if (is_int($attr)) $attrs .= "$val "; # prop
                 else $attrs .= "$attr=\"$val\" ";
             }
-        elseif(is_string($attrs_or_content))
+        elseif (is_string($attrs_or_content))
             $content = $attrs_or_content;
 
         $attrs = mb_substr($attrs, 0, -1);
-        if($tagtype == self::TAG_AUTO_DETECT) {
+        if ($tagtype == self::TAG_AUTO_DETECT) {
             $ttags   = [
                 'input' => self::TAG_EMPTY,
                 'br'    => self::TAG_EMPTY,
@@ -195,7 +196,7 @@ abstract class Html {
             ];
             $tagtype = isset($ttags[($lowname = strtolower($name))]) ? $ttags[$lowname] : self::TAG_NORMAL;
         }
-        switch($tagtype) {
+        switch ($tagtype) {
             case self::TAG_EMPTY:
                 return "<$name" . ($attrs ? ' ' : '') . "$attrs>";
                 break;

@@ -7,12 +7,13 @@ use Olive\Exceptions\OliveException;
 use Olive\Http\Response;
 use Olive\Routing\Controller;
 
-class _error extends Controller {
+class _error extends Controller
+{
     public function fnIndex($args = []) {
 
 
         /** @var OliveException $e */;
-        if(!isset($args['exception']) || !(($e = $args['exception']) instanceof OliveException)) {
+        if (!isset($args['exception']) || !(($e = $args['exception']) instanceof OliveException)) {
             //echo 'FATAL ERROR';
             $e = $args['exception'] = new H500;
             // return;
@@ -20,12 +21,12 @@ class _error extends Controller {
 
         $code  = $e->getCode();
         $rcode = $code;
-        if(!$code || !in_array($code, [400, 401, 402, 403, 404, 500, 501, 503]))
+        if (!$code || !in_array($code, [400, 401, 402, 403, 404, 500, 501, 503]))
             $rcode = 500;
 
         Response::setHttpCode($rcode);
 
-        if($e instanceof ApiException) {
+        if ($e instanceof ApiException) {
             echo $e->getMessage();
             return;
         } else {

@@ -1,6 +1,7 @@
 <?php namespace Olive\Http;
 
-class File {
+class File
+{
     public $name, $type, $tmp_name, $error, $size;
 
     /**
@@ -9,7 +10,7 @@ class File {
      * @param array|NULL $file (Use $_FILES for this)
      */
     public function __construct(array &$file = null) {
-        if($file != null) foreach($file as $k => $v)
+        if ($file != null) foreach ($file as $k => $v)
             $this->{$k} = $v;
     }
 
@@ -50,23 +51,23 @@ class File {
     public function moveAsUploadedFile($targetdir, $replace = false, $target_filename = null, $createPath = true) {
         $p = "$targetdir/" . ($target_filename == null ? $this->getBaseName() : $target_filename);
 
-        if(file_exists($p))
-            if($replace)
+        if (file_exists($p))
+            if ($replace)
                 unlink($p);
             else return false;
 
-        if($createPath && !is_dir($targetdir))
+        if ($createPath && !is_dir($targetdir))
             mkdir($targetdir, 755, true);
 
         $r = move_uploaded_file($this->tmp_name, $p);
-        if($r) touch($p);
+        if ($r) touch($p);
 
         return $r;
     }
 
     public function getExtension($tolower = true) {
         $xtmp = explode(".", $this->getBaseName());
-        if($tolower)
+        if ($tolower)
             return strtolower(array_pop($xtmp));
 
         return array_pop($xtmp);
@@ -102,20 +103,20 @@ class File {
 
     private function transport($destDir, $destFile = null, $replace = false, $createPath = true, $keepSource = true) {
         $p = "$destDir/" . ($destFile == null ? $this->getBaseName() : $destFile);
-        if(file_exists($p))
-            if($replace)
+        if (file_exists($p))
+            if ($replace)
                 unlink($p);
             else
                 return false;
 
-        if($createPath && !is_dir($destDir)) mkdir($destDir, 755, true);
-        if(!$keepSource)
+        if ($createPath && !is_dir($destDir)) mkdir($destDir, 755, true);
+        if (!$keepSource)
             $r = rename($this->tmp_name, $p);
         else
             $r = copy($this->tmp_name, $p);
 
         //change modified date
-        if($r) touch($p);
+        if ($r) touch($p);
 
         return $r;
 

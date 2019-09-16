@@ -1,6 +1,7 @@
 <?php namespace Olive\Util;
 
-class WithObject {
+class WithObject
+{
     /** @var object */
     protected $object;
 
@@ -31,7 +32,7 @@ class WithObject {
      * @return $this
      */
     public function setArray(array $assoc, $run_all_callables = true) {
-        foreach($assoc as $key => $value)
+        foreach ($assoc as $key => $value)
             $this->set($key, $value, $run_all_callables);
         return $this;
     }

@@ -4,7 +4,8 @@ use Olive\Routing\RouteBypass;
 use Olive\Routing\RouteMiddler;
 use Olive\Routing\Router;
 
-abstract class manifest {
+abstract class manifest
+{
 
     #region Path
 

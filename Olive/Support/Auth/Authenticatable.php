@@ -1,6 +1,7 @@
 <?php namespace Olive\Support\Auth;
 
-interface Authenticatable {
+interface Authenticatable
+{
 
     /**
      * @param $identifier

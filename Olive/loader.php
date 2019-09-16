@@ -10,7 +10,7 @@ require_once __DIR__ . '/../manifest.php';
 require_once __DIR__ . '/References.php';
 
 # Pre Boot parts
-spl_autoload_register(function($psr) {
+spl_autoload_register(function ($psr) {
     /** @noinspection PhpIncludeInspection */
     require_once __DIR__ . "/../" . str_replace('\\', '/', $psr) . ".php";
 }, true, true);

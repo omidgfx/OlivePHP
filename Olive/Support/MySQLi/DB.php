@@ -6,7 +6,8 @@ use Olive\Exceptions\MySQLiConditionException;
 use Olive\Exceptions\MySQLiException;
 use Olive\Traits\Singleton;
 
-class DB extends MySQLiConnection {
+class DB extends MySQLiConnection
+{
 
     use Singleton;
 
@@ -43,9 +44,9 @@ class DB extends MySQLiConnection {
         # query
         /** @noinspection SqlNoDataSourceInspection */
         $query = "SELECT $columns FROM $table"
-                 . ($where ? " WHERE $where" : '')
-                 . ($orderby ? " ORDER BY $orderby" : "")
-                 . ($limit ? " LIMIT " . (is_array($limit) ? implode(',', $limit) : $limit) : '');
+            . ($where ? " WHERE $where" : '')
+            . ($orderby ? " ORDER BY $orderby" : "")
+            . ($limit ? " LIMIT " . (is_array($limit) ? implode(',', $limit) : $limit) : '');
         # select
         return $execute ? $this->query($query) : $query;
     }
@@ -68,9 +69,9 @@ class DB extends MySQLiConnection {
 
         # values
         $str_vals = [];
-        foreach($arrayOfCorrespondingValues as &$correspondingValues) {
+        foreach ($arrayOfCorrespondingValues as &$correspondingValues) {
             $vals = [];
-            foreach($correspondingValues as &$value)
+            foreach ($correspondingValues as &$value)
                 $vals[] = $this->val($value);
             $str_vals[] = '(' . implode(',', $vals) . ')';
         }
@@ -99,17 +100,17 @@ class DB extends MySQLiConnection {
         $table = $this->escapeNames($table, false);
 
         #set
-        if(is_array($set)) {
+        if (is_array($set)) {
             $sets = [];
-            foreach($set as $field => $value) {
-                if(!$field) throw new MySQLiAdaptingException('Field name is empty');
+            foreach ($set as $field => $value) {
+                if (!$field) throw new MySQLiAdaptingException('Field name is empty');
                 $field  = $this->escapeNames($field, false);
                 $value  = $this->val($value);
                 $sets[] = "$field=$value";
             }
             $set = implode(',', $sets);
         }
-        if(!is_string($set))
+        if (!is_string($set))
             throw new MySQLiAdaptingException('Invalid $set');
 
         # condition
@@ -202,7 +203,7 @@ class DB extends MySQLiConnection {
         $query = "SHOW COLUMNS FROM $table WHERE `Field`=$column";
 
         # check for execution
-        if(!$execute)
+        if (!$execute)
             return $query;
 
         # execute SQL
@@ -210,10 +211,10 @@ class DB extends MySQLiConnection {
 
         # parse
         $result = $this->fetchArray($result);
-        if($result == [])
+        if ($result == [])
             return [];
         preg_match("/^enum\(\'(.*)\'\)$/", $result[0]['Type'], $matches);
-        if(count($matches) == 2)
+        if (count($matches) == 2)
             return explode("','", $matches[1]);
 
         return [];
@@ -245,7 +246,7 @@ class DB extends MySQLiConnection {
      */
     public function fetch(\mysqli_result $mysqli_result, $class_name = 'stdClass') {
         $out = [];
-        while($o = $mysqli_result->fetch_object($class_name))
+        while ($o = $mysqli_result->fetch_object($class_name))
             $out[] = $o instanceof Record ? $o->syncOriginal() : $o;
         return $out;
     }
@@ -257,14 +258,14 @@ class DB extends MySQLiConnection {
      */
     public function fetchSingle(\mysqli_result $mysqli_result, $class_name = 'stdClass') {
         $r = $this->fetch($mysqli_result, $class_name);
-        if($r == []) return null;
+        if ($r == []) return null;
         return $r[0];
     }
 
     public function fetchArray(\mysqli_result $mysqli_result, $associate = true) {
         $r         = [];
         $associate = $associate ? MYSQLI_ASSOC : MYSQLI_NUM;
-        while($f = $mysqli_result->fetch_array($associate))
+        while ($f = $mysqli_result->fetch_array($associate))
             $r[] = $f;
         return $r;
     }
@@ -285,7 +286,7 @@ class DB extends MySQLiConnection {
      */
     public function selectRecord($class_name, $condition = null, $limit = null, $columns = null, $orderby = null) {
         $r = $this->selectRecords($class_name, $condition, $limit, $columns, $orderby);
-        if($r == []) return null;
+        if ($r == []) return null;
         return $r[0];
     }
 
@@ -321,7 +322,7 @@ class DB extends MySQLiConnection {
             $run();
             $db->commit();
             return true;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $db->rollback();
             return $e;
         }
@@ -337,11 +338,11 @@ class DB extends MySQLiConnection {
      * @throws MySQLiConditionException
      */
     protected function adaptCondition($condition) {
-        if(is_array($condition))
+        if (is_array($condition))
             return (new Condition($condition))->parse();
-        elseif(is_string($condition))
+        elseif (is_string($condition))
             return $condition;
-        elseif($condition instanceof Condition)
+        elseif ($condition instanceof Condition)
             return $condition->parse();
         return null;
     }
@@ -353,7 +354,7 @@ class DB extends MySQLiConnection {
      * @throws MySQLiAdaptingException
      */
     protected function adaptColumns($columns) {
-        if(!$columns) return '*';
+        if (!$columns) return '*';
         return $this->escapeNames($columns);
     }
 
@@ -364,9 +365,9 @@ class DB extends MySQLiConnection {
      * @throws MySQLiAdaptingException
      */
     protected function adaptLimit($limit) {
-        if($limit == null) return null;
-        if(is_array($limit)) {
-            if(count($limit) != 2)
+        if ($limit == null) return null;
+        if (is_array($limit)) {
+            if (count($limit) != 2)
                 throw new MySQLiAdaptingException('Invalid limit array count.');
             return [intval($limit[0]), intval($limit[1])];
         }

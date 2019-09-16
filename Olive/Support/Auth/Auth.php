@@ -3,7 +3,8 @@
 use Olive\Http\{Cookie, Response, Session, URL};
 use Olive\manifest;
 
-abstract class Auth {
+abstract class Auth
+{
 
     #region Consts and fields
 
@@ -32,9 +33,9 @@ abstract class Auth {
         $authResult = static::check($identifier, self::hash($passowrd, 3));
         self::setAuthenticated($authResult->authenticatable);
 
-        if($authResult->isSucceed()) {
+        if ($authResult->isSucceed()) {
             $authString = static::encrypt($identifier, static::hash($passowrd, 1));
-            if($save != static::SAVE_NOSAVE)
+            if ($save != static::SAVE_NOSAVE)
                 self::save($authString, $save);
         }
 
@@ -46,20 +47,20 @@ abstract class Auth {
      */
     public static function is() {
 
-        $ret = function($state, $authenticatable = null) {
-            if($state)
+        $ret = function ($state, $authenticatable = null) {
+            if ($state)
                 static::setAuthenticated($authenticatable);
             else
                 static::logout();
             return $state;
         };
 
-        if(static::$authenticated !== null)
+        if (static::$authenticated !== null)
             return $ret(true, static::$authenticated);
 
         $restored = static::getSavedDecrypted();
 
-        if($restored == null)
+        if ($restored == null)
             return $ret(false);
 
         $identifier  = $restored[0][0];
@@ -94,12 +95,12 @@ abstract class Auth {
         $authenticatable = static::getAuthenticatable($identifier);
 
         # check for existance
-        if($authenticatable == null)
+        if ($authenticatable == null)
             return new AuthResult(AuthResult::INVALID_IDENTIFIER);
 
         # get authenticatable stored password
         $p = $authenticatable->{static::$class::authPasswordField()};
-        if($p != $hashedPassword)
+        if ($p != $hashedPassword)
             return new AuthResult(AuthResult::INVALID_PASSWORD);
 
         # success
@@ -111,7 +112,7 @@ abstract class Auth {
      * @param string $place
      */
     protected static function save($authString, $place) {
-        switch($place) {
+        switch ($place) {
             case static::SAVE_COOKIE:
                 Cookie::set(manifest::AUTH_KEY, $authString);
                 break;
@@ -127,12 +128,12 @@ abstract class Auth {
     protected static function getSavedDecrypted() {
         # session
         $auth = static::decrypt($authString = Session::get(manifest::AUTH_KEY));
-        if($auth !== null)
+        if ($auth !== null)
             return [$auth, static::SAVE_SESSION, $authString];
 
         # cookie
         $auth = static::decrypt($authString = Cookie::get(manifest::AUTH_KEY));
-        if($auth !== null)
+        if ($auth !== null)
             return [$auth, static::SAVE_COOKIE, $authString];
 
         return null;
@@ -143,7 +144,7 @@ abstract class Auth {
      * @return Authenticatable
      */
     protected static function getAuthenticatable($identifier) {
-        if(static::$authenticated === null)
+        if (static::$authenticated === null)
             return static::$class::authGetByIdentifier($identifier);
         return static::$authenticated;
     }
@@ -173,12 +174,12 @@ abstract class Auth {
      * @return array|null
      */
     protected static function decrypt($authString) {
-        if($authString == null)
+        if ($authString == null)
             return null;
         $authString = base64_decode($authString);
         $authString = explode(':', $authString);
 
-        if(count($authString) != 2) return null;
+        if (count($authString) != 2) return null;
 
         return [
             base64_decode($authString[0]),
@@ -203,11 +204,11 @@ abstract class Auth {
      */
     public static function prove($fallbackUrl = null, $fallbackUrlKey = 'ref') {
         $fallbackUrl = URL::parse($fallbackUrl);
-        if(!is_null($fallbackUrlKey)) {
+        if (!is_null($fallbackUrlKey)) {
             $ref = $_SERVER['REQUEST_URI'];
             $fallbackUrl->addQuery($fallbackUrlKey, $ref);
         }
-        if(!static::is())
+        if (!static::is())
             Response::redirect($fallbackUrl);
     }
 

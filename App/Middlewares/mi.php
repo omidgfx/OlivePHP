@@ -3,7 +3,8 @@
 use Olive\Routing\Middleware;
 use Olive\Routing\Route;
 
-class mi extends Middleware {
+class mi extends Middleware
+{
 
     /**
      * @param Route $route

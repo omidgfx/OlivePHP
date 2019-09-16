@@ -5,7 +5,8 @@ use Olive\Exceptions\CSRFTokenInvalid;
 use Olive\Http\Session;
 use Olive\Util\Text;
 
-class CSRFToken {
+class CSRFToken
+{
 
     #region Fields
     /** @var string */
@@ -111,18 +112,18 @@ class CSRFToken {
     public static function check($token, $key = null, $timeout = null, $multiple = false) {
 
         $csrf = self::read($key);
-        if($csrf == null)
+        if ($csrf == null)
             throw new CSRFTokenInvalid;
 
 
-        if(!$multiple) $csrf->revoke();
+        if (!$multiple) $csrf->revoke();
 
         $ok = $csrf->token === $token;
 
-        if(!$ok)
+        if (!$ok)
             throw new CSRFTokenInvalid;
 
-        if($timeout > 0 && $csrf->time + $timeout < time())
+        if ($timeout > 0 && $csrf->time + $timeout < time())
             throw new CSRFTokenExpired;
 
         return $csrf;
@@ -137,22 +138,22 @@ class CSRFToken {
     public static function read($key = null) {
 
         $val = Session::get(static::fixKey($key));
-        if($val == null) return null;
+        if ($val == null) return null;
 
         $csrf      = new static;
         $csrf->key = $key;
 
         $val = explode('_', $val);
-        if(count($val) != 2) return null;
+        if (count($val) != 2) return null;
 
 
         $time = $val[0];
-        if(!is_numeric($time)) return null;
+        if (!is_numeric($time)) return null;
 
         $csrf->time = intval($time);
 
         $csrf->token = $val[1];
-        if(strlen($csrf->token) != 32) return null;
+        if (strlen($csrf->token) != 32) return null;
 
         return $csrf;
 
@@ -163,7 +164,7 @@ class CSRFToken {
     }
 
     private static function fixKey($key) {
-        if($key === null)
+        if ($key === null)
             $key = '';
         $key .= '__ocsrf_';
 

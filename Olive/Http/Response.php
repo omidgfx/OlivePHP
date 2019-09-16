@@ -1,6 +1,7 @@
 <?php namespace Olive\Http;
 
-abstract class Response {
+abstract class Response
+{
 
     //region Helers
 
@@ -19,7 +20,7 @@ abstract class Response {
      * @param null|int $response_code look at (<a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">List_of_HTTP_status_codes</a>) for more information.
      */
     public static function setHeader($name, $value, $replace = true, $response_code = null) {
-        if($value)
+        if ($value)
             $s = "$name: $value";
         else
             $s = $name;
@@ -44,11 +45,11 @@ abstract class Response {
      */
     public static function jsonDump($content, $alive = false, $preventCache = false) {
         $json = json_encode($content, JSON_UNESCAPED_UNICODE);
-        if(!$preventCache) {
+        if (!$preventCache) {
             header("Pragma: no-cache");
             header("Cache-Control: no-cache, must-revalidate");
         }
-        if($alive)
+        if ($alive)
             header("Keep-Alive: timeout=5, max=100");
         header("Content-Type: application/json");
         header("Content-Length: " . strlen($json));

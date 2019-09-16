@@ -2,7 +2,8 @@
 
 use Olive\Exceptions\MySQLiConditionException;
 
-class Condition {
+class Condition
+{
 
     #region Combiners
     const AND    = 'AND';
@@ -41,7 +42,7 @@ class Condition {
      * @throws MySQLiConditionException
      */
     public function __construct(...$args) {
-        if(self::$dbConnection === null)
+        if (self::$dbConnection === null)
             self::$dbConnection = MySQLiConnection::getInstance();
         $this->append($args, self:: AND);
         return $this;
@@ -93,10 +94,10 @@ class Condition {
     #region Protected methods
     protected function append($args, $combiner) {
         $argsCount = count($args);
-        if($argsCount == 0) return;
-        switch($argsCount) {
+        if ($argsCount == 0) return;
+        switch ($argsCount) {
             case 1: # array: condition, string: raw, Condition: complex
-                if(is_array($args[0]) || is_string($args[0]) || $args[0] instanceof self)
+                if (is_array($args[0]) || is_string($args[0]) || $args[0] instanceof self)
                     $this->conditions[] = [$combiner, static::parseArg($args[0])];
                 else
                     throw new MySQLiConditionException('Unknown format');
@@ -113,31 +114,31 @@ class Condition {
 
     protected static function parseArg($arg) {
 
-        if(is_array($arg)) {
+        if (is_array($arg)) {
             $raw = '';
-            foreach($arg as $n => $v) {
-                if(is_array($v)) {
+            foreach ($arg as $n => $v) {
+                if (is_array($v)) {
                     //advanced condition
                     $n = $v[0];
-                    if(strpos($n, '`') === false)
+                    if (strpos($n, '`') === false)
                         $n = "`$n`";
                     $operator = strtoupper($v[1]);
                     $value    = $v[2];
 
                     $secure_value = false;
-                    switch($operator) {
+                    switch ($operator) {
                         case self::like:
                         case self::notLike:
-                            if(!$value)
+                            if (!$value)
                                 continue;
-                            if(is_array($value)) {
+                            if (is_array($value)) {
                                 $value        = implode(" OR $n $operator ", self::val($value));
                                 $secure_value = true;
                             }
                             break;
                         case self::in:
                         case self::notIn:
-                            if(!is_array($value))
+                            if (!is_array($value))
                                 throw new MySQLiConditionException('The parameter passed to IN operator must be array.');
                             $value        = '(' . implode(',', self::val($value)) . ')';
                             $secure_value = true;
@@ -145,17 +146,17 @@ class Condition {
                         default:
                             break;
                     }
-                    if(!$secure_value)
+                    if (!$secure_value)
                         $value = self::val($value);
                     $raw .= ($raw == '' ? '' : ' AND ') . "$n $operator $value";
-                } elseif(is_int($n)) {
+                } elseif (is_int($n)) {
                     //direct string condition
                     $raw .= ($raw == '' ? '' : ' AND ') . $v;
                 } else {
                     //simple condition
-                    if(strpos($n, '`') === false)
+                    if (strpos($n, '`') === false)
                         $n = "`$n`";
-                    if($v === null)
+                    if ($v === null)
                         $c = "$n IS NULL";
                     else {
                         $v = self::$dbConnection->escape_string($v);
@@ -165,11 +166,11 @@ class Condition {
                 }
             }
             return $raw;
-        } elseif(is_string($arg))
+        } elseif (is_string($arg))
             return "$arg";
-        elseif($arg instanceof self) {
+        elseif ($arg instanceof self) {
             $arg = $arg->parse();
-            if($arg == '') return null;
+            if ($arg == '') return null;
             return "($arg)";
         }
         return null;
@@ -188,8 +189,8 @@ class Condition {
     public function parse() {
         $raw = '';
         $pos = 0;
-        foreach($this->conditions as $cond) {
-            if($pos != 0) # first condition's combiner should be ignored
+        foreach ($this->conditions as $cond) {
+            if ($pos != 0) # first condition's combiner should be ignored
                 $raw .= ") $cond[0] (";
             $raw .= $cond[1];
             $pos++;

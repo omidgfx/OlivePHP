@@ -1,6 +1,7 @@
 <?php namespace Olive\Support\MySQLi;
 
-interface RecordInterface {
+interface RecordInterface
+{
     /**
      * @return string
      */

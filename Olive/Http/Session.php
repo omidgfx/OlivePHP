@@ -2,14 +2,15 @@
 
 use Olive\manifest;
 
-abstract class Session {
+abstract class Session
+{
     /**
      * init sessions
      */
     public static function init() {
         self::start();
 
-        if(!self::exists('olive_sess_ip') || self::get('olive_sess_ip') != $_SERVER['REMOTE_ADDR'])
+        if (!self::exists('olive_sess_ip') || self::get('olive_sess_ip') != $_SERVER['REMOTE_ADDR'])
             self::create();
     }
 
@@ -40,8 +41,8 @@ abstract class Session {
     }
 
     /**
-     * @param      string $key
-     * @param      mixed $fallback
+     * @param string $key
+     * @param mixed $fallback
      * @return mixed|null $fallback
      */
     public static function get($key, $fallback = null) {
@@ -59,7 +60,7 @@ abstract class Session {
     /**
      * delete the session after getting
      *
-     * @param  string $key
+     * @param string $key
      * @param null $fallback
      * @return mixed|null
      */
@@ -78,5 +79,5 @@ abstract class Session {
     }
 }
 
-if(manifest::AUTO_INIT_SESSION)
+if (manifest::AUTO_INIT_SESSION)
     Session::init();

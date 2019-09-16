@@ -2,7 +2,8 @@
 
 use Olive\manifest;
 
-abstract class Crypt {
+abstract class Crypt
+{
     /**
      * @param $pw
      * @return string

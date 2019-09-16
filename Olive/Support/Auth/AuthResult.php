@@ -1,6 +1,7 @@
 <?php namespace Olive\Support\Auth;
 
-class AuthResult {
+class AuthResult
+{
     const INVALID_PASSWORD   = -1;
     const INVALID_IDENTIFIER = -2;
     const SUCCESS            = 1;

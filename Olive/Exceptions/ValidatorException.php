@@ -1,5 +1,6 @@
 <?php namespace Olive\Exceptions;
 
-class ValidatorException extends OliveException {
+class ValidatorException extends OliveException
+{
 
 }

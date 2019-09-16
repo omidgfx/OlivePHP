@@ -3,7 +3,8 @@
 use Olive\Core;
 use Olive\Exceptions\H404;
 
-abstract class Controller extends Core {
+abstract class Controller extends Core
+{
 
     //region Fields
 
@@ -70,9 +71,9 @@ abstract class Controller extends Core {
 
         $vars = $this->require("App/Views/$view_name.php", $params);
 
-        if(!isset($vars['layout']))
+        if (!isset($vars['layout']))
             $vars['layout'] = $layout;
-        elseif(!$layout)
+        elseif (!$layout)
             $layout = $vars['layout'];
 
         $viewContent = ob_get_clean();
@@ -87,7 +88,7 @@ abstract class Controller extends Core {
      * @throws H404
      */
     public function require($path, $variables = []) {
-        if(!file_exists($path))
+        if (!file_exists($path))
             throw new H404(DEBUG_MODE ? $path : 'Resource not found.');
         extract($variables);
         /** @noinspection PhpIncludeInspection */
@@ -101,14 +102,14 @@ abstract class Controller extends Core {
      * @throws H404
      */
     private function renderLayout($layout, $vars = []) {
-        if($layout == null) {
+        if ($layout == null) {
             echo $vars['content'];
             return;
         }
         ob_start();
         $res            = self::require("App/Layouts/$layout.php", $vars);
         $layout_content = ob_get_clean();
-        if(isset($res['parent_layout'])) {
+        if (isset($res['parent_layout'])) {
             $this->renderLayout($res['parent_layout'], array_merge($vars, ['content' => $layout_content]));
         } else echo $layout_content;
     }

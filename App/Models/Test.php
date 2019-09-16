@@ -3,7 +3,8 @@
 use Olive\Support\Auth\Authenticatable;
 use Olive\Support\MySQLi\Model;
 
-class Test extends Model implements Authenticatable {
+class Test extends Model implements Authenticatable
+{
 
     /**
      * @return string

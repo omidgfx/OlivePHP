@@ -1,5 +1,6 @@
 <?php namespace Olive\Exceptions;
 
-class MySQLiConditionException extends MySQLiException {
+class MySQLiConditionException extends MySQLiException
+{
 
 }

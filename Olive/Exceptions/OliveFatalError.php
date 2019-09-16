@@ -1,5 +1,6 @@
 <?php namespace Olive\Exceptions;
 
-class OliveFatalError extends OliveError {
+class OliveFatalError extends OliveError
+{
 
 }

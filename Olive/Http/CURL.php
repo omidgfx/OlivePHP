@@ -1,6 +1,7 @@
 <?php namespace Olive\Http;
 
-class CURL {
+class CURL
+{
 
     /** @var resource */
     private $resource;
@@ -15,12 +16,12 @@ class CURL {
     public function __construct($url, $options = []) {
 
         # appliciate url
-        if($url instanceof URL)
+        if ($url instanceof URL)
             $url = (string)$url;
 
         # init
         $this->resource = curl_init($url);
-        foreach($options as $key => $value)
+        foreach ($options as $key => $value)
             $this->setOption($key, $value);
 
         # set return transfer
@@ -111,11 +112,11 @@ class CURL {
      */
     public function exec($close = true) {
 
-        if($this->headers)
+        if ($this->headers)
             $this->setOption(CURLOPT_HTTPHEADER, $this->headers);
 
         $this->result = curl_exec($this->resource);
-        if($close) curl_close($this->resource);
+        if ($close) curl_close($this->resource);
         return $this;
     }
 

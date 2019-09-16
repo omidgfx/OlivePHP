@@ -5,6 +5,7 @@
  * Class H501 Not Implemented
  * @package Olive
  */
-class H501 extends HttpException {
+class H501 extends HttpException
+{
     protected $http_response_code = 501;
 }

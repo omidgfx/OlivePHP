@@ -1,5 +1,6 @@
 <?php namespace Olive\Exceptions;
 
-class CSRFTokenInvalid extends H403 {
+class CSRFTokenInvalid extends H403
+{
 
 }

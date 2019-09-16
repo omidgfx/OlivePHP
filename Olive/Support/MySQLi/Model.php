@@ -10,7 +10,8 @@ use Olive\Util\Text;
  * Class Model
  * @package Olive\MySQLi
  */
-abstract class Model extends Record {
+abstract class Model extends Record
+{
 
     #region Helpers
 
@@ -25,7 +26,7 @@ abstract class Model extends Record {
     public static function uniqueRandomPattern($pattern, $column) {
         do {
             $random = Text::randomByPattern($pattern);
-        } while(static::exists([$column => $random]));
+        } while (static::exists([$column => $random]));
 
         return $random;
     }
@@ -52,7 +53,7 @@ abstract class Model extends Record {
      * @throws MySQLiException
      */
     public function save($syncOriginal = true) {
-        if($this->id === null)
+        if ($this->id === null)
             return $this->insert($syncOriginal);
         return $this->update($syncOriginal);
     }
@@ -77,7 +78,7 @@ abstract class Model extends Record {
         $this->id = $db->insert_id;
 
         # normalize record
-        if($syncOriginal)
+        if ($syncOriginal)
             $this->syncOriginal();
 
         # make chain
@@ -94,7 +95,7 @@ abstract class Model extends Record {
     protected function update($syncOriginal = true) {
         # changes
         $changes = $this->getChanges();
-        if($changes == []) // nothing to save
+        if ($changes == []) // nothing to save
             return $this;
         # db
         $db = DB::getInstance();
@@ -103,7 +104,7 @@ abstract class Model extends Record {
         $db->update(static::table(), $changes, Condition::where('id', $this->id));
 
         # normalize record
-        if($syncOriginal)
+        if ($syncOriginal)
             $this->syncOriginal();
 
         # make chain

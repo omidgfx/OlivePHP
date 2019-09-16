@@ -2,7 +2,8 @@
 
 use Olive\manifest;
 
-abstract class Cookie {
+abstract class Cookie
+{
 
     /**
      * @param string $key
@@ -44,9 +45,9 @@ abstract class Cookie {
      */
     public static function clear() {
         try {
-            if(isset($_SERVER['HTTP_COOKIE'])) {
+            if (isset($_SERVER['HTTP_COOKIE'])) {
                 $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
-                foreach($cookies as $cookie) {
+                foreach ($cookies as $cookie) {
                     $parts = explode('=', $cookie);
                     $name  = trim($parts[0]);
                     setcookie($name, '', time() - 1000);
@@ -54,7 +55,7 @@ abstract class Cookie {
                 }
             }
             return true;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

@@ -3,18 +3,19 @@
 use Olive\Exceptions\OliveError;
 use Olive\Exceptions\OliveFatalError;
 
-abstract class Core {
+abstract class Core
+{
 
     //region Includers and boot handlers
 
     /**
      * @param string[] $modules
-     * @uses Core::requireModule()
-     * @see  Core::requireModule()
      * @throws OliveFatalError
+     * @see  Core::requireModule()
+     * @uses Core::requireModule()
      */
     public static function requireModules(array $modules) {
-        foreach($modules as $module)
+        foreach ($modules as $module)
             self::requireModule($module);
     }
 
@@ -39,13 +40,13 @@ abstract class Core {
      */
     public static function requireModule($module) {
 
-        if(file_exists($path = "App/Modules/$module.php")) {
+        if (file_exists($path = "App/Modules/$module.php")) {
             /** @noinspection PhpIncludeInspection */
             require_once $path;
             return;
         }
-        if(is_dir("App/Modules/$module")) {
-            if(file_exists($path = "App/Modules/$module/loader.php")) {
+        if (is_dir("App/Modules/$module")) {
+            if (file_exists($path = "App/Modules/$module/loader.php")) {
                 /** @noinspection PhpIncludeInspection */
                 require_once $path;
                 return;
@@ -68,33 +69,33 @@ abstract class Core {
      */
     public static function boot($path) {
 
-        if(is_null($path)) return;
+        if (is_null($path)) return;
 
         # read files and folders
         $list = glob("$path/*");
-        if(count($list) == 0)
+        if (count($list) == 0)
             return;
         $dirs = $files = [];
 
-        foreach($list as $item) {
-            if(is_dir($item))
+        foreach ($list as $item) {
+            if (is_dir($item))
                 $dirs[] = $item;
-            elseif(strtolower(substr($item, -4)) == '.php')
+            elseif (strtolower(substr($item, -4)) == '.php')
                 $files[] = $item;
         }
         unset($list);
 
         # sort
-        $sorter = function($a, $b) { return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b)); };
+        $sorter = function ($a, $b) { return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b)); };
         usort($dirs, $sorter);
         usort($files, $sorter);
 
         # recursive call boot for folders
-        foreach($dirs as $dir)
+        foreach ($dirs as $dir)
             self::boot($dir);
 
         # require files
-        foreach($files as $item)
+        foreach ($files as $item)
             /** @noinspection PhpIncludeInspection */
             require_once $item;
     }
@@ -122,14 +123,14 @@ abstract class Core {
     }
 
     public final static function shutdownHandler() {
-        if(($error = error_get_last()) !== null) {
+        if (($error = error_get_last()) !== null) {
             $exception          = new OliveFatalError;
             $exception->code    = $error["type"];
             $exception->message = $error["message"];
             $exception->file    = $error["file"];
             $exception->line    = $error["line"];
 
-            if(DEBUG_MODE) {
+            if (DEBUG_MODE) {
                 echo "<div style='background:#fafafa;color:#777;margin: 10px;border: 1px solid #ddd;padding: 10px;border-radius: 8px'><h1><span style='color:red'>Fatal error captured:</span></h1>",
                 "<pre>";
                 print_r($error);
@@ -150,10 +151,10 @@ abstract class Core {
     public static function startApp($path = 'App') {
         # read files and folders
         $list = glob("$path/*.boot");
-        if(count($list) == 0)
+        if (count($list) == 0)
             return;
         # boot
-        foreach($list as $item) if(is_dir($item))
+        foreach ($list as $item) if (is_dir($item))
             self::boot($item);
 
     }

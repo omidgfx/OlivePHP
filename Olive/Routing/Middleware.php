@@ -2,7 +2,8 @@
 
 use Olive\Core;
 
-abstract class Middleware extends Core {
+abstract class Middleware extends Core
+{
     /**
      * @param Route $route
      * @param array $args

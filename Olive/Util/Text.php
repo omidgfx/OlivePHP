@@ -1,6 +1,7 @@
 <?php namespace Olive\Util;
 
-abstract class Text {
+abstract class Text
+{
     /**
      * Limit given text to numbers of line
      *
@@ -27,9 +28,9 @@ abstract class Text {
      */
     public static function startsWith($search, $text, $ignoreCase = false) {
 
-        if(is_array($search)) {
-            foreach($search as $d)
-                if(self::startsWith($d, $text, $ignoreCase)) return true;
+        if (is_array($search)) {
+            foreach ($search as $d)
+                if (self::startsWith($d, $text, $ignoreCase)) return true;
 
             return false;
         }
@@ -49,9 +50,9 @@ abstract class Text {
      * @return bool
      */
     public static function endsWith($search, $text, $ignoreCase = false) {
-        if(is_array($search)) {
-            foreach($search as $d)
-                if(self::endsWith($d, $text, $ignoreCase)) return true;
+        if (is_array($search)) {
+            foreach ($search as $d)
+                if (self::endsWith($d, $text, $ignoreCase)) return true;
 
             return false;
         }
@@ -64,7 +65,7 @@ abstract class Text {
     }
 
     public static function limit($text, $count = 20) {
-        if(mb_strlen($text) > $count)
+        if (mb_strlen($text) > $count)
             $text = mb_substr($text, 0, $count) . '...';
         return $text;
     }
@@ -82,7 +83,7 @@ abstract class Text {
      * @return string
      */
     public static function randomByPattern($pattern) {
-        return preg_replace_callback("(\d+)", function($match) {
+        return preg_replace_callback("(\d+)", function ($match) {
             return self::_random($match[0], 'abcdefghijklmnopqrstuvwxyz1234567890');
         }, $pattern);
     }
@@ -93,19 +94,19 @@ abstract class Text {
      * @return bool
      */
     public static function validateByPattern($pattern, $text) {
-        if(!is_array($pattern))
+        if (!is_array($pattern))
             $pattern = [$pattern];
-        foreach($pattern as $p) {
+        foreach ($pattern as $p) {
 
             # validation
-            $rule = preg_replace_callback('(\d+)', function($match) {
+            $rule = preg_replace_callback('(\d+)', function ($match) {
                 return '\w{' . $match[0] . '}';
             }, '/^' . $p . '$/');
 
             #check
 
             preg_match($rule, $text, $matches);
-            if($matches != [])
+            if ($matches != [])
                 return true;
         }
         return false;
@@ -119,7 +120,7 @@ abstract class Text {
     private static function _random($length, $chars) {
         $max = strlen($chars) - 1;
         $out = '';
-        for($i = 0; $i < $length; $i++)
+        for ($i = 0; $i < $length; $i++)
             $out .= $chars[mt_rand(0, $max)];
 
         return $out;
@@ -128,8 +129,8 @@ abstract class Text {
     /**
      * ucfirst
      *
-     * @param   string $str required
-     * @param   string $encoding default UTF-8
+     * @param string $str required
+     * @param string $encoding default UTF-8
      * @return  string
      */
     public static function ucfirst($str, $encoding = 'UTF-8') {
@@ -143,8 +144,8 @@ abstract class Text {
      *
      * Does not strtoupper first
      *
-     * @param   string $str required
-     * @param   string $encoding default UTF-8
+     * @param string $str required
+     * @param string $encoding default UTF-8
      * @return  string
      */
     public static function lcfirst($str, $encoding = 'UTF-8') {

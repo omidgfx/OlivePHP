@@ -1,6 +1,7 @@
 <?php namespace Olive\Util;
 
-abstract class Digit {
+abstract class Digit
+{
     public static function surroundDigitsBy($string, $before = '**', $after = '**') {
         return preg_replace("~([0-9]+)~", "$before$1$after", $string);
     }
@@ -22,7 +23,7 @@ abstract class Digit {
     public static function prettify($number, $delimiter = ',', $decimal = 2) {
         $n = number_format($number, $decimal, '.', $delimiter);
         $l = strlen($n);
-        if(substr($n, $l - 3) == '.00')
+        if (substr($n, $l - 3) == '.00')
             $n = substr($n, 0, $l - 3);
 
         return $n;
@@ -37,7 +38,7 @@ abstract class Digit {
     public static function en2fa($string, $prettify = false) {
         $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         $num     = range(0, 9);
-        if($prettify)
+        if ($prettify)
             $string = self::prettify($string);
 
         return str_replace($num, $persian, $string);
@@ -52,7 +53,7 @@ abstract class Digit {
     public static function fa2en($string, $prettify = false) {
         $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         $num     = range(0, 9);
-        if($prettify)
+        if ($prettify)
             $string = self::prettify($string);
 
         return str_replace($persian, $num, $string);
@@ -64,7 +65,7 @@ abstract class Digit {
      * @return string
      */
     public static function sign($n) {
-        if($n > 0)
+        if ($n > 0)
             return "+$n";
 
         return $n;
@@ -79,7 +80,7 @@ abstract class Digit {
      * @return string
      */
     public static function thousands($n, $parts = ['k', 'm', 'b', 't']) {
-        if($n > 1000) {
+        if ($n > 1000) {
             $x               = round($n);
             $x_number_format = number_format($x);
             $x_array         = explode(',', $x_number_format);
@@ -104,7 +105,7 @@ abstract class Digit {
         $power = $size > 0 ? floor(log($size, 1024)) : 0;
         $f     = number_format($size / pow(1024, $power), 2, '.', ',');
         $l     = strlen($f);
-        if(substr($f, $l - 3) == '.00')
+        if (substr($f, $l - 3) == '.00')
             $f = substr($f, 0, $l - 3);
 
         return "$f$sep$units[$power]";

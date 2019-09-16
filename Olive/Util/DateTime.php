@@ -13,7 +13,8 @@ use IntlDateFormatter;
  * @copyright   Copyright 2010, Ali Farhadi (http://farhadi.ir/)
  * @license     GNU General Public License 3.0 (http://www.gnu.org/licenses/gpl.html)
  */
-class DateTime extends \DateTime {
+class DateTime extends \DateTime
+{
 
     /**
      * @var string The current locale in use
@@ -34,12 +35,12 @@ class DateTime extends \DateTime {
      * @param string $pattern the date pattern in which $time is formatted.
      */
     public function __construct($time = null, $timezone = null, $calendar = 'gregorian', $locale = 'en_US', $pattern = null) {
-        if(!isset($timezone)) $timezone = new \DateTimeZone(date_default_timezone_get());
-        elseif(!is_a($timezone, 'DateTimeZone')) $timezone = new \DateTimeZone($timezone);
+        if (!isset($timezone)) $timezone = new \DateTimeZone(date_default_timezone_get());
+        elseif (!is_a($timezone, 'DateTimeZone')) $timezone = new \DateTimeZone($timezone);
         parent::__construct(null, $timezone);
         $this->setLocale($locale);
         $this->setCalendar($calendar);
-        if(isset($time)) $this->set($time, null, $pattern);
+        if (isset($time)) $this->set($time, null, $pattern);
     }
 
     /**
@@ -52,7 +53,7 @@ class DateTime extends \DateTime {
         $locale   = empty($options['locale']) ? $this->locale : $options['locale'];
         $calendar = empty($options['calendar']) ? $this->calendar : $options['calendar'];
         $timezone = empty($options['timezone']) ? $this->getTimezone() : $options['timezone'];
-        if(is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
+        if (is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
         $pattern = empty($options['pattern']) ? null : $options['pattern'];
         return new \IntlDateFormatter($locale . '@calendar=' . $calendar,
             \IntlDateFormatter::FULL, \IntlDateFormatter::FULL, $timezone,
@@ -69,7 +70,7 @@ class DateTime extends \DateTime {
         $result = '';
         $num    = new \NumberFormatter($this->locale, \NumberFormatter::DECIMAL);
         preg_match_all('/.[\x80-\xBF]*/', $str, $matches);
-        foreach($matches[0] as $char) {
+        foreach ($matches[0] as $char) {
             $pos        = 0;
             $parsedChar = $num->parse($char, \NumberFormatter::TYPE_INT32, $pos);
             $result     .= $pos ? $parsedChar : $char;
@@ -98,8 +99,8 @@ class DateTime extends \DateTime {
         $shortDateRegex = '(\d{2,4})(-|\\\\|/)\d{1,2}\2\d{1,2}';
         $longDateRegex  = '([^\d]*\s)?\d{1,2}(-| )[^-\s\d]+\4(\d{2,4})';
         $timeRegex      = '\d{1,2}:\d{1,2}(:\d{1,2})?(\s.*)?';
-        if(preg_match("@^(?:(?:$shortDateRegex)|(?:$longDateRegex))(\s+$timeRegex)?$@", $time, $match)) {
-            if(!empty($match[1])) {
+        if (preg_match("@^(?:(?:$shortDateRegex)|(?:$longDateRegex))(\s+$timeRegex)?$@", $time, $match)) {
+            if (!empty($match[1])) {
                 $separator = $match[2];
                 $pattern   = strlen($match[1]) == 2 ? 'yy' : 'yyyy';
                 $pattern   .= $separator . 'MM' . $separator . 'dd';
@@ -107,12 +108,12 @@ class DateTime extends \DateTime {
                 $separator = $match[4];
                 $pattern   = 'dd' . $separator . 'LLL' . $separator;
                 $pattern   .= strlen($match[5]) == 2 ? 'yy' : 'yyyy';
-                if(!empty($match[3])) $pattern = (preg_match('/,\s+$/', $match[3]) ? 'E, ' : 'E ') . $pattern;
+                if (!empty($match[3])) $pattern = (preg_match('/,\s+$/', $match[3]) ? 'E, ' : 'E ') . $pattern;
             }
-            if(!empty($match[6])) {
+            if (!empty($match[6])) {
                 $pattern .= !empty($match[8]) ? ' hh:mm' : ' HH:mm';
-                if(!empty($match[7])) $pattern .= ':ss';
-                if(!empty($match[8])) $pattern .= ' a';
+                if (!empty($match[7])) $pattern .= ':ss';
+                if (!empty($match[8])) $pattern .= ' a';
             }
             return $pattern;
         }
@@ -194,30 +195,30 @@ class DateTime extends \DateTime {
      * @return DateTime The modified DateTime.
      */
     public function set($time, $timezone = null, $pattern = null) {
-        if(is_a($time, 'DateTime')) {
+        if (is_a($time, 'DateTime')) {
             $time = $time->format('U');
-        } elseif(!is_numeric($time) || $pattern) {
-            if(!$pattern) {
+        } elseif (!is_numeric($time) || $pattern) {
+            if (!$pattern) {
                 $pattern = $this->guessPattern($time);
             }
-            if(!$pattern && preg_match('/((?:[+-]?\d+)|next|last|previous)\s*(year|month)s?/i', $time)) {
+            if (!$pattern && preg_match('/((?:[+-]?\d+)|next|last|previous)\s*(year|month)s?/i', $time)) {
                 $tempTimezone = null;
-                if(isset($timezone)) {
+                if (isset($timezone)) {
                     $tempTimezone = $this->getTimezone();
                     $this->setTimezone($timezone);
                 }
                 $this->setTimestamp(time());
                 $this->modify($time);
-                if(isset($timezone)) {
+                if (isset($timezone)) {
                     $this->setTimezone($tempTimezone);
                 }
                 return $this;
             }
             $timezone = empty($timezone) ? $this->getTimezone() : $timezone;
-            if(is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
+            if (is_a($timezone, 'DateTimeZone')) $timezone = $timezone->getName();
             $defaultTimezone = @date_default_timezone_get();
             date_default_timezone_set($timezone);
-            if($pattern) {
+            if ($pattern) {
                 $time = $this->getFormatter(['timezone' => 'GMT', 'pattern' => $pattern])->parse($time);
                 $time -= date('Z', $time);
             } else {
@@ -249,7 +250,7 @@ class DateTime extends \DateTime {
      * @return DateTime The modified DateTime.
      */
     public function setTimezone($timezone) {
-        if(!is_a($timezone, 'DateTimeZone')) $timezone = new \DateTimeZone($timezone);
+        if (!is_a($timezone, 'DateTimeZone')) $timezone = new \DateTimeZone($timezone);
         parent::setTimezone($timezone);
         return $this;
     }
@@ -261,13 +262,13 @@ class DateTime extends \DateTime {
      * @return string An empty string
      */
     protected function modifyCallback($matches) {
-        if(!empty($matches[1])) {
+        if (!empty($matches[1])) {
             parent::modify($matches[1]);
         }
         list($y, $m, $d) = explode('-', $this->format('y-M-d'));
         $change = strtolower($matches[2]);
         $unit   = strtolower($matches[3]);
-        switch($change) {
+        switch ($change) {
             case "next":
                 $change = 1;
                 break;
@@ -276,13 +277,13 @@ class DateTime extends \DateTime {
                 $change = -1;
                 break;
         }
-        switch($unit) {
+        switch ($unit) {
             case "month":
                 $m += $change;
-                if($m > 12) {
+                if ($m > 12) {
                     $y += floor($m / 12);
                     $m = $m % 12;
-                } elseif($m < 1) {
+                } elseif ($m < 1) {
                     $y += ceil($m / 12) - 1;
                     $m = $m % 12 + 12;
                 }
@@ -304,7 +305,7 @@ class DateTime extends \DateTime {
     public function modify($modify) {
         $modify = $this->latinizeDigits(trim($modify));
         $modify = preg_replace_callback('/(.*?)((?:[+-]?\d+)|next|last|previous)\s*(year|month)s?/i', [$this, 'modifyCallback'], $modify);
-        if($modify) parent::modify($modify);
+        if ($modify) parent::modify($modify);
         return $this;
     }
 
@@ -318,7 +319,7 @@ class DateTime extends \DateTime {
      */
     public function format($pattern, $timezone = null) {
         $tempTimezone = null;
-        if($timezone != null) {
+        if ($timezone != null) {
             $tempTimezone = $this->getTimezone();
             $this->setTimezone($timezone);
         }
@@ -328,7 +329,7 @@ class DateTime extends \DateTime {
             'timezone' => 'GMT' . (parent::format('Z') ? parent::format('P') : ''),
             'pattern'  => $pattern,
         ])->format($this->getTimestamp());
-        if($timezone != null) {
+        if ($timezone != null) {
             $this->setTimezone($tempTimezone);
         }
         return $result;
@@ -342,7 +343,7 @@ class DateTime extends \DateTime {
      * @return string Formatted date on success or FALSE on failure.
      */
     public function legacyFormat($format, $timezone = null) {
-        if($timezone != null) {
+        if ($timezone != null) {
             $tempTimezone = $this->getTimezone();
             $this->setTimezone($timezone);
             $result = parent::format($format);

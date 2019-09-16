@@ -2,7 +2,8 @@
 
 use Olive\Exceptions\URLException;
 
-class URL {
+class URL
+{
 
     #region Parts
     private $scheme;
@@ -23,28 +24,28 @@ class URL {
 
     public function __construct($url = null) {
 
-        if($url == null)
+        if ($url == null)
             return;
 
         # parse
         $u = parse_url($url);
 
-        if($u === false)
+        if ($u === false)
             throw new URLException('Invalid url');
 
         # fill this
-        foreach($u as $k => $v)
+        foreach ($u as $k => $v)
             $this->{$k} = strval($v);
 
         # parse query
-        if($this->query) {
+        if ($this->query) {
             parse_str($this->query, $q);
             $this->query = $q;
         }
     }
 
     public function addQuery($name, $val) {
-        if(!$this->query)
+        if (!$this->query)
             $this->query = [];
         $this->query[$name] = $val;
         return $this;
@@ -76,11 +77,11 @@ class URL {
     public static function parse($array) {
         $url  = $array;
         $full = false;
-        if(is_array($array) and $array) {
-            if(count($array) != 1)
+        if (is_array($array) and $array) {
+            if (count($array) != 1)
                 $full = !!$array[1];
             $url = $array[0];
-        } elseif($array instanceof self)
+        } elseif ($array instanceof self)
             return $array;
 
         $u = self::make($url, true, $full);
@@ -251,7 +252,7 @@ class URL {
     }
 
     public function append($path) {
-        if(empty($this->path))
+        if (empty($this->path))
             $this->path = $path;
         else
             $this->path .= '/' . ltrim($path, '/');
@@ -264,22 +265,22 @@ class URL {
     public function __toString() {
 
         $url = '';
-        if(!is_null($this->scheme)) {
+        if (!is_null($this->scheme)) {
             $this->relative = false;
             $url            .= $this->scheme . '://';
         }
 
-        if($hostIsNotNull = !is_null($this->host)) {
+        if ($hostIsNotNull = !is_null($this->host)) {
 
 
-            if($userIsNotNull = !is_null($this->user))
+            if ($userIsNotNull = !is_null($this->user))
                 $url .= $this->user;
 
-            if($passIsNotNull = !is_null($this->pass))
+            if ($passIsNotNull = !is_null($this->pass))
                 $url .= ":$this->pass";
 
 
-            if($userIsNotNull || $passIsNotNull)
+            if ($userIsNotNull || $passIsNotNull)
                 $url .= '@';
 
 
@@ -289,21 +290,21 @@ class URL {
         }
 
         $port = $this->getPort();
-        if($port > 0)
+        if ($port > 0)
             $url .= ':' . $port;
 
 
-        if(!is_null($this->path)) {
+        if (!is_null($this->path)) {
 //            if($url != '') $url .= '/';
 
-            if($this->path[0] == '\\') {
+            if ($this->path[0] == '\\') {
                 $this->relative = false;
                 $url            .= substr($this->path, 1);
             } else
                 $url .= '/' . ltrim($this->path, '/');
         }
 
-        if($this->query != [])
+        if ($this->query != [])
             $url .= '?' . http_build_query($this->query);
 
         return $this->relative ? src($url, $this->full) : $url;

@@ -213,15 +213,15 @@
     <ol type="1">
         <?php
         /** @var Exception $e */
-        $___er = function($e) use (&$___er) {
-            if($e == null) return;
+        $___er = function ($e) use (&$___er) {
+            if ($e == null) return;
 
             ?>
             <li>
                 <div class="olive-err-traceheading">
                     <?= ($msg = $e->getMessage()); ?>
                     <h2><?= (DEBUG_MODE ? get_class($e) . ' ' : null) . $e->getCode() ?></h2>
-                    <?php if($msg): ?>
+                    <?php if ($msg): ?>
                         <a class="g" href="https://www.google.com/search?q=<?= urlencode($msg) ?>" target="_blank"></a>
                         <a class="s" href="https://stackoverflow.com/search?q=<?= urlencode($msg) ?>" target="_blank"></a>
                     <?php endif; ?>
@@ -232,11 +232,11 @@
                     <?php
                     $trace = $e->getTrace(); ?>
                     <ol reversed>
-                        <?php foreach($trace as $t):
-                            if(!isset($t['file'])) $t['file'] = 'Unkown file';
-                            if(!isset($t['line'])) $t['line'] = '-1';
-                            if(!isset($t['class'])) $t['class'] = '';
-                            if(!isset($t['type'])) $t['type'] = '';
+                        <?php foreach ($trace as $t):
+                            if (!isset($t['file'])) $t['file'] = 'Unkown file';
+                            if (!isset($t['line'])) $t['line'] = '-1';
+                            if (!isset($t['class'])) $t['class'] = '';
+                            if (!isset($t['type'])) $t['type'] = '';
                             ?>
                             <li>
                                 <code><?= $t['class'] . $t['type'] . $t['function'] ?>()</code>

@@ -10,7 +10,7 @@
  * @return string
  */
 function src($source = '', $full = false) {
-    if($full)
+    if ($full)
         return Olive\Http\Linker::srcFull($source);
     return Olive\Http\Linker::src($source);
 }
@@ -50,7 +50,7 @@ function tag($name, $attrs_or_content = null, $content = null, $tagtype = \Olive
     return \Olive\Support\Html\Html::tag($name, $attrs_or_content, $content, $tagtype);
 }
 
-if(!function_exists("mb_basename")) {
+if (!function_exists("mb_basename")) {
     /**
      * Returns filename component of path
      * @link http://php.net/manual/en/function.basename.php
@@ -95,6 +95,6 @@ function isSubdirOf($baseDir, $path) {
     return \Olive\Util\Text::startsWith($baseReal, $pathReal);
 }
 
-function redirect($target_url){
+function redirect($target_url) {
     \Olive\Http\Response::redirect($target_url);
 }

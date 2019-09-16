@@ -1,6 +1,7 @@
 <?php namespace Olive\Routing;
 
-class RouteBypass {
+class RouteBypass
+{
     public $pattern;
     public $target;
 
@@ -54,10 +55,10 @@ class RouteBypass {
         $pattern = str_replace('\+', '([^\/]*)', $pattern);
         $pattern = '/^' . str_replace('\*', '(.*)', $pattern) . '$/';
         $m       = [];
-        if(preg_match($pattern, $route, $m)) {
+        if (preg_match($pattern, $route, $m)) {
             //Matches
             $route = $this->target;
-            for($i = 1; $i < count($m); $i++)
+            for ($i = 1; $i < count($m); $i++)
                 $route = str_replace("($$i)", $m[$i], $route);
 
             return $route;

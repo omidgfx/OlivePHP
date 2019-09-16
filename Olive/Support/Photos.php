@@ -2,12 +2,13 @@
 
 use Olive\Exceptions\PhotoException;
 
-abstract class Photos {
+abstract class Photos
+{
 
     public static function resize($file, $w, $new) {
         $info = getimagesize($file);
         $mime = $info['mime'];
-        switch($mime) {
+        switch ($mime) {
             case 'image/jpg':
                 $image_create_func = 'imagecreatefromjpeg';
                 $image_save_func   = 'imagejpeg';
@@ -36,7 +37,7 @@ abstract class Photos {
         $tmp       = imagecreatetruecolor($w, $newHeight);
         imagecopyresampled($tmp, $img, 0, 0, 0, 0, $w, $newHeight, $width, $height);
 
-        if(file_exists($new))
+        if (file_exists($new))
             unlink($new);
 
         $image_save_func($tmp, "$new", 100);
@@ -57,7 +58,7 @@ abstract class Photos {
         $min    = min($width, $height);
         $x      = ($width > $height) ? ($width - $height) / 2 : 0;
         $y      = ($width < $height) ? ($height - $width) / 2 : 0;
-        switch($type) {
+        switch ($type) {
             case 'image/gif':
                 $src = imagecreatefromgif($file);
                 break;
@@ -74,7 +75,7 @@ abstract class Photos {
         //var_dump($src);
         $dest = imagecreatetruecolor($min, $min);
         imagecopy($dest, $src, 0, 0, $x, $y, $width, $height);
-        switch($type) {
+        switch ($type) {
             case 'image/gif':
                 imagegif($dest, $new);
                 break;

@@ -4,7 +4,8 @@ use Olive\Exceptions\CSRFTokenInvalid;
 use Olive\Security\CSRFToken;
 use Olive\Util\DateTime;
 
-abstract class Form extends Html {
+abstract class Form extends Html
+{
 
     #region Consts: EncTypes
     const ENCTYPE_MULTIPART = 'multipart/form-data';
@@ -51,7 +52,7 @@ abstract class Form extends Html {
             'accept-charset' => 'UTF-8',
         ], $attribs);
 
-        if($action)
+        if ($action)
             $attribs['action'] = self::parseURL($action);
 
         $tagStr = static::tag('form', $attribs);
@@ -77,11 +78,11 @@ abstract class Form extends Html {
     }
 
     public static function token(CSRFToken $csrf) {
-        if($csrf == null)
+        if ($csrf == null)
             throw new CSRFTokenInvalid('Missing CSRFToken object');
 
         $out = '';
-        if($key = $csrf->getKey())
+        if ($key = $csrf->getKey())
             $out .= static::hidden('_csrf_key', $key);
         return $out . static::hidden('_csrf_token', $csrf->getToken());
     }
@@ -111,60 +112,60 @@ abstract class Form extends Html {
     }
 
     public static function date($name, $value = null, $attribs = []) {
-        if(is_object($value)) {
-            if($value instanceof DateTime)
+        if (is_object($value)) {
+            if ($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-m-d');
-            elseif($value instanceof \DateTime)
+            elseif ($value instanceof \DateTime)
                 $value = $value->format('Y-m-d');
         }
         return static::input($name, $value, static::T_DATE, $attribs);
     }
 
     public static function datetime($name, $value = null, $attribs = []) {
-        if(is_object($value)) {
-            if($value instanceof DateTime)
+        if (is_object($value)) {
+            if ($value instanceof DateTime)
                 $value = $value->legacyFormat(DateTime::RFC3339);
-            elseif($value instanceof \DateTime)
+            elseif ($value instanceof \DateTime)
                 $value = $value->format(\DateTime::RFC3339);
         }
         return static::input($name, $value, static::T_DATETIME, $attribs);
     }
 
     public static function datetimeLocal($name, $value = null, $attribs = []) {
-        if(is_object($value)) {
-            if($value instanceof DateTime)
+        if (is_object($value)) {
+            if ($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-m-d\TH:i');
-            elseif($value instanceof \DateTime)
+            elseif ($value instanceof \DateTime)
                 $value = $value->format('Y-m-d\TH:i');
         }
         return static::input($name, $value, static::T_DATETIME_LOCAL, $attribs);
     }
 
     public static function time($name, $value = null, $attribs = []) {
-        if(is_object($value)) {
-            if($value instanceof DateTime)
+        if (is_object($value)) {
+            if ($value instanceof DateTime)
                 $value = $value->legacyFormat('H:i');
-            elseif($value instanceof \DateTime)
+            elseif ($value instanceof \DateTime)
                 $value = $value->format('H:i');
         }
         return static::input($name, $value, static::T_TIME, $attribs);
     }
 
     public static function week($name, $value = null, $attribs = []) {
-        if(is_object($value)) {
-            if($value instanceof DateTime)
+        if (is_object($value)) {
+            if ($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-\WW');
-            elseif($value instanceof \DateTime)
+            elseif ($value instanceof \DateTime)
                 $value = $value->format('Y-\WW');
         }
         return static::input($name, $value, static::T_WEEK, $attribs);
     }
 
     public static function month($name, $value = null, $attribs = []) {
-        if(is_object($value)) {
-            if($value instanceof DateTime)
+        if (is_object($value)) {
+            if ($value instanceof DateTime)
                 $value = $value->legacyFormat('Y-m');
-            elseif($value instanceof \DateTime)
+            elseif ($value instanceof \DateTime)
                 $value = $value->format('Y-m');
         }
         return static::input($name, $value, static::T_MONTH, $attribs);
@@ -193,7 +194,7 @@ abstract class Form extends Html {
                                   array $optionsAttribs = [],
                                   array $optgroupsAttribs = []) {
         $html = '';
-        foreach($list as $value => $item) {
+        foreach ($list as $value => $item) {
             $html .= is_array($item)
                 ? static::optgroup($item, $value, $selected, $optionsAttribs[$value] ?? [], $optgroupsAttribs[$value] ?? [])
                 : static::option($value, $item, $selected === $value, $optionsAttribs[$value] ?? []);
@@ -203,13 +204,13 @@ abstract class Form extends Html {
     }
 
     public static function checkbox($name, $value = 1, $checked = false, $attribs = []) {
-        if($checked) $attribs['checked'] = 'checked';
+        if ($checked) $attribs['checked'] = 'checked';
         return static::input($name, $value, static::T_CHECKBOX, $attribs);
     }
 
     public static function radio($name, $value = null, $checked = false, $attribs = []) {
 
-        if($checked) $attribs['checked'] = 'checked';
+        if ($checked) $attribs['checked'] = 'checked';
 
         return static::input($name, is_null($value) ? $name : $value, static::T_RADIO, $attribs);
     }
@@ -221,7 +222,7 @@ abstract class Form extends Html {
         $attribs['label'] = $label;
         $g                = '';
 
-        foreach($list as $value => $content) {
+        foreach ($list as $value => $content) {
             $g .= self::option($value, $content, $selected === $value, $optionsAtrribs[$value] ?? []);
         }
 
@@ -229,9 +230,9 @@ abstract class Form extends Html {
     }
 
     private static function option($value = null, $content = null, $selected = false, $attribs = []) {
-        if($value != '')
+        if ($value != '')
             $attribs['value'] = $value;
-        if($selected) $attribs['selected'] = 'selected';
+        if ($selected) $attribs['selected'] = 'selected';
         return static::tag('option', $attribs, $content, static::TAG_NORMAL);
     }
     #endregion

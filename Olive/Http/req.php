@@ -1,6 +1,7 @@
 <?php namespace Olive\Http;
 
-abstract class req {
+abstract class req
+{
 
     /**
      * IP address of client
@@ -11,9 +12,9 @@ abstract class req {
         $forward = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
         $remote  = $_SERVER['REMOTE_ADDR'];
 
-        if(filter_var($client, FILTER_VALIDATE_IP)) {
+        if (filter_var($client, FILTER_VALIDATE_IP)) {
             $ip = $client;
-        } elseif(filter_var($forward, FILTER_VALIDATE_IP)) {
+        } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
             $ip = $forward;
         } else {
             $ip = $remote;
@@ -31,7 +32,7 @@ abstract class req {
      * @return mixed
      */
     public static function get($key, $fallback = null) {
-        if(isset($_GET[$key]) && $_GET[$key] != '')
+        if (isset($_GET[$key]) && $_GET[$key] != '')
             return $_GET[$key];
 
         return $fallback;
@@ -45,8 +46,8 @@ abstract class req {
      */
     public static function getInt($key, $fallback = 0) {
         $g = self::get($key);
-        if($g == null) return $fallback;
-        if(is_numeric($g)) return intval($g);
+        if ($g == null) return $fallback;
+        if (is_numeric($g)) return intval($g);
 
         return $fallback;
     }
@@ -59,8 +60,8 @@ abstract class req {
      */
     public static function postInt($key, $fallback = 0) {
         $g = self::post($key);
-        if($g == null) return $fallback;
-        if(is_numeric($g)) return intval($g);
+        if ($g == null) return $fallback;
+        if (is_numeric($g)) return intval($g);
 
         return $fallback;
     }
@@ -74,7 +75,7 @@ abstract class req {
      * @return mixed
      */
     public static function request($key, $fallback = null) {
-        if(isset($_REQUEST[$key]) && $_REQUEST[$key] != '')
+        if (isset($_REQUEST[$key]) && $_REQUEST[$key] != '')
             return $_REQUEST[$key];
 
         return $fallback;
@@ -88,8 +89,8 @@ abstract class req {
      */
     public static function requestInt($key, $fallback = 0) {
         $g = self::request($key);
-        if($g == null) return $fallback;
-        if(is_numeric($g)) return intval($g);
+        if ($g == null) return $fallback;
+        if (is_numeric($g)) return intval($g);
 
         return $fallback;
     }
@@ -103,7 +104,7 @@ abstract class req {
      * @return mixed
      */
     public static function post($key, $fallback = null) {
-        if(isset($_POST[$key]) && $_POST[$key] != '')
+        if (isset($_POST[$key]) && $_POST[$key] != '')
             return $_POST[$key];
 
         return $fallback;
@@ -116,7 +117,7 @@ abstract class req {
      * @return File
      */
     public static function file($key, $fallBack = null) {
-        if(isset($_FILES[$key]))
+        if (isset($_FILES[$key]))
             return new File($_FILES[$key]);
 
         return $fallBack;
@@ -128,9 +129,9 @@ abstract class req {
      * @return bool
      */
     public static function inPosts($posts) {
-        if(is_array($posts)) {
-            foreach($posts as $str)
-                if(!isset($_POST[$str]))
+        if (is_array($posts)) {
+            foreach ($posts as $str)
+                if (!isset($_POST[$str]))
                     return false;
         } else return isset($_POST[$posts]);
 
@@ -138,9 +139,9 @@ abstract class req {
     }
 
     public static function inGets($gets) {
-        if(is_array($gets)) {
-            foreach($gets as $str)
-                if(!isset($_GET[$str]))
+        if (is_array($gets)) {
+            foreach ($gets as $str)
+                if (!isset($_GET[$str]))
                     return false;
         } else return isset($_GET[$gets]);
 
@@ -149,7 +150,7 @@ abstract class req {
 
     public static function posts($keys) {
         $r = [];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $r[$key] = self::post($key);
         }
 
@@ -158,7 +159,7 @@ abstract class req {
 
     public static function gets($keys) {
         $r = [];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $r[$key] = self::get($key);
         }
 
@@ -167,7 +168,7 @@ abstract class req {
 
     public static function requests($keys) {
         $r = [];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $r[$key] = self::request($key);
         }
 
@@ -176,7 +177,7 @@ abstract class req {
 
     public static function postInts(array $keys) {
         $r = [];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $r[$key] = self::postInt($key);
         }
 
@@ -185,7 +186,7 @@ abstract class req {
 
     public static function getInts(array $keys) {
         $r = [];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $r[$key] = self::getInt($key);
         }
 
@@ -194,7 +195,7 @@ abstract class req {
 
     public static function requestInts(array $keys) {
         $r = [];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $r[$key] = self::requestInt($key);
         }
 
@@ -210,7 +211,7 @@ abstract class req {
      * @return bool|string
      */
     public static function method($desire = null) {
-        if($desire) {
+        if ($desire) {
             return strtolower($_SERVER['REQUEST_METHOD']) == strtolower($desire);
         } else
             return $_SERVER['REQUEST_METHOD'];
@@ -223,9 +224,9 @@ abstract class req {
      */
     public static function report($extras = null, $level = null) {
 
-        $dec = function($var) {
+        $dec = function ($var) {
             $out = [];
-            foreach($var as $k => $v)
+            foreach ($var as $k => $v)
                 $out[$k] = urldecode($v);
             return $out;
         };
@@ -234,9 +235,8 @@ abstract class req {
         $vars        += $level == null ? ['Post' => $_POST, 'Get' => $dec($_GET)] : ($level == 'get' ? ['Get' => $dec($_GET)] : ['Post' => $_POST]);
 
 
-
         # EXTRAS
-        if(!is_null($extras))
+        if (!is_null($extras))
             $vars['Extras'] = $extras;
 
         return json_encode($vars, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);

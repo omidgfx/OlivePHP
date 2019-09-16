@@ -1,6 +1,7 @@
 <?php namespace Olive\Exceptions;
 
-class HttpException extends OliveException {
+class HttpException extends OliveException
+{
     protected $http_response_code = 0;
 
     function __construct($message = "", $code = null, OliveException $previous = null) {
