@@ -14,25 +14,13 @@ use Olive\Util\DateTime;
  */
 abstract class Record implements RecordInterface
 {
+
     #region Changings
     private $_ORIGS = [];
     private $_CHNGS = [];
-    private $_INITS = [];
 
     public function __set($name, $value) {
-        $this->_CHNGS[$name] = $this->onChange($name, $this->$name, $value, ($ft = !key_exists($name, $this->_INITS)));
-        if ($ft) $this->_INITS[$name] = null;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $old_value
-     * @param mixed $new_value
-     * @param bool $isFirstTime (Is first time on costructor or when pulling data from db)
-     * @return mixed
-     */
-    protected function onChange($name, $old_value, $new_value, $isFirstTime) {
-        return $new_value;
+        $this->_CHNGS[$name] = $value;
     }
 
     public function __get($name) {
