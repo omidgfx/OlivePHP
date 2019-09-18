@@ -14,9 +14,6 @@ abstract class manifest
     # server root directory, in that case you should use only one slash
     const ROOT_DIR = 'OlivePHP';
 
-    # Only your domain name like site.com, sub.domain.com, localhost, etc.
-    const DOMAIN = 'localhost';
-
     #endregion
 
     #region Routes and middlewares map
