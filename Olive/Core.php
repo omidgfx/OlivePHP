@@ -6,7 +6,7 @@ use Olive\Exceptions\OliveFatalError;
 abstract class Core
 {
 
-    //region Includers and boot handlers
+    #region Includers and boot handlers
 
     /**
      * @param string[] $modules
@@ -86,7 +86,9 @@ abstract class Core
         unset($list);
 
         # sort
-        $sorter = function ($a, $b) { return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b)); };
+        $sorter = function ($a, $b) {
+            return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b));
+        };
         usort($dirs, $sorter);
         usort($files, $sorter);
 
@@ -100,9 +102,9 @@ abstract class Core
             require_once $item;
     }
 
-    //endregion
+    #endregion
 
-    //region Error Handlers
+    #region Error Handlers
 
     /**
      * @param $code
@@ -144,21 +146,21 @@ abstract class Core
 
     }
 
-    //endregion
+    #endregion
 
-    //region App
+    #region App
 
     public static function startApp($path = 'App') {
         # read files and folders
-        $list = glob("$path/*.boot");
+        $list = glob("$path/*.boot", GLOB_ONLYDIR);
         if (count($list) == 0)
             return;
         # boot
-        foreach ($list as $item) if (is_dir($item))
+        foreach ($list as $item)
             self::boot($item);
 
     }
 
-    //endregion
+    #endregion
 
 }
