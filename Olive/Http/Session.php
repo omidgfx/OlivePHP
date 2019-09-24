@@ -15,13 +15,8 @@ abstract class Session
     }
 
     private static function start() {
+        @session_set_cookie_params(3600 /* one hour */, '/', null, false, true);
         @session_start();
-    }
-
-    private static function create() {
-        self::clear();
-        self::start();
-        self::set('olive_sess_ip', $_SERVER['REMOTE_ADDR']);
     }
 
     /**
@@ -34,6 +29,29 @@ abstract class Session
 
     /**
      * @param string $key
+     * @param mixed $fallback
+     * @return mixed|null $fallback
+     */
+    public static function get($key, $fallback = null) {
+        return isset($_SESSION[$key]) ? $_SESSION[$key] : $fallback;
+    }
+
+    private static function create() {
+        self::clear();
+        self::start();
+        self::set('olive_sess_ip', $_SERVER['REMOTE_ADDR']);
+    }
+
+    /**
+     * Clear all sessions
+     */
+    public static function clear() {
+        @session_unset();
+        @session_destroy();
+    }
+
+    /**
+     * @param string $key
      * @param $val
      */
     public static function set($key, $val) {
@@ -42,20 +60,10 @@ abstract class Session
 
     /**
      * @param string $key
-     * @param mixed $fallback
-     * @return mixed|null $fallback
-     */
-    public static function get($key, $fallback = null) {
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : $fallback;
-    }
-
-    /**
-     * @param string $key
      */
     public static function delete($key) {
         unset($_SESSION[$key]);
     }
-
 
     /**
      * delete the session after getting
@@ -68,14 +76,6 @@ abstract class Session
         $v = self::get($key);
         unset($_SESSION[$key]);
         return $v == null ? $fallback : $v;
-    }
-
-    /**
-     * Clear all sessions
-     */
-    public static function clear() {
-        @session_unset();
-        @session_destroy();
     }
 }
 

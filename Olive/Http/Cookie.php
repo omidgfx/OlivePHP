@@ -1,5 +1,6 @@
 <?php namespace Olive\Http;
 
+use Exception;
 use Olive\manifest;
 
 abstract class Cookie
@@ -16,10 +17,11 @@ abstract class Cookie
      * @param string $key
      * @param $val
      * @param int|null $expire
+     * @param bool $httpOnly
      */
-    public static function set($key, $val, $expire = null) {
+    public static function set($key, $val, $expire = null, $httpOnly = true) {
         $expire = $expire === null ? time() + manifest::COOKIE_EXPIRE : $expire;
-        setcookie($key, $val, $expire, manifest::COOKIE_PATH);
+        setcookie($key, $val, $expire, manifest::COOKIE_PATH, null, false, $httpOnly);
     }
 
     /**
@@ -55,7 +57,7 @@ abstract class Cookie
                 }
             }
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
