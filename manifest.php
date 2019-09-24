@@ -43,7 +43,6 @@ abstract class manifest
     #endregion
 
     #region Auth
-    const AUTH_AUTHENTICATABLE_CLASS = '\Olive\MySQLi\Models\Test';
     const AUTH_KEY                   = 'olive_auth'; // use for coockies and sessions
     #endregion
 

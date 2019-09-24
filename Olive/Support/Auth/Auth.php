@@ -1,5 +1,6 @@
 <?php namespace Olive\Support\Auth;
 
+use Olive\Exceptions\URLException;
 use Olive\Http\{Cookie, Response, Session, URL};
 use Olive\manifest;
 
@@ -13,10 +14,15 @@ abstract class Auth
     const SAVE_NOSAVE  = 0;
 
     /** @var Authenticatable */
-    protected static $class = manifest::AUTH_AUTHENTICATABLE_CLASS;
-
-    /** @var Authenticatable */
     public static $authenticated = null;
+    #endregion
+
+    #region Abstract methods
+    /**
+     * @return string|Authenticatable
+     */
+    abstract protected static function getModelClass(): string;
+
     #endregion
 
     #region Public mehtods
@@ -30,13 +36,13 @@ abstract class Auth
     public static function attempt($identifier, $passowrd, $save = self::SAVE_COOKIE) {
 
         # check
-        $authResult = static::check($identifier, self::hash($passowrd, 3));
-        self::setAuthenticated($authResult->authenticatable);
+        $authResult = static::check($identifier, static::hash($passowrd, 3));
+        static::setAuthenticated($authResult->authenticatable);
 
         if ($authResult->isSucceed()) {
             $authString = static::encrypt($identifier, static::hash($passowrd, 1));
             if ($save != static::SAVE_NOSAVE)
-                self::save($authString, $save);
+                static::save($authString, $save);
         }
 
         return $authResult;
@@ -70,7 +76,7 @@ abstract class Auth
 
         $authResult = static::check($identifier, static::hash($hashedlvl_1, 2));
 
-        self::save($authString, $place);
+        static::save($authString, $place);
 
         return $ret($authResult->isSucceed(), $authResult->authenticatable);
 
@@ -99,7 +105,7 @@ abstract class Auth
             return new AuthResult(AuthResult::INVALID_IDENTIFIER);
 
         # get authenticatable stored password
-        $p = $authenticatable->{static::$class::authPasswordField()};
+        $p = $authenticatable->{static::getModelClass()::authPasswordField()};
         if ($p != $hashedPassword)
             return new AuthResult(AuthResult::INVALID_PASSWORD);
 
@@ -117,7 +123,7 @@ abstract class Auth
                 Cookie::set(manifest::AUTH_KEY, $authString);
                 break;
             case static::SAVE_SESSION:
-                Cookie::set(manifest::AUTH_KEY, $authString);
+                Session::set(manifest::AUTH_KEY, $authString);
                 break;
         }
     }
@@ -145,7 +151,7 @@ abstract class Auth
      */
     protected static function getAuthenticatable($identifier) {
         if (static::$authenticated === null)
-            return static::$class::authGetByIdentifier($identifier);
+            return static::getModelClass()::authGetByIdentifier($identifier);
         return static::$authenticated;
     }
 
@@ -194,13 +200,13 @@ abstract class Auth
      * @return string
      */
     protected static function hash($password, $level) {
-        return static::$class::authPasswordHash($password, $level);
+        return static::getModelClass()::authPasswordHash($password, $level);
     }
 
     /**
      * @param string|array|URL $fallbackUrl see: {@see URL::parse}
      * @param string $fallbackUrlKey fallbackURL get key, null=skip ref
-     * @throws \Olive\Exceptions\URLException
+     * @throws URLException
      */
     public static function prove($fallbackUrl = null, $fallbackUrlKey = 'ref') {
         $fallbackUrl = URL::parse($fallbackUrl);
