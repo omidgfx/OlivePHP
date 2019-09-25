@@ -79,6 +79,20 @@ abstract class Text
     }
 
     /**
+     * @param int $length
+     * @param string $chars
+     * @return string
+     */
+    private static function _random($length, $chars) {
+        $max = strlen($chars) - 1;
+        $out = '';
+        for ($i = 0; $i < $length; $i++)
+            $out .= $chars[mt_rand(0, $max)];
+
+        return $out;
+    }
+
+    /**
      * @param string $pattern '8-4-4-4-12'
      * @return string
      */
@@ -113,20 +127,6 @@ abstract class Text
     }
 
     /**
-     * @param int $length
-     * @param string $chars
-     * @return string
-     */
-    private static function _random($length, $chars) {
-        $max = strlen($chars) - 1;
-        $out = '';
-        for ($i = 0; $i < $length; $i++)
-            $out .= $chars[mt_rand(0, $max)];
-
-        return $out;
-    }
-
-    /**
      * ucfirst
      *
      * @param string $str required
@@ -152,5 +152,16 @@ abstract class Text
         return $encoding
             ? mb_strtolower(mb_substr($str, 0, 1, $encoding), $encoding) . mb_substr($str, 1, mb_strlen($str, $encoding), $encoding)
             : lcfirst($str);
+    }
+
+    public static function randomCryptography($length) {
+        $string = '';
+
+        while (($len = strlen($string)) < $length) {
+            $size   = $length - $len;
+            $string .= substr(bin2hex(random_bytes($size)), 0, $size);
+        }
+
+        return $string;
     }
 }
