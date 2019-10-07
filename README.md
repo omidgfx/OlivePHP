@@ -33,11 +33,12 @@ OlivePHP, a lite and powerful PHP framework.
 * Request (req) helper
 * Response Helper
 * Secure session
-* Support of markdown (.md) files
+* Support for markdown (.md) files
 * Inflector
 * Validator
 * Html and Form helper
 * Photo Helper
-* New DateTime based on ICU-PROJECT
+* New DateTime based on ICU-Project
+* New Persian/Arabic/Gregorian Calendar with easy methods to convert from one to another.
 * Digit/Text Helper
 * Timelapse Helper
