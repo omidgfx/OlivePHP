@@ -57,8 +57,9 @@ class RouteBypass
         $m       = [];
         if (preg_match($pattern, $route, $m)) {
             //Matches
+            $count = count($m);
             $route = $this->target;
-            for ($i = 1; $i < count($m); $i++)
+            for ($i = 1; $i < $count; $i++)
                 $route = str_replace("($$i)", $m[$i], $route);
 
             return $route;

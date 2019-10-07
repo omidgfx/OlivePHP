@@ -5,26 +5,25 @@ trait Singleton
     /**
      * Store the singleton object.
      */
-    private static $singleton = false;
+    private static $singleton;
 
     /**
      * Create an inaccessible contructor.
      * singleton constructor.
      */
     public function __construct() {
-        $this->__singleton();
+        $this->_singletonConstruct();
     }
 
+    abstract protected function _singletonConstruct();
 
     /**
      * Fetch an instance of the class
      * @return self
      */
     public static function getInstance() {
-        if (self::$singleton === false)
+        if (self::$singleton === null)
             self::$singleton = new self;
         return self::$singleton;
     }
-
-    protected abstract function __singleton();
 }

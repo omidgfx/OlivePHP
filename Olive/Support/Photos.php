@@ -4,16 +4,18 @@ use Olive\Exceptions\PhotoException;
 
 abstract class Photos
 {
-
+    /**
+     * @param $file
+     * @param $w
+     * @param $new
+     * @throws PhotoException
+     */
     public static function resize($file, $w, $new) {
         $info = getimagesize($file);
         $mime = $info['mime'];
         switch ($mime) {
-            case 'image/jpg':
-                $image_create_func = 'imagecreatefromjpeg';
-                $image_save_func   = 'imagejpeg';
-                break;
             case 'image/jpeg':
+            case 'image/jpg':
                 $image_create_func = 'imagecreatefromjpeg';
                 $image_save_func   = 'imagejpeg';
                 break;
@@ -21,17 +23,15 @@ abstract class Photos
                 $image_create_func = 'imagecreatefrompng';
                 $image_save_func   = 'imagepng';
                 break;
-
             case 'image/gif':
                 $image_create_func = 'imagecreatefromgif';
                 $image_save_func   = 'imagegif';
                 break;
-
             default:
-                throw new PhotoException('Unknown image type.');
+                throw new PhotoException('Unknown image type');
         }
         $img = $image_create_func($file);
-        list($width, $height) = getimagesize($file);
+        [$width, $height] = getimagesize($file);
 
         $newHeight = ($height / $width) * $w;
         $tmp       = imagecreatetruecolor($w, $newHeight);
@@ -40,7 +40,7 @@ abstract class Photos
         if (file_exists($new))
             unlink($new);
 
-        $image_save_func($tmp, "$new", 100);
+        $image_save_func($tmp, (string)$new, 100);
         touch($new);
     }
 
@@ -48,16 +48,20 @@ abstract class Photos
         return getimagesize($file);
     }
 
+    /**
+     * @param $file
+     * @param null $new
+     * @throws PhotoException
+     */
     public static function cropSquare($file, $new = null) {
-        $new = $new ? $new : $file;
+        $new = $new ?? $file;
 
-        $r      = getimagesize($file);
-        $width  = $r[0];
-        $height = $r[1];
-        $type   = strtolower($r['mime']);
-        $min    = min($width, $height);
-        $x      = ($width > $height) ? ($width - $height) / 2 : 0;
-        $y      = ($width < $height) ? ($height - $width) / 2 : 0;
+        $r = getimagesize($file);
+        [$width, $height] = [$r[0], $r[1]];
+        $type = strtolower($r['mime']);
+        $min  = min($width, $height);
+        $x    = ($width > $height) ? ($width - $height) / 2 : 0;
+        $y    = ($width < $height) ? ($height - $width) / 2 : 0;
         switch ($type) {
             case 'image/gif':
                 $src = imagecreatefromgif($file);
@@ -70,9 +74,8 @@ abstract class Photos
                 $src = imagecreatefrompng($file);
                 break;
             default:
-                throw new PhotoException('Unknown image type.');
+                throw new PhotoException('Unknown image type');
         }
-        //var_dump($src);
         $dest = imagecreatetruecolor($min, $min);
         imagecopy($dest, $src, 0, 0, $x, $y, $width, $height);
         switch ($type) {

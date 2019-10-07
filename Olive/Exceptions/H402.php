@@ -7,5 +7,4 @@
 class H402 extends HttpException
 {
     protected $http_response_code = 402;
-
 }

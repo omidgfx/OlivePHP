@@ -4,19 +4,27 @@ use Olive\manifest;
 
 abstract class Session
 {
+    public const SESSIONID = 'OLIVESID';
+
     /**
      * init sessions
      */
     public static function init() {
         self::start();
 
-        if (!self::exists('olive_sess_ip') || self::get('olive_sess_ip') != $_SERVER['REMOTE_ADDR'])
+        if (!self::exists('olive_sess_ip') || self::get('olive_sess_ip') !== (string)$_SERVER['REMOTE_ADDR'])
             self::create();
     }
 
     private static function start() {
-        @session_set_cookie_params(3600 /* one hour */, '/', null, false, true);
-        @session_start();
+        @session_start([
+            'cookie_httponly' => true,
+            'cookie_path'     => '/',
+            'name'            => self::SESSIONID,
+        ]);
+        $d   = session_get_cookie_params();
+        $sid = session_id();
+        Cookie::set(self::SESSIONID, $sid, 0, $d['path'], $d['domain']);
     }
 
     /**
@@ -33,7 +41,7 @@ abstract class Session
      * @return mixed|null $fallback
      */
     public static function get($key, $fallback = null) {
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : $fallback;
+        return $_SESSION[$key] ?? $fallback;
     }
 
     private static function create() {
@@ -75,7 +83,7 @@ abstract class Session
     public static function dispose($key, $fallback = null) {
         $v = self::get($key);
         unset($_SESSION[$key]);
-        return $v == null ? $fallback : $v;
+        return $v ?? $fallback;
     }
 }
 

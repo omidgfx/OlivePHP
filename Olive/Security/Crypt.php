@@ -50,7 +50,7 @@ abstract class Crypt
      * @param string $method
      * @return string
      */
-    public static function encrypt($input, $hashseed = manifest::HASH_SEED, $method = "AES-192-ECB") {
+    public static function encrypt($input, $hashseed = manifest::HASH_SEED, $method = 'AES-192-ECB') {
         return base64_encode(openssl_encrypt($input, $method, $hashseed));
     }
 
@@ -60,7 +60,7 @@ abstract class Crypt
      * @param string $method
      * @return null|string
      */
-    public static function decrypt($encryptedInput, $hashseed = manifest::HASH_SEED, $method = "AES-192-ECB") {
+    public static function decrypt($encryptedInput, $hashseed = manifest::HASH_SEED, $method = 'AES-192-ECB') {
         return openssl_decrypt(base64_decode($encryptedInput), $method, $hashseed);
     }
 }

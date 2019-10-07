@@ -1,5 +1,7 @@
 <?php namespace Olive\Util;
 
+use Exception;
+
 abstract class Text
 {
     /**
@@ -15,7 +17,7 @@ abstract class Text
         $lines  = explode("\n", $str);
         $firsts = array_slice($lines, 0, $num);
 
-        return implode("\n", $firsts) . ((count($lines) > $num && $ellip != null) ? $ellip : null);
+        return implode("\n", $firsts) . ((count($lines) > $num && $ellip !== null) ? $ellip : null);
     }
 
     /**
@@ -37,7 +39,7 @@ abstract class Text
         $search = $ignoreCase ? strtolower($search) : $search;
         $text   = $ignoreCase ? strtolower($text) : $text;
 
-        return $search === "" || mb_strrpos($text, $search, -mb_strlen($text)) !== false;
+        return $search === '' || mb_strrpos($text, $search, -mb_strlen($text)) !== false;
 
     }
 
@@ -61,7 +63,7 @@ abstract class Text
         $search = $ignoreCase ? strtolower($search) : $search;
         $text   = $ignoreCase ? strtolower($text) : $text;
 
-        return $search === "" || (($temp = mb_strlen($text) - mb_strlen($search)) >= 0 && mb_strpos($text, $search, $temp) !== false);
+        return $search === '' || (($temp = mb_strlen($text) - mb_strlen($search)) >= 0 && mb_strpos($text, $search, $temp) !== false);
     }
 
     public static function limit($text, $count = 20) {
@@ -86,9 +88,15 @@ abstract class Text
     private static function _random($length, $chars) {
         $max = strlen($chars) - 1;
         $out = '';
-        for ($i = 0; $i < $length; $i++)
-            $out .= $chars[mt_rand(0, $max)];
-
+        for ($i = 0; $i < $length; $i++) {
+            try {
+                $rnd = random_int(0, $max);
+            } catch (Exception $e) {
+                /** @noinspection RandomApiMigrationInspection */
+                $rnd = mt_rand(0, $max);
+            }
+            $out .= $chars[$rnd];
+        }
         return $out;
     }
 
@@ -97,7 +105,7 @@ abstract class Text
      * @return string
      */
     public static function randomByPattern($pattern) {
-        return preg_replace_callback("(\d+)", function ($match) {
+        return preg_replace_callback("(\d+)", static function ($match) {
             return self::_random($match[0], 'abcdefghijklmnopqrstuvwxyz1234567890');
         }, $pattern);
     }
@@ -113,14 +121,14 @@ abstract class Text
         foreach ($pattern as $p) {
 
             # validation
-            $rule = preg_replace_callback('(\d+)', function ($match) {
+            $rule = preg_replace_callback('(\d+)', static function ($match) {
                 return '\w{' . $match[0] . '}';
             }, '/^' . $p . '$/');
 
             #check
 
             preg_match($rule, $text, $matches);
-            if ($matches != [])
+            if ($matches !== [])
                 return true;
         }
         return false;
@@ -158,7 +166,8 @@ abstract class Text
         $string = '';
 
         while (($len = strlen($string)) < $length) {
-            $size   = $length - $len;
+            $size = $length - $len;
+            /** @noinspection PhpUnhandledExceptionInspection */
             $string .= substr(bin2hex(random_bytes($size)), 0, $size);
         }
 

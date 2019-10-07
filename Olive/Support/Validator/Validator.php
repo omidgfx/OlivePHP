@@ -1,7 +1,8 @@
-<?php /** @noinspection RequiredAttributes */
+<?php /** @noinspection All */
 
 namespace Olive\Support\Validator;
 
+use DateTime;
 use Olive\Exceptions\ValidatorException;
 
 /**
@@ -1804,7 +1805,7 @@ class Validator
                 ];
             }
         } else {
-            $date = \DateTime::createFromFormat($param, $input[$field]);
+            $date = DateTime::createFromFormat($param, $input[$field]);
 
             if ($date === false || $input[$field] != date($param, $date->getTimestamp())) {
                 return [
@@ -1828,14 +1829,15 @@ class Validator
      * @param string $param int
      *
      * @return mixed
+     * @throws \Exception
      */
     protected function validate_min_age($field, $input, $param = null) {
         if (!isset($input[$field]) || empty($input[$field])) {
             return null;
         }
 
-        $cdate1 = new \DateTime(date('Y-m-d', strtotime($input[$field])));
-        $today  = new \DateTime(date('d-m-Y'));
+        $cdate1 = new DateTime(date('Y-m-d', strtotime($input[$field])));
+        $today  = new DateTime(date('d-m-Y'));
 
         $interval = $cdate1->diff($today);
         $age      = $interval->y;

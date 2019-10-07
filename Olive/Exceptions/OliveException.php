@@ -1,6 +1,8 @@
 <?php namespace Olive\Exceptions;
 
-class OliveException extends \Exception
+use Exception;
+
+class OliveException extends Exception
 {
-    protected $code = null;
+    protected $code;
 }

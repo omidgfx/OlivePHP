@@ -25,8 +25,33 @@ class CURL
             $this->setOption($key, $value);
 
         # set return transfer
-        $this->setReturnTransfer(true);
+        $this->setReturnTransfer();
 
+    }
+
+    /**
+     * @param int $key
+     * @param $value
+     * @return $this
+     */
+    public function setOption($key, $value) {
+        curl_setopt($this->resource, $key, $value);
+        return $this;
+    }
+
+    /**
+     * @param bool $state
+     * @return CURL
+     */
+    public function setReturnTransfer($state = true) {
+        return $this->setOption(CURLOPT_RETURNTRANSFER, $state);
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders() {
+        return $this->headers;
     }
 
     /**
@@ -39,13 +64,6 @@ class CURL
     }
 
     /**
-     * @return array
-     */
-    public function getHeaders() {
-        return $this->headers;
-    }
-
-    /**
      * @param $name
      * @param $val
      * @return CURL
@@ -53,14 +71,6 @@ class CURL
     public function addHeader($name, $val) {
         $this->headers[] = "$name: $val";
         return $this;
-    }
-
-    /**
-     * @param bool $state
-     * @return CURL
-     */
-    public function setReturnTransfer($state = true) {
-        return $this->setOption(CURLOPT_RETURNTRANSFER, $state);
     }
 
     /**
@@ -97,16 +107,6 @@ class CURL
     }
 
     /**
-     * @param int $key
-     * @param $value
-     * @return $this
-     */
-    public function setOption($key, $value) {
-        curl_setopt($this->resource, $key, $value);
-        return $this;
-    }
-
-    /**
      * @param bool $close
      * @return $this
      */
@@ -118,10 +118,6 @@ class CURL
         $this->result = curl_exec($this->resource);
         if ($close) curl_close($this->resource);
         return $this;
-    }
-
-    public function getResult() {
-        return $this->result;
     }
 
     /**
@@ -151,6 +147,10 @@ class CURL
      */
     public function jsonDecodeResult($assoc = true, $depth = 512, $options = 0) {
         return json_decode($this->getResult(), $assoc, $depth, $options);
+    }
+
+    public function getResult() {
+        return $this->result;
     }
 
 }

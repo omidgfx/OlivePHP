@@ -2,8 +2,6 @@
 
 interface RecordInterface
 {
-    /**
-     * @return string
-     */
+    /**@return string */
     public static function table();
 }

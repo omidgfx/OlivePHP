@@ -20,6 +20,6 @@ interface Authenticatable
     public static function authPasswordHash($password, $level = 1);
 
     /** @return string */
-    public static function authPasswordField();
+    public function authGetPassword();
 
 }

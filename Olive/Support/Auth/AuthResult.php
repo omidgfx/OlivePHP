@@ -2,14 +2,13 @@
 
 class AuthResult
 {
-    const INVALID_PASSWORD   = -1;
-    const INVALID_IDENTIFIER = -2;
-    const SUCCESS            = 1;
-
-    /** @var int */
-    private $result;
+    public const INVALID_PASSWORD   = -1;
+    public const INVALID_IDENTIFIER = -2;
+    public const SUCCESS            = 1;
     /** @var Authenticatable */
     public $authenticatable;
+    /** @var int */
+    private $result;
 
     /**
      * AuthResult constructor.

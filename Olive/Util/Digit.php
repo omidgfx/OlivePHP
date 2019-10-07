@@ -3,7 +3,22 @@
 abstract class Digit
 {
     public static function surroundDigitsBy($string, $before = '**', $after = '**') {
-        return preg_replace("~([0-9]+)~", "$before$1$after", $string);
+        return preg_replace("~([\d]+)~", "$before$1$after", $string);
+    }
+
+    /**
+     * @param      $string
+     * @param bool $prettify
+     *
+     * @return string
+     */
+    public static function en2fa($string, $prettify = false) {
+        $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        $num     = range(0, 9);
+        if ($prettify)
+            $string = self::prettify($string);
+
+        return str_replace($num, $persian, $string);
     }
 
     /**
@@ -23,25 +38,10 @@ abstract class Digit
     public static function prettify($number, $delimiter = ',', $decimal = 2) {
         $n = number_format($number, $decimal, '.', $delimiter);
         $l = strlen($n);
-        if (substr($n, $l - 3) == '.00')
+        if (substr($n, $l - 3) === '.00')
             $n = substr($n, 0, $l - 3);
 
         return $n;
-    }
-
-    /**
-     * @param      $string
-     * @param bool $prettify
-     *
-     * @return string
-     */
-    public static function en2fa($string, $prettify = false) {
-        $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        $num     = range(0, 9);
-        if ($prettify)
-            $string = self::prettify($string);
-
-        return str_replace($num, $persian, $string);
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class Digit
 
             return $x_display;
         } else
-            return strval($n);
+            return (string)$n;
     }
 
     /**
@@ -103,9 +103,9 @@ abstract class Digit
      */
     public static function bytesFormat($size, $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB',], $sep = ' ') {
         $power = $size > 0 ? floor(log($size, 1024)) : 0;
-        $f     = number_format($size / pow(1024, $power), 2, '.', ',');
+        $f     = number_format($size / (1024 ** $power), 2);
         $l     = strlen($f);
-        if (substr($f, $l - 3) == '.00')
+        if (substr($f, $l - 3) === '.00')
             $f = substr($f, 0, $l - 3);
 
         return "$f$sep$units[$power]";

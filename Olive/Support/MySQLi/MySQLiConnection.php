@@ -1,16 +1,44 @@
 <?php namespace Olive\Support\MySQLi;
 
+use mysqli;
+use mysqli_result;
 use Olive\Exceptions\MySQLiAdaptingException;
 use Olive\Exceptions\MySQLiException;
 use Olive\manifest;
 use Olive\Traits\Singleton;
 
-class MySQLiConnection extends \mysqli
+class MySQLiConnection extends mysqli
 {
     use Singleton;
 
     #region Constructors
-    protected function __singleton() {
+
+    /**
+     * @param $value
+     * @return array|string
+     */
+    public function val($value) {
+        if (is_array($value)) {
+            return array_map(static function ($vns) {
+                return self::val($vns);
+            }, $value);
+        }
+        if ($value === null)
+            return 'NULL';
+        elseif (is_bool($value)) {
+            return $value === true ? '1' : '0';
+        } elseif (is_numeric($value))
+            return sprintf("'%d'", $value);
+        else
+            return "'" . $this->escape_string(mb_convert_encoding($value, 'utf-8')) . "'";
+    }
+    #endregion
+
+    #region Helper methods
+    /**
+     * @throws MySQLiException
+     */
+    protected function _singletonConstruct() {
 
         # Connect
         @$this->connect(
@@ -29,33 +57,12 @@ class MySQLiConnection extends \mysqli
     }
     #endregion
 
-    #region Helper methods
-    /**
-     * @param $value
-     * @return array|string
-     */
-    public function val($value) {
-        if (is_array($value)) {
-            return array_map(function ($vns) {
-                return self::val($vns);
-            }, $value);
-        }
-        if (is_null($value))
-            return 'NULL';
-        elseif (is_bool($value)) {
-            return $value === true ? "1" : "0";
-        } elseif (is_numeric($value))
-            return "'" . strval($value) . "'";
-        else
-            return "'" . $this->escape_string(mb_convert_encoding($value, 'utf-8')) . "'";
-    }
-    #endregion
-
     #region Overrides
+
     /**
      * @param string $query
      * @param int $resultmode
-     * @return \mysqli_result
+     * @return mysqli_result
      * @throws MySQLiException
      */
     public function query($query, $resultmode = MYSQLI_STORE_RESULT) {
@@ -70,7 +77,7 @@ class MySQLiConnection extends \mysqli
 
     /**
      * Adapts field name or table names
-     * @param string|string $name ex. adaptNames('string'|'\\string'|array)
+     * @param string|string[] $name ex. adaptNames('string'|'\\string'|array)
      * @param bool $allow_arrays
      * @return string
      * @throws MySQLiAdaptingException
@@ -78,8 +85,8 @@ class MySQLiConnection extends \mysqli
     protected function escapeNames($name, $allow_arrays = true) {
 
         $esc = function ($name) {
-            if ($name[0] == '`') return $name;
-            if ($name[0] == '\\') return substr($name, 1);
+            if ($name[0] === '`') return $name;
+            if ($name[0] === '\\') return substr($name, 1);
             return '`' . $this->escape_string($name) . '`';
         };
 

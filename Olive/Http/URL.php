@@ -1,7 +1,5 @@
 <?php namespace Olive\Http;
 
-use Olive\Exceptions\URLException;
-
 class URL
 {
 
@@ -22,47 +20,27 @@ class URL
 
     #endregion
 
+    /**
+     * URL constructor.
+     * @param string $url
+     */
     public function __construct($url = null) {
 
-        if ($url == null)
+        if ($url === null)
             return;
 
         # parse
         $u = parse_url($url);
 
-        if ($u === false)
-            throw new URLException('Invalid url');
-
         # fill this
         foreach ($u as $k => $v)
-            $this->{$k} = strval($v);
+            $this->{$k} = (string)$v;
 
         # parse query
         if ($this->query) {
             parse_str($this->query, $q);
             $this->query = $q;
         }
-    }
-
-    public function addQuery($name, $val) {
-        if (!$this->query)
-            $this->query = [];
-        $this->query[$name] = $val;
-        return $this;
-    }
-
-    /**
-     * @param string $url
-     * @param bool $relative
-     * @param bool $full
-     * @return URL
-     * @throws URLException
-     */
-    public static function make($url = null, $relative = true, $full = false) {
-        $u           = new self($url);
-        $u->relative = $relative;
-        $u->full     = $full;
-        return $u;
     }
 
     /**
@@ -72,24 +50,41 @@ class URL
      * * **Array** [string,bool] with 2 elements _returns:_ `src(string, bool)`
      * @param string|array|self $array
      * @return URL
-     * @throws \Olive\Exceptions\URLException
      */
     public static function parse($array) {
         $url  = $array;
         $full = false;
-        if (is_array($array) and $array) {
-            if (count($array) != 1)
-                $full = !!$array[1];
+        if (is_array($array) && $array) {
+            if (count($array) !== 1)
+                $full = (bool)$array[1];
             $url = $array[0];
         } elseif ($array instanceof self)
             return $array;
 
-        $u = self::make($url, true, $full);
+        return self::make($url, true, $full);
+    }
+
+    /**
+     * @param string $url
+     * @param bool $relative
+     * @param bool $full
+     * @return URL
+     */
+    public static function make($url = null, $relative = true, $full = false) {
+        $u           = new self($url);
+        $u->relative = $relative;
+        $u->full     = $full;
         return $u;
     }
 
-    #region Setter and getters
+    public function addQuery($name, $val) {
+        if (!$this->query)
+            $this->query = [];
+        $this->query[$name] = $val;
+        return $this;
+    }
 
+    #region Setter and getters
 
     /**
      * @return string
@@ -120,22 +115,6 @@ class URL
      */
     public function setHost($host) {
         $this->host = $host;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPort() {
-        return intval($this->port);
-    }
-
-    /**
-     * @param int $port
-     * @return URL
-     */
-    public function setPort($port) {
-        $this->port = $port;
         return $this;
     }
 
@@ -219,10 +198,6 @@ class URL
         return $this;
     }
 
-    #endregion
-
-    #region Option methods
-
     /**
      * @return bool
      */
@@ -236,6 +211,10 @@ class URL
     public function setRelative($relative) {
         $this->relative = $relative;
     }
+
+    #endregion
+
+    #region Option methods
 
     /**
      * @return bool
@@ -258,25 +237,22 @@ class URL
             $this->path .= '/' . ltrim($path, '/');
         return $this;
     }
-    #endregion
-
-    #region Magic methods
 
     public function __toString() {
 
         $url = '';
-        if (!is_null($this->scheme)) {
+        if ($this->scheme !== null) {
             $this->relative = false;
             $url            .= $this->scheme . '://';
         }
 
-        if ($hostIsNotNull = !is_null($this->host)) {
+        if ($hostIsNotNull = ($this->host !== null)) {
 
 
-            if ($userIsNotNull = !is_null($this->user))
+            if ($userIsNotNull = ($this->user !== null))
                 $url .= $this->user;
 
-            if ($passIsNotNull = !is_null($this->pass))
+            if ($passIsNotNull = ($this->pass !== null))
                 $url .= ":$this->pass";
 
 
@@ -294,21 +270,38 @@ class URL
             $url .= ':' . $port;
 
 
-        if (!is_null($this->path)) {
-//            if($url != '') $url .= '/';
-
-            if ($this->path[0] == '\\') {
+        if ($this->path !== null) {
+            if ($this->path[0] === '\\') {
                 $this->relative = false;
                 $url            .= substr($this->path, 1);
             } else
                 $url .= '/' . ltrim($this->path, '/');
         }
 
-        if ($this->query != [])
+        if ($this->query)
             $url .= '?' . http_build_query($this->query);
 
-        return $this->relative ? src($url, $this->full) : $url;
+        return $this->relative ? url($url, $this->full) : $url;
 
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort() {
+        return (int)$this->port;
+    }
+    #endregion
+
+    #region Magic methods
+
+    /**
+     * @param int $port
+     * @return URL
+     */
+    public function setPort($port) {
+        $this->port = $port;
+        return $this;
     }
 
     #endregion

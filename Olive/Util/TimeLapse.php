@@ -1,17 +1,19 @@
 <?php namespace Olive\Util;
 
 
+use Exception;
+
 class TimeLapse
 {
-    public $y, $m, $w, $d, $h, $i, $s;
-    private                        $mode;
-
-    private static $formatters = null;
+    private static $formatters;
+    public         $y, $m, $w, $d, $h, $i, $s;
+    private        $mode;
 
     /**
      * TimeLapse constructor.
      * @param int|\DateTime $diffTo
      * @param int|\DateTime $date
+     * @throws Exception
      */
     public function __construct($diffTo, $date) {
 
@@ -54,17 +56,37 @@ class TimeLapse
             $this->mode = 0;//sametime
     }
 
+    /**
+     * @param bool $full
+     * @param string $locale
+     * @return mixed
+     */
+    public function format($full = true, $locale = 'en_US') {
+        if (self::$formatters === null)
+            self::setFormatters();
+
+        # Lowercase first 2 letters
+        $locale = strtolower(substr($locale, 0, 2)) . substr($locale, 2);
+
+        if (!array_key_exists($locale, self::$formatters))
+            $locale = 'en_US';
+
+        $fn = self::$formatters[$locale];
+        return $fn($full, $this);
+    }
+
     private static function setFormatters() {
-        self::$formatters['en_US'] = function ($full, TimeLapse $lapse) {
+        self::$formatters['en_US'] = static function ($full, TimeLapse $lapse) {
             // Google Translate
             //'hence':
             // in the future (used after a period of time).
             // "two years hence they might say something quite different"
             $strings = ['y' => 'year', 'm' => 'month', 'w' => 'week', 'd' => 'day', 'h' => 'hour', 'i' => 'minute', 's' => 'second'];
-            $s       = function ($k, $val) use ($strings) {
+            $s       = static function ($k, $val) use ($strings) {
                 if ($val > 1) return $val . ' ' . $strings[$k] . 's';
-                return 'a' . ($k == 'h' ? 'n ' : ' ') . $strings[$k];
+                return 'a' . ($k === 'h' ? 'n ' : ' ') . $strings[$k];
             };
+            /** @noinspection AlterInForeachInspection */
             foreach ($strings as $k => &$v) {
                 if ($lapse->$k) {
                     $v = $s($k, $lapse->$k);
@@ -73,13 +95,14 @@ class TimeLapse
                 }
             }
 
+
             if (!$full) $strings = array_slice($strings, 0, 1);
 
             if ($strings) {
                 $out = implode(' and ', $strings);
-                if ($lapse->mode == 1)
+                if ($lapse->mode === 1)
                     $out .= ' hence';
-                elseif ($lapse->mode == -1)
+                elseif ($lapse->mode === -1)
                     $out .= ' ago';
                 else $out = 'just now';
                 return $out;
@@ -87,12 +110,13 @@ class TimeLapse
         };
         self::$formatters['en']    = &self::$formatters['en_US'];
 
-        self::$formatters['fa_IR'] = function ($full, TimeLapse $lapse) {
+        self::$formatters['fa_IR'] = static function ($full, TimeLapse $lapse) {
             $strings = ['y' => 'سال', 'm' => 'ماه', 'w' => 'هفته', 'd' => 'روز', 'h' => 'ساعت', 'i' => 'دقیقه', 's' => 'ثانیه'];
-            $s       = function ($k, $val) use ($strings) {
+            $s       = static function ($k, $val) use ($strings) {
                 if ($val > 1) return $val . ' ' . $strings[$k];
                 return 'یک ' . $strings[$k];
             };
+            /** @noinspection AlterInForeachInspection */
             foreach ($strings as $k => &$v) {
                 if ($lapse->$k) {
                     $v = $s($k, $lapse->$k);
@@ -105,9 +129,9 @@ class TimeLapse
 
             if ($strings) {
                 $out = implode(' و ', $strings);
-                if ($lapse->mode == 1)
+                if ($lapse->mode === 1)
                     $out .= ' دیگر';
-                elseif ($lapse->mode == -1)
+                elseif ($lapse->mode === -1)
                     $out .= ' پیش';
                 else $out = 'همین حالا';
                 return Digit::en2fa($out);
@@ -115,25 +139,6 @@ class TimeLapse
         };
 
         self::$formatters['fa'] = &self::$formatters['fa_IR'];
-    }
-
-    /**
-     * @param bool $full
-     * @param string $locale
-     * @return mixed
-     */
-    public function format($full = true, $locale = 'en_US') {
-        if (self::$formatters == null)
-            self::setFormatters();
-
-        # Lowercase first 2 letters
-        $locale = strtolower(substr($locale, 0, 2)) . substr($locale, 2);
-
-        if (!key_exists($locale, self::$formatters))
-            $locale = 'en_US';
-
-        $fn = self::$formatters[$locale];
-        return $fn($full, $this);
     }
 
 }

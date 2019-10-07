@@ -69,24 +69,24 @@ abstract class Core
      */
     public static function boot($path) {
 
-        if (is_null($path)) return;
+        if ($path === null) return;
 
         # read files and folders
         $list = glob("$path/*");
-        if (count($list) == 0)
+        if (count($list) === 0)
             return;
         $dirs = $files = [];
 
         foreach ($list as $item) {
             if (is_dir($item))
                 $dirs[] = $item;
-            elseif (strtolower(substr($item, -4)) == '.php')
+            elseif (strtolower(substr($item, -4)) === '.php')
                 $files[] = $item;
         }
         unset($list);
 
         # sort
-        $sorter = function ($a, $b) {
+        $sorter = static function ($a, $b) {
             return strcmp(str_replace('_', 0, $a), str_replace('_', 0, $b));
         };
         usort($dirs, $sorter);
@@ -114,7 +114,7 @@ abstract class Core
      * @param null $errcontext
      * @throws OliveError
      */
-    public final static function errorHandler($code, $message, $file, $line, $errcontext = null) {
+    final public static function errorHandler($code, $message, $file, $line, $errcontext = null) {
         $e              = new OliveError;
         $e->code        = $code;
         $e->message     = $message;
@@ -124,19 +124,20 @@ abstract class Core
         throw $e;
     }
 
-    public final static function shutdownHandler() {
+    final public static function shutdownHandler() {
         if (($error = error_get_last()) !== null) {
             $exception          = new OliveFatalError;
-            $exception->code    = $error["type"];
-            $exception->message = $error["message"];
-            $exception->file    = $error["file"];
-            $exception->line    = $error["line"];
+            $exception->code    = $error['type'];
+            $exception->message = $error['message'];
+            $exception->file    = $error['file'];
+            $exception->line    = $error['line'];
 
             if (DEBUG_MODE) {
                 echo "<div style='background:#fafafa;color:#777;margin: 10px;border: 1px solid #ddd;padding: 10px;border-radius: 8px'><h1><span style='color:red'>Fatal error captured:</span></h1>",
-                "<pre>";
+                '<pre>';
+                /** @noinspection ForgottenDebugOutputInspection */
                 print_r($error);
-                echo "</pre></div>";
+                echo '</pre></div>';
             } else {
                 ob_clean();
                 http_response_code(500);
@@ -153,7 +154,7 @@ abstract class Core
     public static function startApp($path = 'App') {
         # read files and folders
         $list = glob("$path/*.boot", GLOB_ONLYDIR);
-        if (count($list) == 0)
+        if (count($list) === 0)
             return;
         # boot
         foreach ($list as $item)

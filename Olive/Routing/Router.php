@@ -1,14 +1,20 @@
 <?php namespace Olive\Routing;
 
+use Exception;
 use Olive\Exceptions\H404;
 use Olive\Exceptions\H501;
 use Olive\manifest;
+use Olive\MVC\ActionResult;
+use Olive\MVC\Controller;
+use Olive\MVC\ControllerHelper;
+use Olive\MVC\Middleware;
+use ReflectionMethod;
 
 
 class Router
 {
 
-    //region Fields
+    #region Fields
 
     /** @var RouteBypass[] */
     private $bypasses = [];
@@ -16,9 +22,9 @@ class Router
     /** @var RouteMiddler[] */
     private $middlers = [];
 
-    //endregion
+    #endregion
 
-    //region Constructors
+    #region Constructors
 
     public function __construct() {
 
@@ -30,20 +36,12 @@ class Router
         $route = $this->route();
 
         # Render Route
-        self::RenderRoute($route, $this->middlers);
+        self::FollowRoute($route, $this->middlers);
     }
 
-    //endregion
+    #endregion
 
-    //region Routing
-
-    public function addBypass(RouteBypass $bypass) {
-        $this->bypasses[] = $bypass;
-    }
-
-    public function addMiddler(RouteMiddler $middler) {
-        $this->middlers[] = $middler;
-    }
+    #region Routing
 
     /**
      * @return Route
@@ -64,9 +62,9 @@ class Router
         if (isset($route[0])) {
             while (true) {
                 $r->controller = $route[0];
-                $r->action     = isset($route[1]) ? $route[1] : 'Index';
+                $r->action     = $route[1] ?? 'Index';
                 $r->arguments  = array_slice($route, 2);
-                if (Controller::exists($r->controller))
+                if (ControllerHelper::exists($r->controller))
                     break;
                 if (count($route) > 1)
                     $route = array_merge([$route[0] . '/' . $route[1]], array_slice($route, 2));
@@ -80,89 +78,44 @@ class Router
     /**
      * @param string $routeBypass
      *
-     * @return RouteBypass
+     * @return string
      */
     public function bypass($routeBypass) {
-        foreach ($this->bypasses as &$bypass)
-            if ($m = $bypass->matchAndBypass($routeBypass)) {
+        foreach ($this->bypasses as &$bypass) {
+            $m = $bypass->matchAndBypass($routeBypass);
+            if ($m && is_string($m)) {
                 $routeBypass = $m;
                 break;
             }
-
+        }
 
         return $routeBypass;
     }
 
-    //endregion
-
-    //region Renderers
-
     /**
      * @param Route $route
      * @param RouteMiddler[] $middlers
-     * @throws H404
-     * @throws H501
-     *
      */
-    private static function RenderRoute(Route $route, $middlers = []) {
+    private static function FollowRoute(Route $route, $middlers = []) {
         try {
             $next = true;
             /** @var RouteMiddler $middler */
             foreach ($middlers as $middler) {
-                $next = self::RenderMiddleware($middler, $route);
+                $next = self::ExecuteMiddleware($middler, $route);
                 if (!$next) break;
             }
             //Render the controller
             if ($next)
-                self::RenderController($route->controller, $route->action, $route->arguments, $route);
-        } catch (\Exception $e) {
+                self::HandleController($route->controller, $route);
+        } catch (Exception $e) {
             //Handle the exception
             $route->arguments['exception'] = $e;
-            self::RenderController('_error', null, $route->arguments, $route);
+            try {
+                self::HandleController('_error', $route, true);
+            } catch (Exception $exception) {
+                die ($exception->getMessage());
+            }
         }
-    }
-
-    /**
-     * @param $name
-     * @param null $action
-     * @param array $params
-     * @param null $route
-     * @throws H404
-     * @throws H501
-     */
-    private static function RenderController($name, $action = null, $params = [], &$route = null) {
-        # Include controller file
-        $path = Controller::getPath($name);
-        if (!Controller::exists($name))
-            throw new H404(DEBUG_MODE ? "Controller not found: $path" : 'Page not found.');
-
-        $cn = "\\App\\Controllers\\" . str_replace('/', '\\', $name);
-        if (!class_exists($cn))
-            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers\\{Path}` namespace" : null));
-        $ctrl = new $cn($route);
-
-        if (!$ctrl instanceof Controller)
-            throw new H501('Controller class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Controller');
-
-        # Validate action
-        if ($action === null)
-            # Unspecified action
-            $action = 'Index';
-        elseif (!method_exists($ctrl, "fn$action")) {
-            # Method not exists
-            # Use Index method
-            $params = array_merge([$action], $params);
-            $action = 'Index';
-        }
-
-        # Handle request to the controller
-        $action = "fn$action";
-
-        $parEnc = [];
-        foreach ($params as $p => $k)
-            $parEnc[$p] = is_string($k) ? urlencode($k) : $k;
-        $ctrl->$action($parEnc);
-
     }
 
     /**
@@ -172,7 +125,7 @@ class Router
      * @throws H404
      * @throws H501
      */
-    private static function RenderMiddleware(RouteMiddler $routeMiddler, Route $route) {
+    private static function ExecuteMiddleware(RouteMiddler $routeMiddler, Route $route) {
         # Include MiddleWare file
         $path = Middleware::getPath($routeMiddler->name);
         if (!file_exists($path))
@@ -187,7 +140,7 @@ class Router
         $mdlr = new $cn;
 
         if (!$mdlr instanceof Middleware)
-            throw new H501('Middleware class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\Routing\Middleware');
+            throw new H501('Middleware class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\MVC\Middleware');
 
 
         # Handle request to the MiddleWare
@@ -195,10 +148,86 @@ class Router
         $argEnc = [];
         foreach ($route->arguments as $p => $k)
             $argEnc[$p] = is_string($k) ? urlencode($k) : $k;
-        return $mdlr->perform($route, $argEnc);
+        return $mdlr->execute($route, $argEnc);
 
     }
 
-    //endregion
+    #endregion
+
+    #region Renderers
+
+    /**
+     * @param $name
+     * @param Route $route
+     * @param bool $actinIndexOnly
+     * @throws H404
+     * @throws H501
+     */
+    private static function HandleController($name, Route $route, $actinIndexOnly = false) {
+        # Include controller file
+        $path = ControllerHelper::getPath($name);
+        if (!ControllerHelper::exists($name))
+            throw new H404(DEBUG_MODE ? "Controller not found: $path" : 'Page not found.');
+
+        $cn = "\\App\\Controllers\\" . str_replace('/', '\\', $name);
+        if (!class_exists($cn))
+            throw new H501('Wrong namespace' . (DEBUG_MODE ? ", Controller class in `$path` must be under `\\App\\Controllers\\{Path}` namespace" : null));
+
+        /** @var Controller $controller */
+        $controller = new $cn($route);
+
+        if (!$controller instanceof Controller)
+            throw new H501('Controller class' . (DEBUG_MODE ? " in `$path`" : null) . ' is not an instace of Olive\MVC\Controller');
+
+        $action = $actinIndexOnly === false ? $route->action : null;
+        $args   = $route->arguments;
+
+        # Validate action
+        if ($action === null)
+            $action = 'Index';
+        # Unspecified action
+        elseif (!method_exists($controller, $action)) {
+            # Method not exists
+            # Use Index method
+            $args   = array_merge([$action], $args);
+            $action = 'Index';
+        }
+
+        # Do some check for method visibility
+        try {
+            $rfl = new ReflectionMethod($cn, $action);
+            if (!$rfl->isPublic() || $rfl->isFinal() || $rfl->isStatic() || $rfl->isConstructor())
+                throw new H404('');
+            unset($rfl);
+        } catch (Exception $exception) {
+            throw new H404('Controller action ' . (DEBUG_MODE ? "`$action` in `$path`" : null)
+                . ' is not public or is static or final or is a class constructor');
+        }
+
+        # Handle request to the controller
+        $argsEncoded = [];
+        foreach ($args as $p => $k)
+            $argsEncoded[$p] = is_string($k) ? urlencode($k) : $k;
+
+        $route->action    = $action;
+        $route->arguments = $args;
+
+        # Run controller action
+        $actionResult = $controller->$action($argsEncoded);
+
+        if ($actionResult && $actionResult instanceof ActionResult)
+            $actionResult->executeResult($controller);
+
+    }
+
+    public function addBypass(RouteBypass $bypass) {
+        $this->bypasses[] = $bypass;
+    }
+
+    public function addMiddler(RouteMiddler $middler) {
+        $this->middlers[] = $middler;
+    }
+
+    #endregion
 
 }

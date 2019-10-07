@@ -1,6 +1,5 @@
 <?php namespace Olive\Support\Auth;
 
-use Olive\Exceptions\URLException;
 use Olive\Http\{Cookie, Response, Session, URL};
 use Olive\manifest;
 
@@ -9,12 +8,12 @@ abstract class Auth
 
     #region Consts and fields
 
-    const SAVE_COOKIE  = 1;
-    const SAVE_SESSION = 2;
-    const SAVE_NOSAVE  = 0;
+    public const SAVE_COOKIE  = 1;
+    public const SAVE_SESSION = 2;
+    public const SAVE_NOSAVE  = 0;
 
     /** @var Authenticatable */
-    public static $authenticated = null;
+    public static $authenticated;
     #endregion
 
     #region Abstract methods
@@ -41,7 +40,7 @@ abstract class Auth
 
         if ($authResult->isSucceed()) {
             $authString = static::encrypt($identifier, static::hash($passowrd, 1));
-            if ($save != static::SAVE_NOSAVE)
+            if ($save !== static::SAVE_NOSAVE)
                 static::save($authString, $save);
         }
 
@@ -53,7 +52,7 @@ abstract class Auth
      */
     public static function is() {
 
-        $ret = function ($state, $authenticatable = null) {
+        $ret = static function ($state, $authenticatable = null) {
             if ($state)
                 static::setAuthenticated($authenticatable);
             else
@@ -66,13 +65,11 @@ abstract class Auth
 
         $restored = static::getSavedDecrypted();
 
-        if ($restored == null)
+        if ($restored === null)
             return $ret(false);
 
-        $identifier  = $restored[0][0];
-        $hashedlvl_1 = $restored[0][1];
-        $place       = $restored[1];
-        $authString  = $restored[2];
+        [$identifier, $hashedlvl_1] = [$restored[0][0], $restored[0][1]];
+        [$place, $authString] = [$restored[1], $restored[2]];
 
         $authResult = static::check($identifier, static::hash($hashedlvl_1, 2));
 
@@ -101,12 +98,12 @@ abstract class Auth
         $authenticatable = static::getAuthenticatable($identifier);
 
         # check for existance
-        if ($authenticatable == null)
+        if ($authenticatable === null)
             return new AuthResult(AuthResult::INVALID_IDENTIFIER);
 
         # get authenticatable stored password
-        $p = $authenticatable->{static::getModelClass()::authPasswordField()};
-        if ($p != $hashedPassword)
+        $p = $authenticatable->authGetPassword();
+        if ($p !== $hashedPassword)
             return new AuthResult(AuthResult::INVALID_PASSWORD);
 
         # success
@@ -180,16 +177,17 @@ abstract class Auth
      * @return array|null
      */
     protected static function decrypt($authString) {
-        if ($authString == null)
-            return null;
-        $authString = base64_decode($authString);
-        $authString = explode(':', $authString);
 
-        if (count($authString) != 2) return null;
+        if ($authString === null)
+            return null;
+
+        $auth = explode(':', base64_decode($authString));
+
+        if (count($auth) !== 2) return null;
 
         return [
-            base64_decode($authString[0]),
-            base64_decode($authString[1]),
+            base64_decode($auth[0]),
+            base64_decode($auth[1]),
         ];
 
     }
@@ -206,11 +204,10 @@ abstract class Auth
     /**
      * @param string|array|URL $fallbackUrl see: {@see URL::parse}
      * @param string $fallbackUrlKey fallbackURL get key, null=skip ref
-     * @throws URLException
      */
     public static function prove($fallbackUrl = null, $fallbackUrlKey = 'ref') {
         $fallbackUrl = URL::parse($fallbackUrl);
-        if (!is_null($fallbackUrlKey)) {
+        if (null !== $fallbackUrlKey) {
             $ref = $_SERVER['REQUEST_URI'];
             $fallbackUrl->addQuery($fallbackUrlKey, $ref);
         }

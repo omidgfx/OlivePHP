@@ -3,7 +3,7 @@
 abstract class Response
 {
 
-    //region Helers
+    #region Helers
 
     /**
      * @param string $target_url
@@ -34,9 +34,9 @@ abstract class Response
         http_response_code($response_code);
     }
 
-    //endregion
+    #endregion
 
-    //region Dumpers
+    #region Dumpers
 
     /**
      * @param mixed $content
@@ -46,17 +46,17 @@ abstract class Response
     public static function jsonDump($content, $alive = false, $preventCache = false) {
         $json = json_encode($content, JSON_UNESCAPED_UNICODE);
         if (!$preventCache) {
-            header("Pragma: no-cache");
-            header("Cache-Control: no-cache, must-revalidate");
+            header('Pragma: no-cache');
+            header('Cache-Control: no-cache, must-revalidate');
         }
         if ($alive)
-            header("Keep-Alive: timeout=5, max=100");
-        header("Content-Type: application/json");
-        header("Content-Length: " . strlen($json));
+            header('Keep-Alive: timeout=5, max=100');
+        header('Content-Type: application/json');
+        header('Content-Length: ' . strlen($json));
         echo $json;
         die;
     }
 
-    //endregion
+    #endregion
 
 }

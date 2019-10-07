@@ -1,5 +1,7 @@
 <?php namespace Olive\Support\MySQLi;
 
+use Exception;
+use JsonSerializable;
 use Olive\Exceptions\MySQLiAdaptingException;
 use Olive\Exceptions\MySQLiConditionException;
 use Olive\Exceptions\MySQLiException;
@@ -12,7 +14,7 @@ use Olive\Util\DateTime;
  * Class Record
  * @package Olive\MySQLi
  */
-abstract class Record implements RecordInterface
+abstract class Record implements RecordInterface, JsonSerializable
 {
 
     #region Changings
@@ -24,13 +26,14 @@ abstract class Record implements RecordInterface
     }
 
     public function __get($name) {
-        return isset($this->_CHNGS[$name])
+        return array_key_exists($name, $this->_CHNGS)
             ? $this->_CHNGS[$name]
-            : (
-            isset($this->_ORIGS[$name])
-                ? $this->_ORIGS[$name]
-                : null
-            );
+            : $this->_ORIGS[$name] ?? null;
+    }
+
+    public function __isset($name) {
+        return array_key_exists($name, $this->_CHNGS)
+            or array_key_exists($name, $this->_ORIGS);
     }
 
     public function __clone() {
@@ -82,6 +85,16 @@ abstract class Record implements RecordInterface
     #endregion
 
     #region Public methods
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize() {
+        return $this->toArray();
+    }
+
+    /**
+     * @return array
+     */
     public function toArray() {
         return array_merge($this->_ORIGS, $this->_CHNGS);
     }
@@ -160,7 +173,7 @@ abstract class Record implements RecordInterface
      * @throws MySQLiRecordException
      */
     public function pull() {
-        if ($this->id == null)
+        if ($this->id === null)
             throw new MySQLiRecordException('Invalid id');
         $new          = static::selectById($this->id);
         $this->_ORIGS = $new->_ORIGS;
@@ -179,10 +192,11 @@ abstract class Record implements RecordInterface
      * <b>string</b> returns a formatted date-time string. Read more about {@see \Olive\Util\DateTime::format pattern syntax}
      * @param mixed $fallback
      * @return null|DateTime|string
+     * @throws MySQLiRecordException
      * @uses \Olive\Util\DateTime
      */
     public function getDateTime($column = 'date', $options = [], $pattern = manifest::DEFAULT_DATETIME_PATTERN_SHORT, $fallback = null) {
-        if ($this->{$column} == null)
+        if ($this->{$column} === null)
             return $fallback;
 
         # default option
@@ -193,7 +207,12 @@ abstract class Record implements RecordInterface
         ];
         $options  = array_merge($defaults, $options);
 
-        $d = new DateTime;
+        try {
+
+            $d = new DateTime;
+        } catch (Exception $exception) {
+            throw new MySQLiRecordException('Invalid DateTime', 0, $exception);
+        }
         $d->setTimestamp($this->{$column});
 
         $d->setCalendar($options['calendar']);
@@ -238,7 +257,7 @@ abstract class Record implements RecordInterface
     public static function extract($column, $records, $association = null) {
         $arr = [];
 
-        if ($association == null)
+        if ($association === null)
             foreach ($records as $record)
                 $arr[] = $record->{$column};
         else

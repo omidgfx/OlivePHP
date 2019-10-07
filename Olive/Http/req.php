@@ -24,93 +24,6 @@ abstract class req
     }
 
     /**
-     * Using $_GET
-     *
-     * @param string $key
-     * @param mixed $fallback
-     *
-     * @return mixed
-     */
-    public static function get($key, $fallback = null) {
-        if (isset($_GET[$key]) && $_GET[$key] != '')
-            return $_GET[$key];
-
-        return $fallback;
-    }
-
-    /**
-     * @param     $key
-     * @param int $fallback
-     *
-     * @return int
-     */
-    public static function getInt($key, $fallback = 0) {
-        $g = self::get($key);
-        if ($g == null) return $fallback;
-        if (is_numeric($g)) return intval($g);
-
-        return $fallback;
-    }
-
-    /**
-     * @param     $key
-     * @param int $fallback
-     *
-     * @return int
-     */
-    public static function postInt($key, $fallback = 0) {
-        $g = self::post($key);
-        if ($g == null) return $fallback;
-        if (is_numeric($g)) return intval($g);
-
-        return $fallback;
-    }
-
-    /**
-     * Using $_REQUEST
-     *
-     * @param string $key
-     * @param mixed $fallback
-     *
-     * @return mixed
-     */
-    public static function request($key, $fallback = null) {
-        if (isset($_REQUEST[$key]) && $_REQUEST[$key] != '')
-            return $_REQUEST[$key];
-
-        return $fallback;
-    }
-
-    /**
-     * @param     $key
-     * @param int $fallback
-     *
-     * @return int
-     */
-    public static function requestInt($key, $fallback = 0) {
-        $g = self::request($key);
-        if ($g == null) return $fallback;
-        if (is_numeric($g)) return intval($g);
-
-        return $fallback;
-    }
-
-    /**
-     * Using $_POST
-     *
-     * @param string $key
-     * @param mixed $fallback
-     *
-     * @return mixed
-     */
-    public static function post($key, $fallback = null) {
-        if (isset($_POST[$key]) && $_POST[$key] != '')
-            return $_POST[$key];
-
-        return $fallback;
-    }
-
-    /**
      * @param      $key
      * @param null $fallBack
      *
@@ -157,6 +70,21 @@ abstract class req
         return $r;
     }
 
+    /**
+     * Using $_POST
+     *
+     * @param string $key
+     * @param mixed $fallback
+     *
+     * @return mixed
+     */
+    public static function post($key, $fallback = null) {
+        if (isset($_POST[$key]) && $_POST[$key] !== '')
+            return $_POST[$key];
+
+        return $fallback;
+    }
+
     public static function gets($keys) {
         $r = [];
         foreach ($keys as $key) {
@@ -164,6 +92,21 @@ abstract class req
         }
 
         return $r;
+    }
+
+    /**
+     * Using $_GET
+     *
+     * @param string $key
+     * @param mixed $fallback
+     *
+     * @return mixed
+     */
+    public static function get($key, $fallback = null) {
+        if (isset($_GET[$key]) && $_GET[$key] !== '')
+            return $_GET[$key];
+
+        return $fallback;
     }
 
     public static function requests($keys) {
@@ -175,6 +118,21 @@ abstract class req
         return $r;
     }
 
+    /**
+     * Using $_REQUEST
+     *
+     * @param string $key
+     * @param mixed $fallback
+     *
+     * @return mixed
+     */
+    public static function request($key, $fallback = null) {
+        if (isset($_REQUEST[$key]) && $_REQUEST[$key] !== '')
+            return $_REQUEST[$key];
+
+        return $fallback;
+    }
+
     public static function postInts(array $keys) {
         $r = [];
         foreach ($keys as $key) {
@@ -184,6 +142,20 @@ abstract class req
         return $r;
     }
 
+    /**
+     * @param     $key
+     * @param int $fallback
+     *
+     * @return int
+     */
+    public static function postInt($key, $fallback = 0) {
+        $g = self::post($key);
+        if ($g === null) return $fallback;
+        if (is_numeric($g)) return (int)$g;
+
+        return $fallback;
+    }
+
     public static function getInts(array $keys) {
         $r = [];
         foreach ($keys as $key) {
@@ -191,6 +163,20 @@ abstract class req
         }
 
         return $r;
+    }
+
+    /**
+     * @param     $key
+     * @param int $fallback
+     *
+     * @return int
+     */
+    public static function getInt($key, $fallback = 0) {
+        $g = self::get($key);
+        if ($g === null) return $fallback;
+        if (is_numeric($g)) return (int)$g;
+
+        return $fallback;
     }
 
     public static function requestInts(array $keys) {
@@ -203,6 +189,20 @@ abstract class req
     }
 
     /**
+     * @param     $key
+     * @param int $fallback
+     *
+     * @return int
+     */
+    public static function requestInt($key, $fallback = 0) {
+        $g = self::request($key);
+        if ($g === null) return $fallback;
+        if (is_numeric($g)) return (int)$g;
+
+        return $fallback;
+    }
+
+    /**
      * <p>If set $desire for wanted type, method will return a boolean, otherwise method returns
      * $_SERVER['REQUEST_METHOD']
      *
@@ -212,19 +212,19 @@ abstract class req
      */
     public static function method($desire = null) {
         if ($desire) {
-            return strtolower($_SERVER['REQUEST_METHOD']) == strtolower($desire);
+            return strtolower($_SERVER['REQUEST_METHOD']) === strtolower($desire);
         } else
             return $_SERVER['REQUEST_METHOD'];
     }
 
     /**
      * @param array $extras
-     * @param string $level post|get|null=all
+     * @param string $level 'post'|'get'|null=all
      * @return string
      */
     public static function report($extras = null, $level = null) {
 
-        $dec = function ($var) {
+        $dec = static function ($var) {
             $out = [];
             foreach ($var as $k => $v)
                 $out[$k] = urldecode($v);
@@ -232,11 +232,21 @@ abstract class req
         };
 
         $vars['URL'] = rtrim($_SERVER['HTTP_HOST'], '/') . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
-        $vars        += $level == null ? ['Post' => $_POST, 'Get' => $dec($_GET)] : ($level == 'get' ? ['Get' => $dec($_GET)] : ['Post' => $_POST]);
 
+        switch ($level) {
+            case 'get':
+                $vars = array_merge($vars, ['Get' => $dec($_GET)]);
+                break;
+            case 'post':
+                $vars = array_merge($vars, ['Post' => $_POST]);
+                break;
+            default:
+                $vars = array_merge($vars, ['Post' => $_POST, 'Get' => $dec($_GET)]);
+                break;
+        }
 
         # EXTRAS
-        if (!is_null($extras))
+        if ($extras !== null)
             $vars['Extras'] = $extras;
 
         return json_encode($vars, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);

@@ -1,29 +1,35 @@
 <?php
 
+use Olive\Http\Linker;
+use Olive\Http\Response;
+use Olive\MVC\ContentResult;
+use Olive\MVC\EmptyResult;
+use Olive\MVC\JsonResult;
+use Olive\MVC\ViewResult;
+use Olive\Support\Html\Html;
+use Olive\Util\Text;
+use Olive\Util\WithObject;
+
 /**
- * Returns a url that is useful for using in href or src attribs for internal resources like
- * <code>/olivephp/your_resource.some</code>
- *
  * @param string $source
  *
- * @param bool $full
+ * @param bool $external
  * @return string
  */
-function src($source = '', $full = false) {
-    if ($full)
-        return Olive\Http\Linker::srcFull($source);
-    return Olive\Http\Linker::src($source);
+function url($source = '', $external = false) {
+    if ($external)
+        return Linker::externalLink($source);
+    return Linker::internalLink($source);
 }
 
 /**
  * @param $source
- * @param bool $full
+ * @param bool $external
  * @param string $full_port
- * @param null $full_protocol
  * @return string
  */
-function srcExt($source, $full = false, $full_port = '', $full_protocol = null) {
-    return Olive\Http\Linker::srcEx($source, $full, $full_port, $full_protocol);
+function linkEx($source, $external = false, $full_port = '') {
+    return Linker::linkExtended($source, $external, $full_port);
 }
 
 /**
@@ -32,7 +38,7 @@ function srcExt($source, $full = false, $full_port = '', $full_protocol = null) 
  * @param bool $preventCache
  */
 function json_dump($content, $alive = false, $preventCache = false) {
-    \Olive\Http\Response::jsonDump($content, $alive, $preventCache);
+    Response::jsonDump($content, $alive, $preventCache);
 }
 
 /**
@@ -46,41 +52,17 @@ function json_dump($content, $alive = false, $preventCache = false) {
  * <b>{@see \Olive\Util\html::TAG_EMPTY }</b>
  * @return string
  */
-function tag($name, $attrs_or_content = null, $content = null, $tagtype = \Olive\Support\Html\Html::TAG_AUTO_DETECT) {
-    return \Olive\Support\Html\Html::tag($name, $attrs_or_content, $content, $tagtype);
+function domElement($name, $attrs_or_content = null, $content = null, $tagtype = Html::TAG_AUTO_DETECT) {
+    return Html::domElement($name, $attrs_or_content, $content, $tagtype);
 }
 
-if (!function_exists("mb_basename")) {
-    /**
-     * Returns filename component of path
-     * @link http://php.net/manual/en/function.basename.php
-     * @param string $path <p>
-     * A path.
-     * </p>
-     * <p>
-     * On Windows, both slash (/) and backslash
-     * (\) are used as directory separator character. In
-     * other environments, it is the forward slash (/).
-     * </p>
-     * @return string the base name of the given path.
-     * @since 4.0
-     * @since 5.0
-     */
-    function mb_basename($path) {
-        $separator = " qq ";
-        $path      = preg_replace("/[^ ]/u", $separator . "\$0" . $separator, $path);
-        $base      = basename($path);
-        $base      = str_replace($separator, "", $base);
-        return $base;
-    }
-}
+
 /**
  * @param object $object
- * @return \Olive\Util\WithObject
+ * @return WithObject
  */
-
 function with($object) {
-    return new \Olive\Util\WithObject($object);
+    return new WithObject($object);
 }
 
 
@@ -92,9 +74,37 @@ function with($object) {
 function isSubdirOf($baseDir, $path) {
     $baseReal = realpath($baseDir);
     $pathReal = realpath($path);
-    return \Olive\Util\Text::startsWith($baseReal, $pathReal);
+    return Text::startsWith($baseReal, $pathReal);
 }
 
+/**
+ * @param $target_url
+ */
 function redirect($target_url) {
-    \Olive\Http\Response::redirect($target_url);
+    Response::redirect($target_url);
+}
+
+function contentResult() {
+    return new ContentResult;
+}
+
+function emptyResult() {
+    return new EmptyResult;
+}
+
+/**
+ * @param array|object $value
+ * @param int $options
+ * @param int $depth
+ * @return JsonResult
+ */
+function jsonResult($value, int $options = 0, int $depth = JSON_PARTIAL_OUTPUT_ON_ERROR) {
+    return new JsonResult($value, $options, $depth);
+}
+
+function viewResult(string $view = null) {
+    return new ViewResult($view);
+}
+function object(){
+    return new stdClass();
 }

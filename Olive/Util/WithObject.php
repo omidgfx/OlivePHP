@@ -9,7 +9,20 @@ class WithObject
      * WithObject constructor.
      * @param object $object
      */
-    public function __construct($object) { $this->object = $object; }
+    public function __construct($object) {
+        $this->object = $object;
+    }
+
+    /**
+     * @param array $assoc
+     * @param bool $run_all_callables
+     * @return $this
+     */
+    public function setArray(array $assoc, $run_all_callables = true) {
+        foreach ($assoc as $key => $value)
+            $this->set($key, $value, $run_all_callables);
+        return $this;
+    }
 
     /**
      * @param string $key
@@ -23,17 +36,6 @@ class WithObject
             ? $value($this->object)
             : $value;
 
-        return $this;
-    }
-
-    /**
-     * @param array $assoc
-     * @param bool $run_all_callables
-     * @return $this
-     */
-    public function setArray(array $assoc, $run_all_callables = true) {
-        foreach ($assoc as $key => $value)
-            $this->set($key, $value, $run_all_callables);
         return $this;
     }
 }
