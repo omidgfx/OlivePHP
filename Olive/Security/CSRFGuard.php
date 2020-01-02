@@ -35,7 +35,8 @@ class CSRFGuard
      * CSRFToken constructor.
      * @param string $key
      */
-    public function __construct($key) {
+    public function __construct($key)
+    {
         $this->key = $key;
         $this->fill();
     }
@@ -50,7 +51,8 @@ class CSRFGuard
      * @param int $timeout In minutes
      * @return string
      */
-    public function spawnToken($timeout = CSRFGuard::TIMEOUT) {
+    public function spawnToken($timeout = CSRFGuard::TIMEOUT)
+    {
         $token          = Text::randomCryptography(self::TOKEN_LENGTH);
         $this->tokens[] = [$token, time() + $timeout * 60];
         $this->save();
@@ -63,7 +65,8 @@ class CSRFGuard
      * @param string $token
      * @return bool
      */
-    public function isValid($token) {
+    public function isValid($token)
+    {
         $index = $this->find($token);
         return $index > -1 and $this->tokens[$index][1] > time();
     }
@@ -74,7 +77,8 @@ class CSRFGuard
      * @param string $token
      * @return bool
      */
-    public function revokeToken($token) {
+    public function revokeToken($token)
+    {
         $index = $this->find($token);
         if ($index > -1) {
             unset($this->tokens[$index]);
@@ -92,7 +96,8 @@ class CSRFGuard
      * @param $token
      * @return int -1: not found, 0 < index of found item
      */
-    private function find($token) {
+    private function find($token)
+    {
         $len = count($this->tokens);
         for ($i = 0; $i < $len; $i++)
             if ($this->tokens[$i][0] === $token)
@@ -100,18 +105,21 @@ class CSRFGuard
         return -1;
     }
 
-    private function fill() {
+    private function fill()
+    {
         $this->tokens = self::getTokens($this->key);
     }
 
-    private function save() {
+    private function save()
+    {
         self::saveTokens($this->key, $this->tokens);
     }
     #endregion
 
     #region Statitcs
 
-    public static function optimize() {
+    public static function optimize()
+    {
         $now = time();
 
         $optimized = [];
@@ -129,18 +137,19 @@ class CSRFGuard
         };
 
         $guards = self::readGuards();
-        /** @noinspection AlterInForeachInspection */
         foreach ($guards as $key => &$tokens)
-            /** @noinspection AlterInForeachInspection */
             foreach ($tokens as &$tokenArr)
                 $optimize($key, $tokenArr, $optimized);
+
+        unset($tokens, $tokenArr);
 
         count($optimized) > 0
             ? self::saveGuards($optimized)
             : self::eliminate();
     }
 
-    public static function eliminate($key = null) {
+    public static function eliminate($key = null)
+    {
         $guards = self::readGuards();
         if ($key !== null) {
             if (array_key_exists($key, $guards)) {
@@ -155,7 +164,8 @@ class CSRFGuard
      * @param string $key
      * @return array|[]
      */
-    private static function getTokens($key) {
+    private static function getTokens($key)
+    {
         $guards = self::readGuards();
         return array_key_exists($key, $guards) ? $guards[$key] : [];
     }
@@ -164,7 +174,8 @@ class CSRFGuard
      * @param array $tokens
      * @param string $key
      */
-    private static function saveTokens($key, $tokens) {
+    private static function saveTokens($key, $tokens)
+    {
         $guards       = self::readGuards();
         $guards[$key] = $tokens;
         self::saveGuards($guards);
@@ -173,14 +184,16 @@ class CSRFGuard
     /**
      * @return array
      */
-    protected static function readGuards() {
+    protected static function readGuards()
+    {
         return Session::get(self::MASTER_KEY, []);
     }
 
     /**
      * @param array $guards
      */
-    protected static function saveGuards($guards) {
+    protected static function saveGuards($guards)
+    {
         Session::set(self::MASTER_KEY, $guards);
     }
 
@@ -190,7 +203,8 @@ class CSRFGuard
      * @param string $key
      * @return CSRFGuard
      */
-    public function setKey(string $key) {
+    public function setKey(string $key)
+    {
         $this->key = $key;
         return $this;
     }
@@ -198,7 +212,8 @@ class CSRFGuard
     /**
      * @return string
      */
-    public function getKey() {
+    public function getKey()
+    {
         return $this->key;
     }
 

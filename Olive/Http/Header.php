@@ -35,7 +35,6 @@ class Header
      */
     public function execute(int $statusCode = null) {
         header((string)$this, $this->replace, $statusCode);
-        unset($this);
     }
 
     /**

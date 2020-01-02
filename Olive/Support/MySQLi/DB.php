@@ -52,9 +52,9 @@ class DB extends MySQLiConnection
 
         # values
         $str_vals = [];
-        foreach ($arrayOfCorrespondingValues as $correspondingValues) {
+        foreach ($arrayOfCorrespondingValues as &$correspondingValues) {
             $vals = [];
-            foreach ($correspondingValues as $value)
+            foreach ($correspondingValues as &$value)
                 $vals[] = $this->val($value);
             $str_vals[] = '(' . implode(',', $vals) . ')';
         }
