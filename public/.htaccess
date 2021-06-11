@@ -1,0 +1,20 @@
+DirectoryIndex index.php
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    SetEnvIf Request_URI ^(.*)/$ OLIVE_BASE_DIR=$1
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ %{ENV:OLIVE_BASE_DIR} [L,R=303]
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-l
+
+    RewriteRule ^([^\n]+)|(.*)$ index.php/$1
+
+</IfModule>

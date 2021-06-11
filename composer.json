@@ -1,0 +1,18 @@
+{
+  "autoload": {
+    "psr-4": {
+      "": ""
+    }
+  },
+  "authors": [
+    {
+      "name": "Pejman Chatrrouz",
+      "email": "omid.quist@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "8.*",
+    "ext-mbstring": "*",
+    "rakit/validation": "^1.4"
+  }
+}
